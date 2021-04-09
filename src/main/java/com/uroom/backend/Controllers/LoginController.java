@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 //@CrossOrigin("http://localhost:8080")
 @RestController //Es un controlador de tipo REST
@@ -28,6 +29,23 @@ public class LoginController {
 
         return new ResponseEntity<>(
                 "Custom header set", headers, HttpStatus.OK);
+    }
+
+    @PostMapping(path="/LogIn", consumes = "application/json")
+    public ResponseEntity<Object> loginUser(@RequestBody User loginUser){
+        try{
+            User ans =  userService.selectByEmail(loginUser.getEmail()).iterator().next();
+            if(ans.getPassword().equals( loginUser.getPassword() )){
+                System.out.println("Usuario valido, buena muchacho");
+                return new ResponseEntity<>("Usuario valido, buena muchacho", HttpStatus.OK);
+            }else {
+                System.out.println("Contraseña incorrecta, Mal :c");
+                return new ResponseEntity<>("Contraseña incorrecta, Mal :(", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }catch (NoSuchElementException e){
+            System.out.println("El correo ingresado no esta registrado");
+            return new ResponseEntity<>("El correo ingresado no esta registrado, Mal :(", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/getUsers")

@@ -26,6 +26,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public Iterable<User> selectByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
     public Iterable<User> selectByCellphone(String key_cellphone){//Busca en los Usuarios por número celular
         return userRepository.findByCellphone(key_cellphone);
     }
