@@ -25,6 +25,9 @@ public class UserService {
     public Iterable<User> select(){//Hace un select a la base de datos, en este caso los devuelve todos
         return userRepository.findAll();
     }
+    public Iterable<User> selectByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
 
     public Iterable<User> selectByCellphone(String key_cellphone){//Busca en los Usuarios por número celular
         return userRepository.findByCellphone(key_cellphone);
@@ -34,19 +37,8 @@ public class UserService {
         try{
 
             Iterable<User> query = selectByCellphone(user.getCellphone());
-            //User user2 = new User();
-            //
-            if(iterableEmpty(query)){// Es un nuevo usuario
-                //System.out.println("oiga mire vea ");
-                //System.out.println(user.toString());
-                //System.out.println(user.getPassword());
-                //System.out.println(user.getCellphone());
-                //System.out.println(user.getAge());
-                //System.out.println(user.getEmail());
-                //System.out.println(user.isIs_active());
-                //System.out.println(user.isIs_student());
 
-                //User user2 = new User('Leeo', 'leodelgad@unal.edu.co', 'mypass222222', '1321412412', true);
+            if(iterableEmpty(query)){// Es un nuevo usuario
                 userRepository.save(user);
             }
             else{

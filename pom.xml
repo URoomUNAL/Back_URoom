@@ -9,9 +9,15 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.uroom</groupId>
+<<<<<<< HEAD
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>uroom-back</name>
+=======
+    <artifactId>Backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>URoom</name>
+>>>>>>> LogIn
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>11</java.version>
