@@ -11,9 +11,13 @@
     <groupId>com.uroom</groupId>
 
 
-    <artifactId>Backend</artifactId>
+    <!-- <artifactId>Backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>URoom</name>
+    <name>URoom</name> -->
+
+    <artifactId>backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>uroom-back</name>
 
     <description>Demo project for Spring Boot</description>
     <properties>
