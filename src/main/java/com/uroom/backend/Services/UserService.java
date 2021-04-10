@@ -39,6 +39,7 @@ public class UserService {
             Iterable<User> query = selectByCellphone(user.getCellphone());
 
             if(iterableEmpty(query)){// Es un nuevo usuario
+                user.setIs_active(true);
                 userRepository.save(user);
             }
             else{

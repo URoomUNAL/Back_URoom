@@ -23,7 +23,7 @@ public class LoginController {
         this.userService = userService;
     }
 
-    @GetMapping(path="/log-in", consumes = "application/json")
+    @PostMapping(path="/log-in", consumes = "application/json")
     public ResponseEntity<Object> loginUser(@RequestBody User loginUser){
         try{
             User user =  userService.selectByEmail(loginUser.getEmail()).iterator().next();
