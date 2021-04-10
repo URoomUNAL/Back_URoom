@@ -31,26 +31,29 @@ public class LoginController {
                 "Custom header set", headers, HttpStatus.OK);
     }*/
 
-    @PostMapping(path="/login", consumes = "application/json")
+    @GetMapping(path="/login", consumes = "application/json")
     public ResponseEntity<Object> loginUser(@RequestBody User loginUser){
         try{
-            System.out.println(loginUser.getName());
-            User ans =  userService.selectByEmail(loginUser.getEmail()).iterator().next();
-            if(ans.getPassword().equals( loginUser.getPassword() )){
+            User user =  userService.selectByEmail(loginUser.getEmail()).iterator().next();
+            if(user.getPassword().equals( loginUser.getPassword() )){
                 System.out.println("Usuario valido, buena muchacho");
-                ans.setIs_active(true);
-                if(userService.update(ans)){
-                    return new ResponseEntity<>(ans, HttpStatus.OK);
+                user.setIs_active(true);
+                if(userService.update(user)){
+                    //TODO:INGRESAR LOG
+                    return new ResponseEntity<>(user, HttpStatus.OK);
                 }else{
+                    //TODO:INGRESAR LOG
                     return new ResponseEntity<>("No se pudo actualizar", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }else {
-                System.out.println("Contraseña incorrecta, Mal :c");
-                return new ResponseEntity<>("La contraseña esta mal, Mal :(", HttpStatus.INTERNAL_SERVER_ERROR);
+                //TODO:INGRESAR LOG
+                //System.out.println("Contraseña incorrecta, Mal :c");
+                return new ResponseEntity<>("La contraseña esta mal, Mal :(", HttpStatus.BAD_REQUEST);
             }
         }catch (NoSuchElementException e){
-            System.out.println("El correo ingresado no esta registrado");
-            return new ResponseEntity<>("El correo ingresado no esta registrado, Mal :(", HttpStatus.INTERNAL_SERVER_ERROR);
+            //TODO:INGRESAR LOG
+            //System.out.println("El correo ingresado no esta registrado");
+            return new ResponseEntity<>("El correo ingresado no esta registrado, Mal :(", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -59,15 +62,14 @@ public class LoginController {
         return userService.select();
     }
 
-    @PostMapping(path = "/sign-in", consumes = "application/json")
-    public ResponseEntity<Object> signIn(@RequestBody User newUser){
+    @PostMapping(path = "/sign-up", consumes = "application/json")
+    public ResponseEntity<Object> signUp(@RequestBody User newUser){
         if(userService.insert(newUser)) { //Es un usuario nuevo
-            return new ResponseEntity<>("buena muchacho", HttpStatus.OK);
+            //TODO:INGRESAR LOG
+            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
         }
+        //TODO:INGRESAR LOG
         return new ResponseEntity<>("Mal :(", HttpStatus.INTERNAL_SERVER_ERROR);
-        //List<String> result = Lists.newArrayList(iterable);
-        //if(similarUsers)
-        //
     }
 
     @DeleteMapping(path = "/delete-user", consumes = "application/json")
@@ -75,13 +77,16 @@ public class LoginController {
         try{
             User user =  userService.selectByEmail(deleteUser.getEmail()).iterator().next();
             if(userService.delete(user)){
-                return new ResponseEntity<>("Melo caramelo", HttpStatus.OK);
+                //TODO:INGRESAR LOG
+                return new ResponseEntity<>("", HttpStatus.ACCEPTED);
             }else{
+                //TODO:INGRESAR LOG
                 return new ResponseEntity<>("No se pudo borrar :c", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }catch (NoSuchElementException e){
-            String hola = e.getMessage() + ", no está el muchacho";
-            return new ResponseEntity<>(hola, HttpStatus.INTERNAL_SERVER_ERROR);
+            //TODO:INGRESAR LOG
+            String message = e.getMessage() + ", no está el muchacho";
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -91,13 +96,16 @@ public class LoginController {
             User user =  userService.selectByEmail(deactivateUser.getEmail()).iterator().next();
             user.setIs_active(false);
             if(userService.update(user)){
-                return new ResponseEntity<>("Melo caramelo", HttpStatus.OK);
+                //TODO:INGRESAR LOG
+                return new ResponseEntity<>("Melo caramelo", HttpStatus.ACCEPTED);
             }else{
-                return new ResponseEntity<>("No se pudo borrar :c", HttpStatus.INTERNAL_SERVER_ERROR);
+                //TODO:INGRESAR LOG
+                return new ResponseEntity<>("No se pudo desctivar :c", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }catch (NoSuchElementException e){
-            String hola = e.getMessage() + ", no se pudo desactivar";
-            return new ResponseEntity<>(hola, HttpStatus.INTERNAL_SERVER_ERROR);
+            //TODO:INGRESAR LOG
+            String message = e.getMessage() + ", no se pudo desactivar";
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
 
     }
