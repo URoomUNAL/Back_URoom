@@ -23,6 +23,12 @@ public class LoginController {
         this.userService = userService;
     }
 
+
+    @GetMapping(path="/nuevaaa")
+    public ResponseEntity<Object> pruebaa(){
+        return new ResponseEntity<>(userService.selectByEmail("aaaaaaaaaaa@.edu.co"), HttpStatus.BAD_REQUEST);
+    }
+
     @PostMapping(path="/log-in", consumes = "application/json")
     public ResponseEntity<Object> loginUser(@RequestBody User loginUser){
         try{

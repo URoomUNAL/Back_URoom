@@ -22,22 +22,22 @@ public class UserService {
         System.out.println(listOfIterable);
         return listOfIterable.size() == 0;
     }
-    public Iterable<User> select(){//Hace un select a la base de datos, en este caso los devuelve todos
+    public List<User> select(){//Hace un select a la base de datos, en este caso los devuelve todos
         return userRepository.findAll();
     }
-    public Iterable<User> selectByEmail(String email){
+    public List<User> selectByEmail(String email){
         return userRepository.findByEmail(email);
     }
 
-    public Iterable<User> selectByCellphone(String key_cellphone){//Busca en los Usuarios por número celular
+    public List<User> selectByCellphone(String key_cellphone){//Busca en los Usuarios por número celular
         return userRepository.findByCellphone(key_cellphone);
     }
 
     public boolean insert(User user){//Inserta un Usuario en la base de datos
         try{
-            Iterable<User> query = selectByCellphone(user.getCellphone());
+            List<User> query = selectByCellphone(user.getCellphone());
 
-            if(iterableEmpty(query)){// Es un nuevo usuario
+            if(query.size() == 0){// Es un nuevo usuario
                 user.setIs_active(true);
                 userRepository.save(user);
             }

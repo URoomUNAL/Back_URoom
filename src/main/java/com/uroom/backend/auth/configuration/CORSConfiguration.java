@@ -18,19 +18,13 @@ public class CORSConfiguration
     public FilterRegistrationBean<CorsFilter> corsFilter( ){
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource( );
         CorsConfiguration config = new CorsConfiguration( );
-
-        config.addAllowedOrigin( "*" );
+        //config.setAllowCredentials(true);
+        config.addAllowedOrigin( "http://localhost:8080");
         config.addAllowedHeader( "*" );
-        config.addAllowedMethod( GET );
-        config.addAllowedMethod( POST );
-        config.addAllowedMethod( PATCH );
-        config.addAllowedMethod( PUT );
-        config.addAllowedMethod( DELETE );
+        config.addAllowedMethod( "*");
         source.registerCorsConfiguration( "/**", config );
-
         FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>( new CorsFilter(  source ) );
         bean.setOrder( HIGHEST_PRECEDENCE );
-
         return bean;
     }
 }
