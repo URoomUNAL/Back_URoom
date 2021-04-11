@@ -39,7 +39,7 @@ public class LoginController {
                 }
             }else {
                 //TODO:INGRESAR LOG
-                //System.out.println("Contraseña incorrecta, Mal :c");
+                System.out.println("Contraseña incorrecta, Mal :c");
                 return new ResponseEntity<>("La contraseña esta mal, Mal :(", HttpStatus.BAD_REQUEST);
             }
         }catch (NoSuchElementException e){
@@ -64,6 +64,7 @@ public class LoginController {
         }
         newUser.setPassword(encoder.encode(newUser.getPassword()));
         System.out.println(newUser.getPassword());
+        System.out.println(userService);
         if(userService.insert(newUser)) { //Es un usuario nuevo
             //TODO:INGRESAR LOG
             return new ResponseEntity<>(newUser, HttpStatus.CREATED);
