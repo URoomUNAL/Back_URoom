@@ -33,7 +33,7 @@ public class UserService {
         return userRepository.findByCellphone(key_cellphone);
     }
 
-    public boolean insert(User user){//Inserta un Usuario en la base de datos
+    public int insert(User user){//Inserta un Usuario en la base de datos
         try{
 
             Iterable<User> query = selectByCellphone(user.getCellphone());
@@ -44,13 +44,13 @@ public class UserService {
             }
             else{
                 System.out.println("Ya existe un usuario con ese teléfono");
-                return false;
+                return 1;
             }
         }catch(Exception e){
-            System.out.println(e);
-            return false;
+            System.out.println(e.getMessage());
+            return 2;
         }
-        return true;
+        return 0;
     }
 
     public boolean update(User user){
