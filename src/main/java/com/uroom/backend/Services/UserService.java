@@ -35,7 +35,6 @@ public class UserService {
 
     public boolean insert(User user){//Inserta un Usuario en la base de datos
         try{
-
             Iterable<User> query = selectByCellphone(user.getCellphone());
 
             if(iterableEmpty(query)){// Es un nuevo usuario
