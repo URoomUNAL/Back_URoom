@@ -20,6 +20,7 @@ public class CORSConfiguration
         CorsConfiguration config = new CorsConfiguration( );
         //config.setAllowCredentials(true);
         config.addAllowedOrigin( "http://localhost:8080");
+        config.addAllowedOrigin( "https://proud-grass-0191ffe10.azurestaticapps.net");
         config.addAllowedHeader( "*" );
         config.addAllowedMethod( "*");
         source.registerCorsConfiguration( "/**", config );

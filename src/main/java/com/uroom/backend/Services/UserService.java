@@ -2,7 +2,11 @@ package com.uroom.backend.Services;
 
 import com.uroom.backend.Models.User;
 import com.uroom.backend.Repository.UserRepository;
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.exception.DataException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.hibernate.exception.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,7 @@ public class UserService {
         System.out.println(listOfIterable);
         return listOfIterable.size() == 0;
     }
+
     public List<User> select(){//Hace un select a la base de datos, en este caso los devuelve todos
         return userRepository.findAll();
     }
@@ -33,23 +38,23 @@ public class UserService {
         return userRepository.findByCellphone(key_cellphone);
     }
 
-    public boolean insert(User user){//Inserta un Usuario en la base de datos
+    public int insert(User user){//Inserta un Usuario en la base de datos
         try{
             List<User> query = selectByCellphone(user.getCellphone());
+            List<User> query2 = selectByEmail(user.getEmail());
 
-            if(query.size() == 0){// Es un nuevo usuario
+            if(query.size() == 0 && query2.size() == 0){// Es un nuevo usuario
                 user.setIs_active(true);
                 userRepository.save(user);
+                return 0;
+            }else if(iterableEmpty(query)){
+                return 2;
+            }else{
+                return 1;
             }
-            else{
-                System.out.println("Ya existe un usuario con ese teléfono");
-                return false;
-            }
-        }catch(Exception e){
-            System.out.println(e);
-            return false;
+        }catch (Exception e){
+            return -1;
         }
-        return true;
     }
 
     public boolean update(User user){
