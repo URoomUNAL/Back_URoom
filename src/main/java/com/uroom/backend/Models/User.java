@@ -28,9 +28,9 @@ public class User {
     private String email;
 
     @NotBlank
-    @Size(max = 20)
+    //@Size(max = 255)
     @NotNull
-    @Column(name="password", nullable=false, length=20)
+    @Column(name="password", nullable=false)
     private String password;
 
     @Column(name="age",nullable=true)
