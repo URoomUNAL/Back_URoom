@@ -2,7 +2,11 @@ package com.uroom.backend.Services;
 
 import com.uroom.backend.Models.User;
 import com.uroom.backend.Repository.UserRepository;
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.exception.DataException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.hibernate.exception.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,22 +39,21 @@ public class UserService {
 
     public int insert(User user){//Inserta un Usuario en la base de datos
         try{
-
             Iterable<User> query = selectByCellphone(user.getCellphone());
+            Iterable<User> query2 = selectByEmail(user.getEmail());
 
-            if(iterableEmpty(query)){// Es un nuevo usuario
+            if(iterableEmpty(query) && iterableEmpty(query2)){// Es un nuevo usuario
                 user.setIs_active(true);
                 userRepository.save(user);
-            }
-            else{
-                System.out.println("Ya existe un usuario con ese teléfono");
+                return 0;
+            }else if(iterableEmpty(query)){
+                return 2;
+            }else{
                 return 1;
             }
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-            return 2;
+        }catch (Exception e){
+            return -1;
         }
-        return 0;
     }
 
     public boolean update(User user){
