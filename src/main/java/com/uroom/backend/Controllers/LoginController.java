@@ -35,17 +35,16 @@ public class LoginController {
                     return new ResponseEntity<>(user, HttpStatus.OK);
                 }else{
                     //TODO:INGRESAR LOG
-                    return new ResponseEntity<>("No se pudo actualizar", HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity<>("No fue posible reactivar el usuario, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }else {
                 //TODO:INGRESAR LOG
-                System.out.println("Contraseña incorrecta, Mal :c");
-                return new ResponseEntity<>("La contraseña esta mal, Mal :(", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("La contraseña es incorrecta, por favor intente nuevamente.", HttpStatus.BAD_REQUEST);
             }
         }catch (NoSuchElementException e){
             //TODO:INGRESAR LOG
             //System.out.println("El correo ingresado no esta registrado");
-            return new ResponseEntity<>("El correo ingresado no esta registrado, Mal :(", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("No se encontró el usuario, por favor intente nuevamente.", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -57,20 +56,26 @@ public class LoginController {
     @PostMapping(path = "/sign-up", consumes = "application/json")
     public ResponseEntity<Object> signUp(@RequestBody User newUser){
         if(newUser.getPassword().length() < 6 || newUser.getPassword().length() > 20){
-            return new ResponseEntity<>("La contraseña debe tener un longitud entre 6 y 20. Mal :(", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("La contraseña debe tener un longitud entre 6 y 20.", HttpStatus.BAD_REQUEST);
         }
         if(!newUser.getPassword().matches(".*\\d.*")){
-            return new ResponseEntity<>("La contraseña debe tener al menos un numero. Mal :(", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("La contraseña debe tener al menos un numero.", HttpStatus.BAD_REQUEST);
         }
         newUser.setPassword(encoder.encode(newUser.getPassword()));
-        System.out.println(newUser.getPassword());
-        System.out.println(userService);
-        if(userService.insert(newUser)) { //Es un usuario nuevo
-            //TODO:INGRESAR LOG
-            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        switch (userService.insert(newUser)) { //Es un usuario nuevo
+            case 0:
+                //TODO:INGRESAR LOG
+                return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+            case 1:
+                //TODO:INGRESAR LOG
+                return new ResponseEntity<>("Ya existe un usuario con ese teléfono, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
+            case 2:
+                //TODO:INGRESAR LOG
+                return new ResponseEntity<>("Ya existe un usuario registrado con ese correo, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
+            default:
+                //TODO:INGRESAR LOG
+                return new ResponseEntity<>("Algo salio mal en su registro, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        //TODO:INGRESAR LOG
-        return new ResponseEntity<>("Mal :(", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @DeleteMapping(path = "/delete-user", consumes = "application/json")
@@ -79,15 +84,14 @@ public class LoginController {
             User user =  userService.selectByEmail(deleteUser.getEmail()).iterator().next();
             if(userService.delete(user)){
                 //TODO:INGRESAR LOG
-                return new ResponseEntity<>("", HttpStatus.ACCEPTED);
+                return new ResponseEntity<>("El usuario fue eliminado correctamente.", HttpStatus.ACCEPTED);
             }else{
                 //TODO:INGRESAR LOG
-                return new ResponseEntity<>("No se pudo borrar :c", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>("El usuario no pudo ser eliminado, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }catch (NoSuchElementException e){
             //TODO:INGRESAR LOG
-            String message = e.getMessage() + ", no está el muchacho";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("No se encontró el usuario, por favor intente nuevamente.", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -98,16 +102,15 @@ public class LoginController {
             user.setIs_active(false);
             if(userService.update(user)){
                 //TODO:INGRESAR LOG
-                return new ResponseEntity<>("Melo caramelo", HttpStatus.ACCEPTED);
+                return new ResponseEntity<>("Su cuenta fue desactivada exitosamente.", HttpStatus.ACCEPTED);
             }else{
                 //TODO:INGRESAR LOG
-                return new ResponseEntity<>("No se pudo desctivar :c", HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>("Su cuenta no pudo ser actualizada, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }catch (NoSuchElementException e){
             //TODO:INGRESAR LOG
-            String message = e.getMessage() + ", no se pudo desactivar";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("No se encontró el usuario, por favor intente nuevamente.", HttpStatus.BAD_REQUEST);
         }
-
     }
+
 }
