@@ -15,7 +15,7 @@ public class Image {
     private String url;
 
     @ManyToOne()
-    @JoinColumn(name = "university_id")
+    @JoinColumn(name = "post")
     private Post post;
 
     public void setUrl(String url) {

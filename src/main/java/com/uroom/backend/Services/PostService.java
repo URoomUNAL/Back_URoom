@@ -19,13 +19,27 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public boolean insert(Post post){
+    public Post insert(Post post){
         try{
             post.setIs_active(true);
-            postRepository.save(post);
-            return true;
+            return postRepository.save(post);
         }catch (Exception e){
-            return false;
+            return null;
+        }
+    }
+    public Post update(Post newPost){
+        try{
+            return postRepository.save(newPost);
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    public Post selectByAddress(String address){
+        try {
+            return postRepository.findByAddress(address);
+        }catch (Exception e){
+            return null;
         }
     }
 

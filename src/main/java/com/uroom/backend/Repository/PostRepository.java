@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
     //List<Post> findBySomething(String something);
+    Post findByAddress(String addres);
 }
