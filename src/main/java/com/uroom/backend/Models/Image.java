@@ -1,5 +1,7 @@
 package com.uroom.backend.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,6 +16,7 @@ public class Image {
     @Column(name="url", nullable=false, length = 255)
     private String url;
 
+    @JsonIgnore
     @ManyToOne()
     @JoinColumn(name = "post")
     private Post post;
