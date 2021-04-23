@@ -71,7 +71,7 @@ public class PostController {
         myPost.setTitle(newPost.getTitle());
         int random_int = (int)Math.floor(Math.random()*(1000+1));
         String prefix_img = "post_"+String.valueOf(random_int)+"_image_";
-        String main_img = writeBlobFile(newPost.getMain_img(),prefix_img + "0");
+        String main_img = writeBlobFile(newPost.getMain_img(),prefix_img + "0.jpg");
         myPost.setMain_img(main_img);
         User user = userService.selectByEmail(newPost.getUser()).iterator().next();
         myPost.setUser(user);
@@ -83,7 +83,7 @@ public class PostController {
 
             for(int i = 1; i < newPost.getImages().size(); ++i){ //Añadir imágenes a la base de datos
                 Image image = new Image();
-                String name_img = prefix_img + String.valueOf(i);
+                String name_img = prefix_img + String.valueOf(i) + ".jpg";
                 image.setUrl(writeBlobFile(newPost.getImages().get(i-1),name_img));
                 image.setPost(myPost); //Enlaza el post a la imagen
                 image = imageService.insert(image);
