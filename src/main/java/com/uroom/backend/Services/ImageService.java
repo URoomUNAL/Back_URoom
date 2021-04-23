@@ -21,4 +21,8 @@ public class ImageService {
             return null;
         }
     }
+
+    public Image selectByUrl(String url){
+        return imageRepository.findByUrl(url);
+    }
 }

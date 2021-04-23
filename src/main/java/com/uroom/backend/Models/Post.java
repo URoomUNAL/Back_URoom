@@ -44,6 +44,9 @@ public class Post {
     @Column(name = "is_active", nullable = false)
     private boolean is_active;
 
+    @Column(name = "score",nullable = true)
+    private double score;
+
     @OneToMany(mappedBy = "post")
     private List<Image> images;
 
@@ -112,6 +115,10 @@ public class Post {
     public List<Image> getImages() {
         return images;
     }
+
+    public double getScore() { return score; }
+
+    public void setScore(double score) { this.score = score; }
 
     public void setImages(List<Image> images) {
         this.images = images;

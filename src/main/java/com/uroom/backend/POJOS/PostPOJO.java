@@ -19,6 +19,7 @@ public class PostPOJO {
     private double latitude;
     private double longitude;
     private MultipartFile main_img;
+    private double score;
 
     public PostPOJO() {
     }
@@ -70,6 +71,10 @@ public class PostPOJO {
     public MultipartFile getMain_img() {
         return main_img;
     }
+
+    public double getScore() { return score; }
+
+    public void setScore(double score) { this.score = score; }
 
     /*private List<MultipartFile> images;*/
 

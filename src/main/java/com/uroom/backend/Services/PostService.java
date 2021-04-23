@@ -43,5 +43,13 @@ public class PostService {
         }
     }
 
+    public Post selectById(int id){
+        try {
+            return postRepository.findById(id);
+        }catch (Exception e){
+            return null;
+        }
+    }
+
 
 }
