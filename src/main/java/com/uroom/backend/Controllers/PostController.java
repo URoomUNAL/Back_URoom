@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 @RestController
 public class PostController {
@@ -42,20 +44,21 @@ public class PostController {
         return imageService.select();
     }
 
+    /*
     @PostMapping("/blob")
     public String writeBlobFile(@RequestParam("HOLA") MultipartFile file) throws IOException {
         String url = azureStorageService.writeBlobFile(file,"prueba");
         System.out.println(url);
         return url;
     }
-    /*
+    /**/
     public String writeBlobFile(MultipartFile file, String filename) throws IOException {
         String url = azureStorageService.writeBlobFile(file,filename);
         System.out.println(url);
         return url;
-    }*/
-/*
-    @PostMapping(path = "add-ppost")
+    }
+
+    @PostMapping(path = "add-post")
     public ResponseEntity<Object> addPost(@ModelAttribute PostPOJO newPost) throws IOException {
         //System.out.println(newPost.getRules());
 
@@ -66,12 +69,16 @@ public class PostController {
         myPost.setLatitude(newPost.getLatitude());
         myPost.setLongitude(newPost.getLongitude());
         myPost.setTitle(newPost.getTitle());
-        String prefix_img = "post_"+myPost.getAddress()+"_image_";
-        //String main_img = writeBlobFile(newPost.getMain_img(),prefix_img + "0");
-        //myPost.setMain_img(main_img);
+        int random_int = (int)Math.floor(Math.random()*(1000+1));
+        String prefix_img = "post_"+String.valueOf(random_int)+"_image_";
+        String main_img = writeBlobFile(newPost.getMain_img(),prefix_img + "0");
+        myPost.setMain_img(main_img);
+        User user = userService.selectByEmail(newPost.getUser()).iterator().next();
+        myPost.setUser(user);
         myPost = postService.insert(myPost);
         if(myPost != null){
             //Añadir imágenes
+
             List<Image> images = new ArrayList<>();
 
             for(int i = 1; i < newPost.getImages().size(); ++i){ //Añadir imágenes a la base de datos
@@ -88,16 +95,26 @@ public class PostController {
                 }
             }
             myPost.setImages(images);
+            /**/
             //Añadir servicios
-            myPost.setServices(newPost.getServices());
+            Set<String> serviceNames = newPost.getServices();
+            Set<Service> services = serviceService.selectBySetNames(serviceNames);
+            myPost.setServices(services);
+
             //Añadir rules
-            myPost.setRules(newPost.getRules());
-            //Añadir usuario
-            User user = userService.selectByEmail(newPost.getUser()).iterator().next();
-            myPost.setUser(user);
+            Set<String> ruleNames = newPost.getRules();
+            Set<Rule> rules = ruleService.selectBySetNames(ruleNames);
+            myPost.setRules(rules);
+            /**/
 
             myPost = postService.update(myPost);
-            return new ResponseEntity<>(myPost, HttpStatus.CREATED);
+            if(myPost != null){
+
+                return new ResponseEntity<>(myPost, HttpStatus.CREATED);
+            }
+            else{
+                return new ResponseEntity<>("(Services)Algo salio mal al agregar la nueva publicacion, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }else{
             return new ResponseEntity<>("Algo salio mal al agregar la nueva publicacion, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -106,7 +123,7 @@ public class PostController {
         //return new ResponseEntity<>("Algo salio mal al agregar la nueva publicacion, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
-    */
+
     @GetMapping(value = "get-services")
     public ResponseEntity<Object> getServices(){
         List<Service> services = serviceService.select();

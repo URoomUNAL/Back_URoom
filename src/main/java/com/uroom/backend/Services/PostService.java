@@ -32,6 +32,7 @@ public class PostService {
         try{
             return postRepository.save(newPost);
         }catch (Exception e){
+            System.out.println(e);
             return null;
         }
     }

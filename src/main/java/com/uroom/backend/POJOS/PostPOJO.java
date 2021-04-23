@@ -24,8 +24,8 @@ public class PostPOJO {
     private double score;
     private MultipartFile main_img;
     private List<MultipartFile> images;
-    private Set<Rule> rules;
-    private Set<Service> services;
+    private Set<String> rules;
+    private Set<String> services;
     private String user;
 
     public PostPOJO() {
@@ -43,11 +43,11 @@ public class PostPOJO {
         this.images = images;
     }
 
-    public void setRules(Set<Rule> rules) {
+    public void setRules(Set<String> rules) {
         this.rules = rules;
     }
 
-    public void setServices(Set<Service> services) {
+    public void setServices(Set<String> services) {
         this.services = services;
     }
 
@@ -55,11 +55,11 @@ public class PostPOJO {
         return images;
     }
 
-    public Set<Rule> getRules() {
+    public Set<String> getRules() {
         return rules;
     }
 
-    public Set<Service> getServices() {
+    public Set<String> getServices() {
         return services;
     }
 

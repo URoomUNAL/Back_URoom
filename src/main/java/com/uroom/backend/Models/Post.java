@@ -13,7 +13,7 @@ import java.util.Set;
 public class Post {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private  int id;
+    private int id;
 
     @NotBlank
     @Size(max=45)

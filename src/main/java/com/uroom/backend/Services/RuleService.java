@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import com.uroom.backend.Repository.RuleRepository;
 import com.uroom.backend.Models.Rule;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RuleService {
@@ -13,9 +14,6 @@ public class RuleService {
         this.ruleRepository = ruleRepository;
     }
 
-    public List<Rule> select() {
-        return ruleRepository.findAll();
-    }
 
     public Rule insert(Rule newRule) {
         try {
@@ -28,5 +26,12 @@ public class RuleService {
 
     public Rule selectById(int id){
         return ruleRepository.findById(id);
+    }
+
+    public List<Rule> select() {
+        return ruleRepository.findAll();
+    }
+    public Set<Rule> selectBySetNames(Set<String> ruleNames){
+        return ruleRepository.findByNameIn(ruleNames);
     }
 }

@@ -4,6 +4,7 @@ import com.uroom.backend.Repository.ServiceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ServiceService {
@@ -31,4 +32,8 @@ public class ServiceService {
     }
 
     public List<com.uroom.backend.Models.Service> select(){return serviceRepository.findAll();}
+
+    public Set<com.uroom.backend.Models.Service> selectBySetNames(Set<String> serviceNames){
+        return serviceRepository.findByNameIn(serviceNames);
+    }
 }
