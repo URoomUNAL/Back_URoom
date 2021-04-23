@@ -3,6 +3,8 @@ package com.uroom.backend.POJOS;
 import com.uroom.backend.Models.Image;
 import com.uroom.backend.Models.Rule;
 import com.uroom.backend.Models.Service;
+import com.uroom.backend.Models.User;
+import com.uroom.backend.Services.RuleService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -13,15 +15,52 @@ import java.util.List;
 import java.util.Set;
 
 public class PostPOJO {
+    private String title;
     private String description;
     private String address;
     private int price;
     private double latitude;
     private double longitude;
-    private MultipartFile main_img;
     private double score;
+    private MultipartFile main_img;
+    private List<MultipartFile> images;
+    private Set<Rule> rules;
+    private Set<Service> services;
+    private String user;
 
     public PostPOJO() {
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setImages(List<MultipartFile> images) {
+        this.images = images;
+    }
+
+    public void setRules(Set<Rule> rules) {
+        this.rules = rules;
+    }
+
+    public void setServices(Set<Service> services) {
+        this.services = services;
+    }
+
+    public List<MultipartFile> getImages() {
+        return images;
+    }
+
+    public Set<Rule> getRules() {
+        return rules;
+    }
+
+    public Set<Service> getServices() {
+        return services;
     }
 
     public void setDescription(String description) {
@@ -76,6 +115,13 @@ public class PostPOJO {
 
     public void setScore(double score) { this.score = score; }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
     /*private List<MultipartFile> images;*/
 
 

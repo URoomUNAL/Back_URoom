@@ -1,5 +1,7 @@
 package com.uroom.backend.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -12,6 +14,12 @@ public class Post {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private  int id;
+
+    @NotBlank
+    @Size(max=45)
+    @NotNull
+    @Column(name="title", nullable = false, length = 45)
+    private String title;
 
     @Size(max = 255)
     @Column(name="description", nullable=true, length = 255)
@@ -35,6 +43,7 @@ public class Post {
     @Column(name="longitude", nullable=false)
     private double longitude;
 
+
     @NotBlank
     @Size(max = 255)
     @NotNull
@@ -45,7 +54,7 @@ public class Post {
     private boolean is_active;
 
     @Column(name = "score",nullable = true)
-    private double score;
+    private Double score;
 
     @OneToMany(mappedBy = "post")
     private List<Image> images;
@@ -55,6 +64,20 @@ public class Post {
 
     @ManyToMany(mappedBy = "posts")
     private Set<Service> services;
+
+    @NotNull
+    @JsonIgnore
+    @ManyToOne()
+    @JoinColumn(name = "user")
+    private User user;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public int getId() {
         return id;
@@ -116,9 +139,9 @@ public class Post {
         return images;
     }
 
-    public double getScore() { return score; }
+    public Double getScore() { return score; }
 
-    public void setScore(double score) { this.score = score; }
+    public void setScore(Double score) { this.score = score; }
 
     public void setImages(List<Image> images) {
         this.images = images;
@@ -146,5 +169,13 @@ public class Post {
 
     public void setIs_active(boolean is_active) {
         this.is_active = is_active;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -18,6 +18,7 @@ public class Image {
 
     @JsonIgnore
     @ManyToOne()
+    @NotNull
     @JoinColumn(name = "post")
     private Post post;
 

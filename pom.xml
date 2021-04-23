@@ -25,6 +25,7 @@
         <sonar.projectKey>URoomUNAL_Back_URoom</sonar.projectKey>
         <sonar.organization>uroomunal</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <azure.version>3.3.0</azure.version>
     </properties>
     <dependencies>
         <dependency>
@@ -62,7 +63,34 @@
             <artifactId>spring-security-crypto</artifactId>
             <version>5.4.5</version>
         </dependency>
+
+        <!-- Dependencias para guardad los blob -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>azure-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.azure.spring</groupId>
+            <artifactId>azure-spring-boot-starter-storage</artifactId>
+        </dependency>
+
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.azure.spring</groupId>
+                <artifactId>azure-spring-boot-bom</artifactId>
+                <version>${azure.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

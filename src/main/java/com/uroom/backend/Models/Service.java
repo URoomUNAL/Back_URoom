@@ -18,12 +18,34 @@ public class Service {
     @Column(name="name", nullable=false, length = 45)
     private String name;
 
+    @NotBlank
+    @Size(max = 45)
+    @NotNull
+    @Column(name="icono", nullable=false, length = 45)
+    private String icono;
+
     @ManyToMany()
     @JoinTable(
             name = "post_service", joinColumns = {@JoinColumn(name = "post_id")},
             inverseJoinColumns = {@JoinColumn(name = "service_id")}
     )
     private Set<Post> posts;
+
+    public String getIcono() {
+        return icono;
+    }
+
+    public void setIcono(String icono) {
+        this.icono = icono;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
 
     public int getId() {
         return id;
@@ -40,4 +62,6 @@ public class Service {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }

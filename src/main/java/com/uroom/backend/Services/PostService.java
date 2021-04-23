@@ -24,6 +24,7 @@ public class PostService {
             post.setIs_active(true);
             return postRepository.save(post);
         }catch (Exception e){
+            System.out.println(e);
             return null;
         }
     }

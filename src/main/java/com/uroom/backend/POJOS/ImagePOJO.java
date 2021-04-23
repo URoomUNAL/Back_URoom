@@ -12,5 +12,23 @@ import javax.validation.constraints.Size;
 
 public class ImagePOJO {
     private String url;
-    private Post post;
+    private PostPOJO post;
+
+    public ImagePOJO(){}
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    /*
+    public void setPost(PostJO post) {
+        this.post = post;
+    }
+    public PostPOJO getPost() {
+        return post;
+    }
+    /**/
+
+    public String getUrl() {
+        return url;
+    }
+
 }

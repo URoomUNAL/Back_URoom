@@ -18,10 +18,6 @@ public class Rule {
     @Column(name="name", nullable=false, length = 45)
     private String name;
 
-    @NotNull
-    @Column(name="value", nullable=false)
-    private int value;
-
     @ManyToMany()
     @JoinTable(
         name = "post_rule", joinColumns = {@JoinColumn(name = "post_id")},
@@ -43,13 +39,5 @@ public class Rule {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
     }
 }

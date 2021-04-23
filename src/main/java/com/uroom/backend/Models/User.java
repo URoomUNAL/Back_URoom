@@ -8,6 +8,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 public class User {
@@ -50,6 +51,8 @@ public class User {
     @Column(name="isActive", nullable=false)
     private boolean is_active;
 
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts;
     //Información Adicional
     //Foto foto?
     //Ennumerate Gustos
@@ -127,5 +130,13 @@ public class User {
 
     public void setIs_active(boolean is_active) {
         this.is_active = is_active;
+    }
+
+    public List<Post> getPost() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }
