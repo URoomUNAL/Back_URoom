@@ -42,13 +42,20 @@ public class PostController {
         return imageService.select();
     }
 
+    @PostMapping("/blob")
+    public String writeBlobFile(@RequestParam("HOLA") MultipartFile file) throws IOException {
+        String url = azureStorageService.writeBlobFile(file,"prueba");
+        System.out.println(url);
+        return url;
+    }
+    /*
     public String writeBlobFile(MultipartFile file, String filename) throws IOException {
         String url = azureStorageService.writeBlobFile(file,filename);
         System.out.println(url);
         return url;
-    }
-
-        @PostMapping(path = "add-post")
+    }*/
+/*
+    @PostMapping(path = "add-ppost")
     public ResponseEntity<Object> addPost(@ModelAttribute PostPOJO newPost) throws IOException {
         //System.out.println(newPost.getRules());
 
@@ -60,8 +67,8 @@ public class PostController {
         myPost.setLongitude(newPost.getLongitude());
         myPost.setTitle(newPost.getTitle());
         String prefix_img = "post_"+myPost.getAddress()+"_image_";
-        String main_img = writeBlobFile(newPost.getMain_img(),prefix_img + "0");
-        myPost.setMain_img(main_img);
+        //String main_img = writeBlobFile(newPost.getMain_img(),prefix_img + "0");
+        //myPost.setMain_img(main_img);
         myPost = postService.insert(myPost);
         if(myPost != null){
             //Añadir imágenes
@@ -97,8 +104,9 @@ public class PostController {
 
         //return new ResponseEntity<>("jaja no debi aser eso", HttpStatus.OK);
         //return new ResponseEntity<>("Algo salio mal al agregar la nueva publicacion, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 
+    }
+    */
     @GetMapping(value = "get-services")
     public ResponseEntity<Object> getServices(){
         List<Service> services = serviceService.select();
