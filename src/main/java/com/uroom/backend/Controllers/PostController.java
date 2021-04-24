@@ -57,15 +57,18 @@ public class PostController {
         }else{
             post.setUser(user);
         }
-
+/*
         int random_int = (int)Math.floor(Math.random() * (1000+1));
         String prefix_img = "post_"+ random_int +"_image_";
         String main_img = this.azureStorageService.writeBlobFile(requestPost.getMain_img(),prefix_img + "0.jpg");
         post.setMain_img(main_img);
+*/
 
+        post.setMain_img("asdfasdf");
         post = this.postService.insert(post);
 
         if(post != null){
+            /*
             if(requestPost.getImages() != null) {
                 List<Image> images = new ArrayList<>();
                 for(int i = 0; i < requestPost.getImages().size(); i++){ //Añadir imágenes a la base de datos
@@ -82,7 +85,7 @@ public class PostController {
                 }
                 post.setImages(images);
             }
-
+            */
             //Añadir servicios
             Set<String> serviceNames = requestPost.getServices();
             Set<Service> services = this.serviceService.selectBySetNames(serviceNames);

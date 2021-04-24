@@ -24,11 +24,7 @@ public class Service {
     @Column(name="icono", nullable=false, length = 45)
     private String icono;
 
-    @ManyToMany()
-    @JoinTable(
-            name = "post_service", joinColumns = {@JoinColumn(name = "post_id")},
-            inverseJoinColumns = {@JoinColumn(name = "service_id")}
-    )
+    @ManyToMany(mappedBy = "services")
     private Set<Post> posts;
 
     public String getIcono() {

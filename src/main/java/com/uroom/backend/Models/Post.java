@@ -62,7 +62,11 @@ public class Post {
     @ManyToMany(mappedBy = "posts")
     private Set<Rule> rules;
 
-    @ManyToMany(mappedBy = "posts")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "post_service", joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "service_id")}
+    )
     private Set<Service> services;
 
     @NotNull
