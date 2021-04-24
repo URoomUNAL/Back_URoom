@@ -35,7 +35,7 @@ public class LoginControllerTest {
     void createUser() throws IOException {
         LoginController loginController = new LoginController(userService);
         String newUser = "{\n" +
-                "  \"email\": \"sdelgadom@unal.edu.coo\",\n" +
+                "  \"email\": \"test@test.edu.coo\",\n" +
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"mala\",\n" +
                 "  \"cellphone\": \"3002674935\",\n" +
@@ -47,7 +47,7 @@ public class LoginControllerTest {
 
         //Succesful sign up
         newUser = "{\n" +
-                "  \"email\": \"sdelgadom@unal.edu.coo\",\n" +
+                "  \"email\": \"test@test.edu.coo\",\n" +
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"MICONTRASEÑA1\",\n" +
                 "  \"cellphone\": \"3002674935\",\n" +
@@ -60,7 +60,7 @@ public class LoginControllerTest {
 
         //POSSIBLE DUPLICATED USER
         newUser = "{\n" +
-                "  \"email\": \"sdelgadom@unal.edu.coo\",\n" +
+                "  \"email\": \"test@test.edu.coo\",\n" +
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"MICONTRASEÑA1\",\n" +
                 "  \"cellphone\": \"3002674935\",\n" +
@@ -78,7 +78,7 @@ public class LoginControllerTest {
         LoginController loginController = new LoginController(userService);
         //Invalid email
         String loginUser = "{\n" +
-                "  \"email\": \"sdelgadom@unal.edu.cooo\",\n" +
+                "  \"email\": \"test@test.edu.cooo\",\n" +
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"MICONTRASEÑA1\"\n" +
                 "  }";
@@ -87,7 +87,7 @@ public class LoginControllerTest {
 
         //Invalid password
         loginUser = "{\n" +
-                "  \"email\": \"sdelgadom@unal.edu.coo\",\n" +
+                "  \"email\": \"test@test.edu.coo\",\n" +
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"mala\"\n" +
                 "  }";
@@ -96,7 +96,7 @@ public class LoginControllerTest {
 
         //Succes login
         loginUser = "{\n" +
-                "  \"email\": \"sdelgadom@unal.edu.coo\",\n" +
+                "  \"email\": \"test@test.edu.coo\",\n" +
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"MICONTRASEÑA1\"\n" +
                 "  }";
@@ -111,14 +111,14 @@ public class LoginControllerTest {
         LoginController loginController = new LoginController(userService);
         //Invalid email
         String updateUser = "{\n" +
-                "  \"email\": \"sdelgadom@unal.educoo\"\n" +
+                "  \"email\": \"test@test.edu.cooo\"\n" +
                 "}";
         User user = new ObjectMapper().readValue(updateUser, User.class);
         assertEquals(FAILED_BAD_REQUEST, loginController.deactivateUser(user).getStatusCode());
 
         //Succesful deactivate user
         updateUser = "{\n" +
-                "  \"email\": \"sdelgadom@unal.edu.coo\"\n" +
+                "  \"email\": \"test@test.edu.coo\"\n" +
                 "}";
         user = new ObjectMapper().readValue(updateUser, User.class);
         assertEquals(SUCCESS_ACCEPTED, loginController.deactivateUser(user).getStatusCode());
@@ -131,14 +131,14 @@ public class LoginControllerTest {
         LoginController loginController = new LoginController(userService);
         //Invalid email
         String deleteUser = "{\n" +
-                "  \"email\": \"sdelgadom@unal.educoo\"\n" +
+                "  \"email\": \"test@test.edu.coooo\"\n" +
                 "}";
         User user = new ObjectMapper().readValue(deleteUser, User.class);
         assertEquals(FAILED_BAD_REQUEST, loginController.deleteUser(user).getStatusCode());
 
         //Succesful delete
         deleteUser = "{\n" +
-                "  \"email\": \"sdelgadom@unal.edu.coo\"\n" +
+                "  \"email\": \"test@test.edu.coo\"\n" +
                 "}";
         user = new ObjectMapper().readValue(deleteUser, User.class);
         assertEquals(SUCCESS_ACCEPTED, loginController.deleteUser(user).getStatusCode());

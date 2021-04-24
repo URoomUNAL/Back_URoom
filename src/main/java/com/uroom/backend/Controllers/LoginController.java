@@ -32,7 +32,7 @@ public class LoginController {
     @PostMapping(path="/log-in", consumes = "application/json")
     public ResponseEntity<Object> loginUser(@RequestBody User loginUser){
         try{
-            User user =  userService.selectByEmail(loginUser.getEmail()).iterator().next();
+            User user =  userService.selectByEmail(loginUser.getEmail());
             if(encoder.matches(loginUser.getPassword(), user.getPassword()) ){
                 System.out.println("Usuario valido, buena muchacho");
                 user.setIs_active(true);
@@ -87,7 +87,7 @@ public class LoginController {
     @DeleteMapping(path = "/delete-user", consumes = "application/json")
     public ResponseEntity<Object> deleteUser(@RequestBody User deleteUser){
         try{
-            User user =  userService.selectByEmail(deleteUser.getEmail()).iterator().next();
+            User user =  userService.selectByEmail(deleteUser.getEmail());
             if(userService.delete(user)){
                 //TODO:INGRESAR LOG
                 return new ResponseEntity<>("El usuario fue eliminado correctamente.", HttpStatus.ACCEPTED);
@@ -104,7 +104,7 @@ public class LoginController {
     @PutMapping(path = "/deactivate-user", consumes = "application/json")
     public ResponseEntity<Object> deactivateUser(@RequestBody User deactivateUser){
         try{
-            User user =  userService.selectByEmail(deactivateUser.getEmail()).iterator().next();
+            User user =  userService.selectByEmail(deactivateUser.getEmail());
             user.setIs_active(false);
             if(userService.update(user)){
                 //TODO:INGRESAR LOG
