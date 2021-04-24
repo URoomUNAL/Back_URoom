@@ -18,18 +18,18 @@ public class PostController {
 
     private final PostService postService;
     private final ImageService imageService;
+    private final AzureStorageService azureStorageService;
     private final RuleService ruleService;
     private final ServiceService serviceService;
     private final UserService userService;
-    private final AzureStorageService azureStorageService;
 
-    public PostController(PostService postService, ImageService imageService, RuleService ruleService ,ServiceService serviceService, UserService userService, AzureStorageService azureStorageService){
+    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService ,ServiceService serviceService, UserService userService){
         this.postService = postService;
         this.imageService = imageService;
+        this.azureStorageService = azureStorageService;
         this.ruleService = ruleService;
         this.serviceService = serviceService;
         this.userService = userService;
-        this.azureStorageService = azureStorageService;
     }
 
     @GetMapping("get-posts")
@@ -51,7 +51,7 @@ public class PostController {
         post.setLatitude(requestPost.getLatitude());
         post.setLongitude(requestPost.getLongitude());
         post.setTitle(requestPost.getTitle());
-        User user = this.userService.selectByEmail(requestPost.getUser());
+        User user = this.userService.selectByEmail(requestPost.getUser()).iterator().next();
         if(user == null){
             System.out.println("User does not exist in the database."); // TODO: User does not exist in the database.
         }else{
