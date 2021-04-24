@@ -1,5 +1,7 @@
 package com.uroom.backend.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -18,11 +20,8 @@ public class Rule {
     @Column(name="name", nullable=false, length = 45)
     private String name;
 
-    @ManyToMany()
-    @JoinTable(
-        name = "post_rule", joinColumns = {@JoinColumn(name = "post_id")},
-        inverseJoinColumns = {@JoinColumn(name = "rule_id")}
-    )
+    @JsonIgnore
+    @ManyToMany(mappedBy = "rules")
     private Set<Post> posts;
 
     public int getId() {

@@ -59,7 +59,11 @@ public class Post {
     @OneToMany(mappedBy = "post")
     private List<Image> images;
 
-    @ManyToMany(mappedBy = "posts")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "post_rule", joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "rule_id")}
+    )
     private Set<Rule> rules;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

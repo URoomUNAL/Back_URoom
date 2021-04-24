@@ -1,5 +1,7 @@
 package com.uroom.backend.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -24,6 +26,7 @@ public class Service {
     @Column(name="icono", nullable=false, length = 45)
     private String icono;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "services")
     private Set<Post> posts;
 
