@@ -1,7 +1,6 @@
 package com.uroom.backend.Controllers;
 
 import com.uroom.backend.Models.*;
-import com.uroom.backend.POJOS.ImagePOJO;
 import com.uroom.backend.POJOS.PostPOJO;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
@@ -12,26 +11,25 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 @RestController
 public class PostController {
+
     private final PostService postService;
     private final ImageService imageService;
-    private final AzureStorageService azureStorageService;
     private final RuleService ruleService;
     private final ServiceService serviceService;
     private final UserService userService;
+    private final AzureStorageService azureStorageService;
 
-
-    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService ,ServiceService serviceService, UserService userService){
+    public PostController(PostService postService, ImageService imageService, RuleService ruleService ,ServiceService serviceService, UserService userService, AzureStorageService azureStorageService){
         this.postService = postService;
         this.imageService = imageService;
-        this.azureStorageService = azureStorageService;
         this.ruleService = ruleService;
         this.serviceService = serviceService;
         this.userService = userService;
+        this.azureStorageService = azureStorageService;
     }
 
     @GetMapping("get-posts")
@@ -44,73 +42,61 @@ public class PostController {
         return imageService.select();
     }
 
-    /*
-    @PostMapping("/blob")
-    public String writeBlobFile(@RequestParam("HOLA") MultipartFile file) throws IOException {
-        String url = azureStorageService.writeBlobFile(file,"prueba");
-        System.out.println(url);
-        return url;
-    }
-    /**/
-    public String writeBlobFile(MultipartFile file, String filename) throws IOException {
-        String url = azureStorageService.writeBlobFile(file,filename);
-        System.out.println(url);
-        return url;
-    }
-
     @PostMapping(path = "add-post")
-    public ResponseEntity<Object> addPost(@ModelAttribute PostPOJO newPost) throws IOException {
-        //System.out.println(newPost.getRules());
+    public ResponseEntity<Object> addPost(@ModelAttribute PostPOJO requestPost) throws IOException {
+        Post post = new Post();
+        post.setDescription(requestPost.getDescription());
+        post.setAddress(requestPost.getAddress());
+        post.setPrice(requestPost.getPrice());
+        post.setLatitude(requestPost.getLatitude());
+        post.setLongitude(requestPost.getLongitude());
+        post.setTitle(requestPost.getTitle());
+        User user = this.userService.selectByEmail(requestPost.getUser());
+        if(user == null){
+            System.out.println("User does not exist in the database."); // TODO: User does not exist in the database.
+        }else{
+            post.setUser(user);
+        }
 
-        Post myPost = new Post();
-        myPost.setDescription(newPost.getDescription());
-        myPost.setAddress(newPost.getAddress());
-        myPost.setPrice(newPost.getPrice());
-        myPost.setLatitude(newPost.getLatitude());
-        myPost.setLongitude(newPost.getLongitude());
-        myPost.setTitle(newPost.getTitle());
-        int random_int = (int)Math.floor(Math.random()*(1000+1));
-        String prefix_img = "post_"+String.valueOf(random_int)+"_image_";
-        String main_img = writeBlobFile(newPost.getMain_img(),prefix_img + "0.jpg");
-        myPost.setMain_img(main_img);
-        User user = userService.selectByEmail(newPost.getUser()).iterator().next();
-        myPost.setUser(user);
-        myPost = postService.insert(myPost);
-        if(myPost != null){
-            //Añadir imágenes
+        int random_int = (int)Math.floor(Math.random() * (1000+1));
+        String prefix_img = "post_"+ random_int +"_image_";
+        String main_img = this.azureStorageService.writeBlobFile(requestPost.getMain_img(),prefix_img + "0.jpg");
+        post.setMain_img(main_img);
 
-            List<Image> images = new ArrayList<>();
+        post = this.postService.insert(post);
 
-            for(int i = 1; i < newPost.getImages().size(); ++i){ //Añadir imágenes a la base de datos
-                Image image = new Image();
-                String name_img = prefix_img + String.valueOf(i) + ".jpg";
-                image.setUrl(writeBlobFile(newPost.getImages().get(i-1),name_img));
-                image.setPost(myPost); //Enlaza el post a la imagen
-                image = imageService.insert(image);
-                if(image != null){
-                    images.add(image);
+        if(post != null){
+            if(requestPost.getImages() != null) {
+                List<Image> images = new ArrayList<>();
+                for(int i = 0; i < requestPost.getImages().size(); i++){ //Añadir imágenes a la base de datos
+                    Image image = new Image();
+                    String name_img = prefix_img + i + ".jpg";
+                    image.setUrl(this.azureStorageService.writeBlobFile(requestPost.getImages().get(i + 1), name_img));
+                    image.setPost(post); //Enlaza el post a la imagen
+                    image = this.imageService.insert(image);
+                    if (image != null) {
+                        images.add(image);
+                    }else{
+                        return new ResponseEntity<>("Algo salio mal al agregar una de las imágenes, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
                 }
-                else{
-                    return new ResponseEntity<>("Algo salio mal al agregar una de las imágenes, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
-                }
+                post.setImages(images);
             }
-            myPost.setImages(images);
-            /**/
+
             //Añadir servicios
-            Set<String> serviceNames = newPost.getServices();
-            Set<Service> services = serviceService.selectBySetNames(serviceNames);
-            myPost.setServices(services);
+            Set<String> serviceNames = requestPost.getServices();
+            Set<Service> services = this.serviceService.selectBySetNames(serviceNames);
+            post.setServices(services);
 
             //Añadir rules
-            Set<String> ruleNames = newPost.getRules();
-            Set<Rule> rules = ruleService.selectBySetNames(ruleNames);
-            myPost.setRules(rules);
-            /**/
+            Set<String> ruleNames = requestPost.getRules();
+            Set<Rule> rules = this.ruleService.selectBySetNames(ruleNames);
+            post.setRules(rules);
 
-            myPost = postService.update(myPost);
-            if(myPost != null){
 
-                return new ResponseEntity<>(myPost, HttpStatus.CREATED);
+            post = this.postService.update(post);
+            if(post != null){
+                return new ResponseEntity<>(post, HttpStatus.CREATED);
             }
             else{
                 return new ResponseEntity<>("(Services)Algo salio mal al agregar la nueva publicacion, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);

@@ -30,8 +30,9 @@ public class UserService {
     public List<User> select(){//Hace un select a la base de datos, en este caso los devuelve todos
         return userRepository.findAll();
     }
-    public List<User> selectByEmail(String email){
-        return userRepository.findByEmail(email);
+    public User selectByEmail(String email){
+        List<User> user =  this.userRepository.findByEmail(email);
+        return user == null ? user.get(0) : null;
     }
 
     public List<User> selectByCellphone(String key_cellphone){//Busca en los Usuarios por número celular
@@ -41,9 +42,9 @@ public class UserService {
     public int insert(User user){//Inserta un Usuario en la base de datos
         try{
             List<User> query = selectByCellphone(user.getCellphone());
-            List<User> query2 = selectByEmail(user.getEmail());
+            User query2 = selectByEmail(user.getEmail());
 
-            if(query.size() == 0 && query2.size() == 0){// Es un nuevo usuario
+            if(query.size() == 0 && query2 == null){// Es un nuevo usuario
                 user.setIs_active(true);
                 userRepository.save(user);
                 return 0;
