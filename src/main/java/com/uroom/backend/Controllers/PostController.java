@@ -71,7 +71,8 @@ public class PostController {
         myPost.setTitle(newPost.getTitle());
         int random_int = (int)Math.floor(Math.random()*(1000+1));
         String prefix_img = "post_"+String.valueOf(random_int)+"_image_";
-        String main_img = writeBlobFile(newPost.getMain_img(),prefix_img + "0.jpg");
+        String[] extention = newPost.getMain_img().getOriginalFilename().split(".");
+        String main_img = writeBlobFile(newPost.getMain_img(),prefix_img + "0" + extention[extention.length - 1]);
         myPost.setMain_img(main_img);
         User user = userService.selectByEmail(newPost.getUser()).iterator().next();
         myPost.setUser(user);
@@ -113,6 +114,7 @@ public class PostController {
                 return new ResponseEntity<>(myPost, HttpStatus.CREATED);
             }
             else{
+                //TODO: Delete post
                 return new ResponseEntity<>("(Services)Algo salio mal al agregar la nueva publicacion, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }else{
