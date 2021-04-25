@@ -70,19 +70,22 @@ public class PostController {
         if(post != null){
             if(requestPost.getImages() != null) {
                 List<Image> images = new ArrayList<>();
-                for(int i = 0; i < requestPost.getImages().size(); i++){ //Añadir imágenes a la base de datos
-                    Image image = new Image();
-                    String name_img = prefix_img + i + ".jpg";
-                    image.setUrl(this.azureStorageService.writeBlobFile(requestPost.getImages().get(i + 1), name_img));
-                    image.setPost(post); //Enlaza el post a la imagen
-                    image = this.imageService.insert(image);
-                    if (image != null) {
-                        images.add(image);
-                    }else{
-                        return new ResponseEntity<>("Algo salio mal al agregar una de las imágenes, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
+                if(requestPost.getImages()!=null){
+                    for(int i = 0; i < requestPost.getImages().size(); i++){ //Añadir imágenes a la base de datos
+                        Image image = new Image();
+                        int h = i + 1 ;
+                        String name_img = prefix_img + h + ".jpg";
+                        image.setUrl(this.azureStorageService.writeBlobFile(requestPost.getImages().get(i), name_img));
+                        image.setPost(post); //Enlaza el post a la imagen
+                        image = this.imageService.insert(image);
+                        if (image != null) {
+                            images.add(image);
+                        }else{
+                            return new ResponseEntity<>("Algo salio mal al agregar una de las imágenes, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
+                        }
                     }
+                    post.setImages(images);
                 }
-                post.setImages(images);
             }
             //Añadir servicios
             Set<String> serviceNames = requestPost.getServices();
