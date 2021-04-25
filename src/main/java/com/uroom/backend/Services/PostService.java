@@ -53,5 +53,15 @@ public class PostService {
         }
     }
 
+    public boolean delete(Post post){
+        try {
+            postRepository.delete(post);
+            return true;
+        }
+        catch (Exception e){
+            System.out.println(e);
+            return false;
+        }
+    }
 
 }
