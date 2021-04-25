@@ -19,8 +19,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findPostByPriceBetweenAndScoreAfter(int minPrice, int maxPrice, double minScore);
 
 
-    /*@Query(
-    "select * from post where ST_Distance_Sphere( ST_GeomFromText( 'POINT(latitude longitude)', 4326, 'axis-order=lat-long'), ST_GeomFromText('POINT(?1 ?2)', 4326)) <= ?3*1000"
-    "select * from post where ((latitude - ?1)*110.574)^2 + ((longitude - ?2)*(111.32*COS(latitude*PI()/180))^2")
-    List<Post> filterByDistance(double LattitudOrigen,double  LongitudOrigen,double Radio);*/
+    @Query(
+    value = "select * from post where ST_Distance_Sphere( ST_GeomFromText( CONCAT('POINT(',latitude,' ', longitude,')'), 4326, 'axis-order=lat-long'), ST_GeomFromText('POINT(?1 ?2)', 4326)) <= ?3*1000", nativeQuery = true)
+    List<Post> filterByDistance(double latitude, double longitude, double distancia);
 }
