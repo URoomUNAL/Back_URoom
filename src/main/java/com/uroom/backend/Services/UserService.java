@@ -32,7 +32,7 @@ public class UserService {
     }
     public User selectByEmail(String email){
         List<User> user =  this.userRepository.findByEmail(email);
-        return user != null ? user.get(0) : null;
+        return user != null ? user.iterator().next() : null;
     }
 
     public List<User> selectByCellphone(String key_cellphone){//Busca en los Usuarios por número celular
