@@ -44,6 +44,19 @@ public class FilterController {
         return filteredPostByRules;
     }
 
+    public List<Post> match(List<Post> posts, List<Post> posts2){
+        List<Post> postMatch = new ArrayList<>();
+        for(Post post : posts){
+            for(Post post2 : posts2){
+                if(post.getId()==post2.getId()) {
+                    postMatch.add(post);
+                    break;
+                }
+            }
+        }
+        return postMatch;
+    }
+
     @PostMapping("/test-distance-filter")
     public List<Post> distanceFilter(@RequestBody FilterPOJO filterPost){
         return postService.filterDistance(filterPost.getDistance().getOrigin().get(0), filterPost.getDistance().getOrigin().get(1), filterPost.getDistance().getRadius());
@@ -74,6 +87,11 @@ public class FilterController {
         }
         else{
             posts = postService.filterBasic(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(),filterPost.getMin_score());
+        }
+        if(filterPost.getDistance().getOrigin().size() != 0) {
+            List<Post> postDistance = postService.filterDistance(filterPost.getDistance().getOrigin().get(0), filterPost.getDistance().getOrigin().get(1), filterPost.getDistance().getRadius());
+            List<Post> finalPost = match(postDistance, posts);
+            return finalPost;
         }
         return posts;
     }
