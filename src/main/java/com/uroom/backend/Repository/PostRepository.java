@@ -17,6 +17,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findPostByPriceBetweenAndScoreAfterAndServices(int minPrice, int maxPrice, double minScore, Service service);
     List<Post> findPostByPriceBetweenAndScoreAfterAndRules(int minPrice, int maxPrice, double minScore, Rule rule);
     List<Post> findPostByPriceBetweenAndScoreAfter(int minPrice, int maxPrice, double minScore);
+    List<Post> findPostByPriceBetweenAndAndServicesAndRules(int minPrice, int maxPrice, Service service, Rule rule);
+    List<Post> findPostByPriceBetweenAndAndServices(int minPrice, int maxPrice, Service service);
+    List<Post> findPostByPriceBetweenAndAndRules(int minPrice, int maxPrice, Rule rule);
+    List<Post> findPostByPriceBetween(int minPrice, int maxPrice);
 
 
     @Query(

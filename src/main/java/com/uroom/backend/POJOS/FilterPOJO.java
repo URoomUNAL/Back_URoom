@@ -4,13 +4,13 @@ import java.util.Set;
 
 public class FilterPOJO {
 
-    private double min_score;
+    private Double min_score;
     private DistancePOJO distance;
     private PricePOJO price;
     private Set<String> rules;
     private Set<String> services;
 
-    public FilterPOJO(double min_score, DistancePOJO distance, PricePOJO price, Set<String> rules, Set<String> services) {
+    public FilterPOJO(Double min_score, DistancePOJO distance, PricePOJO price, Set<String> rules, Set<String> services) {
         this.min_score = min_score;
         this.distance = distance;
         this.price = price;
@@ -18,11 +18,11 @@ public class FilterPOJO {
         this.services = services;
     }
 
-    public double getMin_score() {
+    public Double getMin_score() {
         return min_score;
     }
 
-    public void setMin_score(double min_score) {
+    public void setMin_score(Double min_score) {
         this.min_score = min_score;
     }
 

@@ -69,17 +69,32 @@ public class PostService {
     public List<Post> filterAll(int minPrice, int maxPrice, double minScore, com.uroom.backend.Models.Service service, Rule rule) {
         return postRepository.findPostByPriceBetweenAndScoreAfterAndServicesAndRules(minPrice, maxPrice, minScore, service, rule);
     }
+    public List<Post> filterAllNoScore(int minPrice, int maxPrice, com.uroom.backend.Models.Service service, Rule rule) {
+        return postRepository.findPostByPriceBetweenAndAndServicesAndRules(minPrice, maxPrice, service, rule);
+    }
 
     public List<Post> filterServices(int minPrice, int maxPrice, double minScore, com.uroom.backend.Models.Service service) {
         return postRepository.findPostByPriceBetweenAndScoreAfterAndServices(minPrice, maxPrice, minScore, service);
+    }
+
+    public List<Post> filterServicesNoScore(int minPrice, int maxPrice, com.uroom.backend.Models.Service service) {
+        return postRepository.findPostByPriceBetweenAndAndServices(minPrice, maxPrice, service);
     }
 
     public List<Post> filterRules(int minPrice, int maxPrice, double minScore, Rule rule) {
         return postRepository.findPostByPriceBetweenAndScoreAfterAndRules(minPrice, maxPrice, minScore, rule);
     }
 
+    public List<Post> filterRulesNoScore(int minPrice, int maxPrice, Rule rule) {
+        return postRepository.findPostByPriceBetweenAndAndRules(minPrice, maxPrice, rule);
+    }
+
     public List<Post> filterBasic(int minPrice, int maxPrice, double minScore) {
         return postRepository.findPostByPriceBetweenAndScoreAfter(minPrice, maxPrice, minScore);
+    }
+
+    public List<Post> filterBasicNoScore(int minPrice, int maxPrice) {
+        return postRepository.findPostByPriceBetween(minPrice, maxPrice);
     }
 
     public List<Post> filterDistance(double latitude, double longitude, double distance){

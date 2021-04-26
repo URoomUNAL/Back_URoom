@@ -67,26 +67,47 @@ public class FilterController {
         Set<Service> services = serviceService.selectBySetNames(filterPost.getServices());
         Set<Rule> rules = ruleService.selectBySetNames(filterPost.getRules());
         boolean filterService =true;
-        boolean filterRules = (filterPost.getRules() == null) ? false : true;
+        boolean filterRules = true;
+        boolean filterScore = true;
 
         if( (filterPost.getServices().size() == 0)) filterService = false;
         if( (filterPost.getRules().size() == 0)) filterRules = false;
+        if( filterPost.getMin_score() == null) filterScore = false;
         List<Post> posts;
         if(filterService && filterRules){
-            posts = postService.filterAll(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(),filterPost.getMin_score(),services.iterator().next(),rules.iterator().next());
+            if(filterScore){
+                posts = postService.filterAll(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(),filterPost.getMin_score(),services.iterator().next(),rules.iterator().next());
+            }
+            else{
+                posts = postService.filterAllNoScore(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(), services.iterator().next(),rules.iterator().next());
+            }
             posts = completeFilterServices(posts, services);
             posts = completeFilterRules(posts, rules);
         }
         else if(filterRules){
-            posts = postService.filterRules(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(),filterPost.getMin_score(),rules.iterator().next());
+            if(filterScore){
+                posts = postService.filterRules(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(),filterPost.getMin_score(),rules.iterator().next());
+            }
+            else{
+                posts = postService.filterRulesNoScore(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(), rules.iterator().next());
+            }
             posts = completeFilterRules(posts, rules);
         }
         else if(filterService){
-            posts = postService.filterServices(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(),filterPost.getMin_score(),services.iterator().next());
+            if(filterScore){
+                posts = postService.filterServices(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(),filterPost.getMin_score(),services.iterator().next());
+            }else{
+                posts = postService.filterServicesNoScore(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(), services.iterator().next());
+            }
             posts = completeFilterServices(posts, services);
         }
         else{
-            posts = postService.filterBasic(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(),filterPost.getMin_score());
+            if(filterScore){
+                posts = postService.filterBasic(filterPost.getPrice().getMin(),filterPost.getPrice().getMax(),filterPost.getMin_score());
+            }
+            else {
+                posts = postService.filterBasicNoScore(filterPost.getPrice().getMin(),filterPost.getPrice().getMax());
+            }
         }
         if(filterPost.getDistance().getOrigin().size() != 0) {
             List<Post> postDistance = postService.filterDistance(filterPost.getDistance().getOrigin().get(0), filterPost.getDistance().getOrigin().get(1), filterPost.getDistance().getRadius());
