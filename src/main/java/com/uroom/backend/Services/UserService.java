@@ -2,11 +2,11 @@ package com.uroom.backend.Services;
 
 import com.uroom.backend.Models.User;
 import com.uroom.backend.Repository.UserRepository;
-import org.hibernate.exception.ConstraintViolationException;
-import org.hibernate.exception.DataException;
-import org.springframework.dao.DataIntegrityViolationException;
+//import org.hibernate.exception.ConstraintViolationException;
+//import org.hibernate.exception.DataException;
+//import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.hibernate.exception.*;
+//import org.hibernate.exception.*;
 
 import java.util.ArrayList;
 import java.util.List;

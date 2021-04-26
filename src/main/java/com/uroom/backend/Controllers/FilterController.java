@@ -44,6 +44,11 @@ public class FilterController {
         return filteredPostByRules;
     }
 
+    @PostMapping("/test-distance-filter")
+    public List<Post> distanceFilter(@RequestBody FilterPOJO filterPost){
+        return postService.filterDistance(filterPost.getDistance().getOrigin().get(0), filterPost.getDistance().getOrigin().get(1), filterPost.getDistance().getRadius());
+    }
+
     @PostMapping("/get-posts-filtered")
     public List<Post> getAll(@RequestBody FilterPOJO filterPost){
         Set<Service> services = serviceService.selectBySetNames(filterPost.getServices());

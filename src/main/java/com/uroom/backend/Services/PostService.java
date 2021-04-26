@@ -82,4 +82,7 @@ public class PostService {
         return postRepository.findPostByPriceBetweenAndScoreAfter(minPrice, maxPrice, minScore);
     }
 
+    public List<Post> filterDistance(double latitude, double longitude, double distance){
+        return postRepository.filterByDistance(latitude, longitude, distance);
+    }
 }
