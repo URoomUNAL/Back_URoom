@@ -62,18 +62,17 @@ public class PostController {
         }else{
             post.setUser(user);
         }
-
-        int random_int = (int)Math.floor(Math.random() * (1000+1));
-        String prefix_img = "post_"+ random_int +"_image_";
-        String[] extention = requestPost.getMain_img().getOriginalFilename().split(".");
-        String main_img = this.azureStorageService.writeBlobFile(requestPost.getMain_img(),prefix_img + "0." + extention[extention.length - 1]);
-        post.setMain_img(main_img);
-
-
-        //post.setMain_img("asdfasdf");
+        post.setMain_img("buenaMuchacho");
         post = this.postService.insert(post);
 
         if(post != null){
+            //Añadir imagen principal
+            String prefix_img = "post_"+ post.getId() +"_image_";
+            String[] extention = requestPost.getMain_img().getOriginalFilename().split(".");
+            String main_img = this.azureStorageService.writeBlobFile(requestPost.getMain_img(),prefix_img + "0." + extention[extention.length - 1]);
+            post.setMain_img(main_img);
+
+            //Añadir imagenes secundarias
             if(requestPost.getImages() != null) {
                 List<Image> images = new ArrayList<>();
                 if(requestPost.getImages()!=null){
