@@ -22,6 +22,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findPostByPriceBetweenAndAndRules(int minPrice, int maxPrice, Rule rule);
     List<Post> findPostByPriceBetween(int minPrice, int maxPrice);
 
+    List<Post> findByIs_active(boolean active);
+
 
     @Query(
     value = "select * from post where ST_Distance_Sphere( ST_GeomFromText( CONCAT('POINT(',latitude,' ', longitude,')'), 4326, 'axis-order=lat-long'), ST_GeomFromText(CONCAT('POINT(', ?1, ' ', ?2 ,')'), 4326)) <= ?3 * 1000", nativeQuery = true)

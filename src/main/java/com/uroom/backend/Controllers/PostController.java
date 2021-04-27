@@ -34,6 +34,11 @@ public class PostController {
 
     @GetMapping("get-posts")
     public List<Post> getAll(){
+        return postService.selectActivePosts();
+    }
+
+    @GetMapping("get-posts-even-no-actives")
+    public List<Post> getAllEvenNoActives(){
         return postService.select();
     }
 

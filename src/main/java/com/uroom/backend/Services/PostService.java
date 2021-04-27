@@ -21,6 +21,10 @@ public class PostService {
         return postRepository.findAll();
     }
 
+    public List<Post> selectActivePosts(){
+        return postRepository.findByIs_active(true);
+    }
+
     public Post insert(Post post) {
         try {
             post.setIs_active(true);
