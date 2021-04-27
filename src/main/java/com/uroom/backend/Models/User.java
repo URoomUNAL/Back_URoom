@@ -1,5 +1,6 @@
 package com.uroom.backend.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UniqueElements;
 
@@ -51,6 +52,7 @@ public class User {
     @Column(name="isActive", nullable=false)
     private boolean is_active;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
     //Información Adicional

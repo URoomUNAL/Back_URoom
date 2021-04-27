@@ -22,9 +22,12 @@ public class PostService {
     }
 
     public List<Post> selectActivePosts(){
-        return postRepository.findByIs_active(true);
+        return postRepository.filterActives();
     }
 
+    public List<Post> selectMyPosts(User user){
+        return postRepository.findByUser(user);
+    }
     public Post insert(Post post) {
         try {
             post.setIs_active(true);
@@ -44,10 +47,12 @@ public class PostService {
         }
     }
 
-    public Post selectByAddress(String address) {
+    public List<Post> selectByAddress(String address) {
+        System.out.println(address);
         try {
-            return postRepository.findByAddress(address);
+            return postRepository.findPostsByAddress(address);
         } catch (Exception e) {
+            System.out.println("uy ojito");
             return null;
         }
     }

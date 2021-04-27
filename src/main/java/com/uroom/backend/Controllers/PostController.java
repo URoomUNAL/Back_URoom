@@ -2,6 +2,7 @@ package com.uroom.backend.Controllers;
 
 import com.uroom.backend.Models.*;
 import com.uroom.backend.POJOS.PostPOJO;
+import com.uroom.backend.POJOS.UserPOJO;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,38 @@ public class PostController {
     public List<Post> getAll(){
         return postService.selectActivePosts();
     }
+
+    @PostMapping(path="get-my-posts", consumes = "application/json")
+    public  ResponseEntity<Object> getMyPosts(@RequestBody UserPOJO user_req){
+        List<User> users = userService.selectByEmail(user_req.getUsername());
+        if(users.size() == 0){
+            return new ResponseEntity<>("Por favor regístrese para ver sus publicaciones.", HttpStatus.BAD_REQUEST);
+        }
+        else{
+            List <Post> posts = postService.selectMyPosts(users.iterator().next());
+            if(posts.size() == 0){
+                return new ResponseEntity<>("Aún no tiene publicaciones.", HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>(posts, HttpStatus.OK);
+            }
+        }
+    }
+
+    @PostMapping(path="change-active", consumes = "application/json")
+    public  ResponseEntity<Object> getMyPosts(@RequestBody PostPOJO post_req){
+        List<Post> posts = postService.selectByAddress(post_req.getAddress());
+        if(posts.size() == 0){
+            return new ResponseEntity<>("No existe la publicación.", HttpStatus.BAD_REQUEST);
+        }
+        else{
+            Post post = posts.iterator().next();
+            post.setIs_active(post_req.isIs_active());
+            postService.update(post);
+            return new ResponseEntity<>("Actualización exitosa.", HttpStatus.OK);
+        }
+    }
+
 
     @GetMapping("get-posts-even-no-actives")
     public List<Post> getAllEvenNoActives(){

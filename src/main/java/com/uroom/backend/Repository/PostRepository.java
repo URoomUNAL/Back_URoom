@@ -3,6 +3,7 @@ package com.uroom.backend.Repository;
 import com.uroom.backend.Models.Post;
 import com.uroom.backend.Models.Rule;
 import com.uroom.backend.Models.Service;
+import com.uroom.backend.Models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
     //List<Post> findBySomething(String something);
-    Post findByAddress(String addres);
+    List<Post> findPostsByAddress(String addres);
     Post findById(int id);
     List<Post> findPostByPriceBetweenAndScoreAfterAndServicesAndRules(int minPrice, int maxPrice, double minScore, Service service, Rule rule);
     List<Post> findPostByPriceBetweenAndScoreAfterAndServices(int minPrice, int maxPrice, double minScore, Service service);
@@ -21,8 +22,11 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findPostByPriceBetweenAndAndServices(int minPrice, int maxPrice, Service service);
     List<Post> findPostByPriceBetweenAndAndRules(int minPrice, int maxPrice, Rule rule);
     List<Post> findPostByPriceBetween(int minPrice, int maxPrice);
+    @Query(
+            value = "select * from post where is_active = 1", nativeQuery = true)
+    List<Post> filterActives();
 
-    List<Post> findByIs_active(boolean active);
+    List<Post> findByUser(User user);
 
 
     @Query(

@@ -23,12 +23,40 @@ public class PostPOJO {
     private double longitude;
     private double score;
     private MultipartFile main_img;
+    private String main_img_s;
+    private List<String> images_s;
     private List<MultipartFile> images;
     private Set<String> rules;
     private Set<String> services;
     private String user;
+    private boolean is_active;
+
+
+    public String getMain_img_s() {
+        return main_img_s;
+    }
+
+    public void setMain_img_s(String main_img_s) {
+        this.main_img_s = main_img_s;
+    }
+
+    public List<String> getImages_s() {
+        return images_s;
+    }
+
+    public void setImages_s(List<String> images_s) {
+        this.images_s = images_s;
+    }
 
     public PostPOJO() {
+    }
+
+    public boolean isIs_active() {
+        return is_active;
+    }
+
+    public void setIs_active(boolean is_active) {
+        this.is_active = is_active;
     }
 
     public String getUser() {
