@@ -14,10 +14,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     //List<Post> findBySomething(String something);
     List<Post> findPostsByAddress(String addres);
     Post findById(int id);
-    List<Post> findPostByPriceBetweenAndScoreAfterAndServicesAndRules(int minPrice, int maxPrice, double minScore, Service service, Rule rule);
-    List<Post> findPostByPriceBetweenAndScoreAfterAndServices(int minPrice, int maxPrice, double minScore, Service service);
-    List<Post> findPostByPriceBetweenAndScoreAfterAndRules(int minPrice, int maxPrice, double minScore, Rule rule);
-    List<Post> findPostByPriceBetweenAndScoreAfter(int minPrice, int maxPrice, double minScore);
+    List<Post> findPostByPriceBetweenAndScoreBetweenAndServicesAndRules(int minPrice, int maxPrice, double minScore, double maxScore, Service service, Rule rule);
+    List<Post> findPostByPriceBetweenAndScoreBetweenAndServices(int minPrice, int maxPrice, double minScore, double maxScore, Service service);
+    List<Post> findPostByPriceBetweenAndScoreBetweenAndRules(int minPrice, int maxPrice, double minScore, double maxScore, Rule rule);
+    List<Post> findPostByPriceBetweenAndScoreBetween(int minPrice, int maxPrice, double minScore,  double maxScore);
     List<Post> findPostByPriceBetweenAndAndServicesAndRules(int minPrice, int maxPrice, Service service, Rule rule);
     List<Post> findPostByPriceBetweenAndAndServices(int minPrice, int maxPrice, Service service);
     List<Post> findPostByPriceBetweenAndAndRules(int minPrice, int maxPrice, Rule rule);
