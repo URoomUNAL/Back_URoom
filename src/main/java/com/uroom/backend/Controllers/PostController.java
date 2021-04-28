@@ -108,7 +108,7 @@ public class PostController {
             post.setMain_img(main_img);
 
             //Añadir imagenes secundarias
-            if(requestPost.getImages() != null) {
+            if(requestPost.getImages() != null && requestPost.getImages().size() > 0) {
                 List<Image> images = new ArrayList<>();
                 if(requestPost.getImages()!=null){
                     for(int i = 0; i < requestPost.getImages().size(); i++){ //Añadir imágenes a la base de datos
