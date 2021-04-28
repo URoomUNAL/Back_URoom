@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @RestController
@@ -101,7 +102,8 @@ public class PostController {
         if(post != null){
             //Añadir imagen principal
             String prefix_img = "post_"+ post.getId() +"_image_";
-            String[] extention = requestPost.getMain_img().getOriginalFilename().split(".");
+            String[] extention = Objects.requireNonNull(requestPost.getMain_img().getOriginalFilename()).split("\\.");
+            System.out.println("Nombre: " + extention[1]);
             String main_img = this.azureStorageService.writeBlobFile(requestPost.getMain_img(),prefix_img + "0." + extention[extention.length - 1]);
             post.setMain_img(main_img);
 

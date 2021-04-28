@@ -32,6 +32,6 @@ public class RuleService {
         return ruleRepository.findAll();
     }
     public Set<Rule> selectBySetNames(Set<String> ruleNames){
-        return ruleRepository.findByNameIn(ruleNames);
+        return ruleNames == null ? null : ruleRepository.findByNameIn(ruleNames);
     }
 }
