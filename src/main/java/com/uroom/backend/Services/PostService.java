@@ -76,14 +76,14 @@ public class PostService {
     }
 
     public List<Post> filterAll(int minPrice, int maxPrice, double minScore, com.uroom.backend.Models.Service service, Rule rule) {
-        return postRepository.findPostByPriceBetweenAndScoreAfterAndServicesAndRules(minPrice, maxPrice, minScore, service, rule);
+        return postRepository.findPostByPriceBetweenAndScoreBetweenAndServicesAndRules(minPrice, maxPrice, minScore, 5, service, rule);
     }
     public List<Post> filterAllNoScore(int minPrice, int maxPrice, com.uroom.backend.Models.Service service, Rule rule) {
         return postRepository.findPostByPriceBetweenAndAndServicesAndRules(minPrice, maxPrice, service, rule);
     }
 
     public List<Post> filterServices(int minPrice, int maxPrice, double minScore, com.uroom.backend.Models.Service service) {
-        return postRepository.findPostByPriceBetweenAndScoreAfterAndServices(minPrice, maxPrice, minScore, service);
+        return postRepository.findPostByPriceBetweenAndScoreBetweenAndServices(minPrice, maxPrice, minScore, 5,  service);
     }
 
     public List<Post> filterServicesNoScore(int minPrice, int maxPrice, com.uroom.backend.Models.Service service) {
@@ -91,7 +91,7 @@ public class PostService {
     }
 
     public List<Post> filterRules(int minPrice, int maxPrice, double minScore, Rule rule) {
-        return postRepository.findPostByPriceBetweenAndScoreAfterAndRules(minPrice, maxPrice, minScore, rule);
+        return postRepository.findPostByPriceBetweenAndScoreBetweenAndRules(minPrice, maxPrice, minScore,5,  rule);
     }
 
     public List<Post> filterRulesNoScore(int minPrice, int maxPrice, Rule rule) {
@@ -99,7 +99,7 @@ public class PostService {
     }
 
     public List<Post> filterBasic(int minPrice, int maxPrice, double minScore) {
-        return postRepository.findPostByPriceBetweenAndScoreAfter(minPrice, maxPrice, minScore);
+        return postRepository.findPostByPriceBetweenAndScoreBetween(minPrice, maxPrice, minScore, 5);
     }
 
     public List<Post> filterBasicNoScore(int minPrice, int maxPrice) {
