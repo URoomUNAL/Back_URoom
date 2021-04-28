@@ -114,7 +114,7 @@ public class PostController {
                     for(int i = 0; i < requestPost.getImages().size(); i++){ //Añadir imágenes a la base de datos
                         Image image = new Image();
                         int h = i + 1 ;
-                        extention = requestPost.getImages().get(i).getOriginalFilename().split(".");
+                        extention = Objects.requireNonNull(requestPost.getImages().get(i).getOriginalFilename()).split("\\.");
                         main_img = this.azureStorageService.writeBlobFile(requestPost.getMain_img(),prefix_img + "0." + extention[extention.length - 1]);
                         String name_img = prefix_img + h + "." + extention;
                         image.setUrl(this.azureStorageService.writeBlobFile(requestPost.getImages().get(i), name_img));
