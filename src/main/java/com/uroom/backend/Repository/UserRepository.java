@@ -1,9 +1,7 @@
 package com.uroom.backend.Repository;
 
-import com.uroom.backend.Models.User;
+import com.uroom.backend.Models.EntitiyModels.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 

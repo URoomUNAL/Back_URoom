@@ -1,20 +1,11 @@
-package com.uroom.backend.POJOS;
+package com.uroom.backend.Models.RequestModels;
 
-import com.uroom.backend.Models.Image;
-import com.uroom.backend.Models.Rule;
-import com.uroom.backend.Models.Service;
-import com.uroom.backend.Models.User;
-import com.uroom.backend.Services.RuleService;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Set;
 
-public class PostPOJO {
+public class PostRequest {
     private String title;
     private String description;
     private String address;
@@ -48,7 +39,7 @@ public class PostPOJO {
         this.images_s = images_s;
     }
 
-    public PostPOJO() {
+    public PostRequest() {
     }
 
     public boolean isIs_active() {

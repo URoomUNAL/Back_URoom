@@ -3,7 +3,7 @@ package com.uroom.backend;
 //import org.h2.util.json.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uroom.backend.Controllers.LoginController;
-import com.uroom.backend.Models.User;
+import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Services.UserService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;

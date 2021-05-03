@@ -1,6 +1,6 @@
 package com.uroom.backend.Services;
 
-import com.uroom.backend.Models.User;
+import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Repository.UserRepository;
 //import org.hibernate.exception.ConstraintViolationException;
 //import org.hibernate.exception.DataException;

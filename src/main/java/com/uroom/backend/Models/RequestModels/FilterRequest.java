@@ -1,8 +1,11 @@
-package com.uroom.backend.POJOS;
+package com.uroom.backend.Models.RequestModels;
+
+import com.uroom.backend.Models.POJOS.DistancePOJO;
+import com.uroom.backend.Models.POJOS.PricePOJO;
 
 import java.util.Set;
 
-public class FilterPOJO {
+public class FilterRequest {
 
     private Double min_score;
     private DistancePOJO distance;
@@ -10,7 +13,7 @@ public class FilterPOJO {
     private Set<String> rules;
     private Set<String> services;
 
-    public FilterPOJO(Double min_score, DistancePOJO distance, PricePOJO price, Set<String> rules, Set<String> services) {
+    public FilterRequest(Double min_score, DistancePOJO distance, PricePOJO price, Set<String> rules, Set<String> services) {
         this.min_score = min_score;
         this.distance = distance;
         this.price = price;

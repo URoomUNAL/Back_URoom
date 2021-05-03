@@ -1,4 +1,4 @@
-package com.uroom.backend.Models;
+package com.uroom.backend.Models.EntitiyModels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

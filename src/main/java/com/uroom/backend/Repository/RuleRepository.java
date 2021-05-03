@@ -1,6 +1,6 @@
 package com.uroom.backend.Repository;
 
-import com.uroom.backend.Models.Rule;
+import com.uroom.backend.Models.EntitiyModels.Rule;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Set;

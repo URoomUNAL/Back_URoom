@@ -1,21 +1,19 @@
 package com.uroom.backend.Controllers;
 
 
-import com.uroom.backend.Models.User;
+import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Services.UserService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.NoSuchElementException;
 
 //@CrossOrigin("http://localhost:8080")
 @RestController //Es un controlador de tipo REST
 public class LoginController {
-
+    //TODO:QUITAR LOS BADSMELLS
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private final UserService userService;
 

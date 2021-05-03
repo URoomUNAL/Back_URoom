@@ -1,8 +1,8 @@
-package com.uroom.backend.POJOS;
+package com.uroom.backend.Models.RequestModels;
 
-public class UserPOJO {
+public class UserRequest {
     private String username;
-
+    //TODO: AÑADIR CONTRASEÑA
     public String getUsername() {
         return username;
     }

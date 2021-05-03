@@ -1,4 +1,4 @@
-package com.uroom.backend.POJOS;
+package com.uroom.backend.Models.POJOS;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
 package com.uroom.backend.Controllers;
 
-import com.uroom.backend.Models.Post;
-import com.uroom.backend.Models.Rule;
-import com.uroom.backend.Models.Service;
-import com.uroom.backend.POJOS.FilterPOJO;
+import com.uroom.backend.Models.EntitiyModels.Post;
+import com.uroom.backend.Models.EntitiyModels.Rule;
+import com.uroom.backend.Models.EntitiyModels.Service;
+import com.uroom.backend.Models.RequestModels.FilterRequest;
 import com.uroom.backend.Services.PostService;
 import com.uroom.backend.Services.RuleService;
 import com.uroom.backend.Services.ServiceService;
@@ -58,12 +58,12 @@ public class FilterController {
     }
 
     @PostMapping("/test-distance-filter")
-    public List<Post> distanceFilter(@RequestBody FilterPOJO filterPost){
+    public List<Post> distanceFilter(@RequestBody FilterRequest filterPost){
         return postService.filterDistance(filterPost.getDistance().getOrigin().get(0), filterPost.getDistance().getOrigin().get(1), filterPost.getDistance().getRadius());
     }
 
     @PostMapping("/get-posts-filtered")
-    public List<Post> getAll(@RequestBody FilterPOJO filterPost){
+    public List<Post> getAll(@RequestBody FilterRequest filterPost){
         Set<Service> services = serviceService.selectBySetNames(filterPost.getServices());
         Set<Rule> rules = ruleService.selectBySetNames(filterPost.getRules());
         boolean filterService =true;

@@ -1,6 +1,6 @@
 package com.uroom.backend.Services;
 
-import com.uroom.backend.Models.Image;
+import com.uroom.backend.Models.EntitiyModels.Image;
 import com.uroom.backend.Repository.ImageRepository;
 import org.springframework.stereotype.Service;
 

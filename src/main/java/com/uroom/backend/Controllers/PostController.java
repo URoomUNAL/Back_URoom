@@ -1,13 +1,12 @@
 package com.uroom.backend.Controllers;
 
-import com.uroom.backend.Models.*;
-import com.uroom.backend.POJOS.PostPOJO;
-import com.uroom.backend.POJOS.UserPOJO;
+import com.uroom.backend.Models.EntitiyModels.*;
+import com.uroom.backend.Models.RequestModels.PostRequest;
+import com.uroom.backend.Models.RequestModels.UserRequest;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class PostController {
     }
 
     @PostMapping(path="get-my-posts", consumes = "application/json")
-    public  ResponseEntity<Object> getMyPosts(@RequestBody UserPOJO user_req){
+    public  ResponseEntity<Object> getMyPosts(@RequestBody UserRequest user_req){
         List<User> users = userService.selectByEmail(user_req.getUsername());
         if(users.size() == 0){
             return new ResponseEntity<>("Por favor regístrese para ver sus publicaciones.", HttpStatus.BAD_REQUEST);
@@ -57,7 +56,7 @@ public class PostController {
     }
 
     @PostMapping(path="change-active", consumes = "application/json")
-    public  ResponseEntity<Object> getMyPosts(@RequestBody PostPOJO post_req){
+    public  ResponseEntity<Object> getMyPosts(@RequestBody PostRequest post_req){
         List<Post> posts = postService.selectByAddress(post_req.getAddress());
         if(posts.size() == 0){
             return new ResponseEntity<>("No existe la publicación.", HttpStatus.BAD_REQUEST);
@@ -82,7 +81,7 @@ public class PostController {
     }
 
     @PostMapping(path = "add-post")
-    public ResponseEntity<Object> addPost(@ModelAttribute PostPOJO requestPost) throws IOException {
+    public ResponseEntity<Object> addPost(@ModelAttribute PostRequest requestPost) throws IOException {
         Post post = new Post();
         post.setDescription(requestPost.getDescription());
         post.setAddress(requestPost.getAddress());
