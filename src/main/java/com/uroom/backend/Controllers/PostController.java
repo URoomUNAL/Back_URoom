@@ -3,11 +3,14 @@ package com.uroom.backend.Controllers;
 import com.uroom.backend.Models.EntitiyModels.*;
 import com.uroom.backend.Models.RequestModels.PostRequest;
 import com.uroom.backend.Models.RequestModels.UserRequest;
+import com.uroom.backend.Models.ResponseModels.CalificationResponse;
+import com.uroom.backend.Models.ResponseModels.PostResponse;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.HTML;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +59,27 @@ public class PostController {
             else{
                 return new ResponseEntity<>(posts, HttpStatus.OK);
             }
+        }
+    }
+
+    @GetMapping(path="get-post")
+    public ResponseEntity<Object> getPost(@RequestParam(name = "id") int post_id){
+        Post post = postService.selectById(post_id);
+        if(post == null || !post.isIs_active()){
+            return new ResponseEntity<>("No se encontró el post", HttpStatus.BAD_REQUEST);
+        }
+        else{
+            List<Calification> califications = calificationService.selectByPost(post);
+            List<Question> questions = questionService.selectByPost(post);
+            PostResponse postResponse = new PostResponse(post);
+
+            List<CalificationResponse> calificationResponses = new ArrayList<>();
+            for(Calification calification : califications){
+                calificationResponses.add(new CalificationResponse(calification));
+            }
+            postResponse.setCalifications(calificationResponses);
+            postResponse.setQuestions(questions);
+            return new ResponseEntity<>(postResponse, HttpStatus.OK);
         }
     }
 

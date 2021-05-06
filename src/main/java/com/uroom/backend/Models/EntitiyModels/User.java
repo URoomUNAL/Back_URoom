@@ -55,9 +55,14 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
+
     //Información Adicional
     //Foto foto?
     //Ennumerate Gustos
+
+
+    @Column(name="Photo")
+    private String photo;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Calification> calification;

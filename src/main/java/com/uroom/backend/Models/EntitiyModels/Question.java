@@ -1,5 +1,7 @@
 package com.uroom.backend.Models.EntitiyModels;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,10 +28,12 @@ public class Question {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id", nullable = false)
+    @JsonIgnore
     private Post post;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @Column(name="anonymous", nullable = false)
