@@ -40,7 +40,7 @@ public class PostController {
 
     @PostMapping(path="get-my-posts", consumes = "application/json")
     public  ResponseEntity<Object> getMyPosts(@RequestBody UserRequest user_req){
-        List<User> users = userService.selectByEmail(user_req.getUsername());
+        List<User> users = userService.selectById(user_req.getId());
         if(users.size() == 0){
             return new ResponseEntity<>("Por favor regístrese para ver sus publicaciones.", HttpStatus.BAD_REQUEST);
         }
