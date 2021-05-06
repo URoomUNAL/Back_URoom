@@ -59,6 +59,11 @@ public class User {
     //Foto foto?
     //Ennumerate Gustos
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Calification> calification;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Question> questions;
 
     public User(String name, String email, String password, String cellphone, boolean is_student){
         this.cellphone = cellphone;

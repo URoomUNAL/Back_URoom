@@ -23,14 +23,18 @@ public class PostController {
     private final RuleService ruleService;
     private final ServiceService serviceService;
     private final UserService userService;
+    private final CalificationService calificationService;
+    private final QuestionService questionService;
 
-    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService ,ServiceService serviceService, UserService userService){
+    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService ,ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService){
         this.postService = postService;
         this.imageService = imageService;
         this.azureStorageService = azureStorageService;
         this.ruleService = ruleService;
         this.serviceService = serviceService;
         this.userService = userService;
+        this.calificationService = calificationService;
+        this.questionService = questionService;
     }
 
     @GetMapping("get-posts")
@@ -78,6 +82,39 @@ public class PostController {
     @GetMapping("get-images")
     public List<Image> getAllImages(){
         return imageService.select();
+    }
+
+    @GetMapping("test-calification")
+    public Calification testCalification(){
+        Calification myCalification = new Calification();
+        myCalification.setComment("Hola soy un comentario, Buena muchacho");
+        myCalification.setScore(4.5);
+        Post post  = postService.selectById(122);
+        User user = userService.selectById(147);
+        System.out.println("Post: "+post.getDescription());
+        System.out.println("Usuario: "+user.getName());
+        myCalification.setPost(post);
+        myCalification.setUser(user);
+        Calification calification = calificationService.insert(myCalification);
+        System.out.println(calification.getComment());
+        return calification;
+    }
+
+
+    @GetMapping("test-question")
+    public Question testQuestion(){
+        Question myQuestion = new Question();
+        myQuestion.setQuestion("Se permiten Uribistas?");
+        myQuestion.setAnswer("Lamentablemente no");
+        Post post = postService.selectById(122);
+        System.out.println("Post: "+post.getDescription());
+        User user = userService.selectById(147);
+        System.out.println("Usuario: "+user.getName());
+        myQuestion.setPost(post);
+        myQuestion.setAnonymous(false);
+        myQuestion.setUser(user);
+        Question question = questionService.insert(myQuestion);
+        return question;
     }
 
     @PostMapping(path = "add-post")

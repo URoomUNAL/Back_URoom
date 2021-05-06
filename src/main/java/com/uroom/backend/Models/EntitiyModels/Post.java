@@ -54,11 +54,17 @@ public class Post {
     @Column(name = "is_active", nullable = false)
     private boolean is_active;
 
-    @Column(name = "score",nullable = true)
+    @Column(name = "score")
     private Double score;
 
     @OneToMany(mappedBy = "post")
     private List<Image> images;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Calification> califications;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Question> questions;
 
     @ManyToMany(/*fetch = FetchType.EAGER, cascade = CascadeType.ALL*/)
     @JoinTable(
