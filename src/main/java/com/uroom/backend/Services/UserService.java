@@ -61,7 +61,7 @@ public class UserService {
 
     public boolean update(User user){
         try{
-            Iterable<User> query = selectByCellphone(user.getCellphone());
+            Iterable<User> query = userRepository.findById(user.getId());
             if(iterableEmpty(query)){// Es un nuevo usuario
                 System.out.println("No existe un usuario con ese teléfono");
                 return false;
