@@ -4,6 +4,8 @@ package com.uroom.backend;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uroom.backend.Controllers.LoginController;
 import com.uroom.backend.Models.EntitiyModels.User;
+import com.uroom.backend.Models.RequestModels.LogInRequest;
+import com.uroom.backend.Models.RequestModels.UserRequest;
 import com.uroom.backend.Services.UserService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -42,7 +44,7 @@ public class LoginControllerTest {
                 "  \"age\":35,\n" +
                 "  \"is_student\": true\n" +
                 "  }";
-        User user = new ObjectMapper().readValue(newUser, User.class);
+        UserRequest user = new ObjectMapper().readValue(newUser, UserRequest.class);
         assertEquals(FAILED_BAD_REQUEST, loginController.signUp(user).getStatusCode());
 
         //Succesful sign up
@@ -55,7 +57,7 @@ public class LoginControllerTest {
                 "  \"is_student\": true\n" +
                 "  }";
 
-        user = new ObjectMapper().readValue(newUser, User.class);
+        user = new ObjectMapper().readValue(newUser, UserRequest.class);
         assertEquals(SUCCESS_CREATED, loginController.signUp(user).getStatusCode());
 
         //POSSIBLE DUPLICATED USER
@@ -67,7 +69,7 @@ public class LoginControllerTest {
                 "  \"age\":35,\n" +
                 "  \"is_student\": true\n" +
                 "  }";
-        user = new ObjectMapper().readValue(newUser, User.class);
+        user = new ObjectMapper().readValue(newUser, UserRequest.class);
         assertEquals(FAILED_INTERNAL_SERVER_ERROR, loginController.signUp(user).getStatusCode());
     }
 /**/
@@ -82,7 +84,7 @@ public class LoginControllerTest {
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"MICONTRASEÑA1\"\n" +
                 "  }";
-        User user = new ObjectMapper().readValue( loginUser, User.class);
+        LogInRequest user = new ObjectMapper().readValue( loginUser, LogInRequest.class);
         assertEquals(FAILED_BAD_REQUEST, loginController.loginUser(user).getStatusCode());
 
         //Invalid password
@@ -91,7 +93,7 @@ public class LoginControllerTest {
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"mala\"\n" +
                 "  }";
-        user = new ObjectMapper().readValue(loginUser, User.class);
+        user = new ObjectMapper().readValue( loginUser, LogInRequest.class);
         assertEquals(FAILED_BAD_REQUEST, loginController.loginUser(user).getStatusCode());
 
         //Succes login
@@ -100,7 +102,7 @@ public class LoginControllerTest {
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"MICONTRASEÑA1\"\n" +
                 "  }";
-        user = new ObjectMapper().readValue(loginUser, User.class);
+        user = new ObjectMapper().readValue( loginUser, LogInRequest.class);
         assertEquals(SUCCESS_OK, loginController.loginUser(user).getStatusCode());
     }
 /**/
