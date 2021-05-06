@@ -4,13 +4,16 @@ package com.uroom.backend.Controllers;
 import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Models.RequestModels.LogInRequest;
 import com.uroom.backend.Models.RequestModels.UserRequest;
+import com.uroom.backend.Services.AzureStorageService;
 import com.uroom.backend.Services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 //@CrossOrigin("http://localhost:8080")
 @RestController //Es un controlador de tipo REST
@@ -18,9 +21,11 @@ public class LoginController {
     //TODO:QUITAR LOS BADSMELLS
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private final UserService userService;
+    private final AzureStorageService azureStorageService;
 
-    public LoginController(UserService userService){ //Los servicios se pasan como atributos, son globales
+    public LoginController(UserService userService, AzureStorageService azureStorageService){ //Los servicios se pasan como atributos, son globales
         this.userService = userService;
+        this.azureStorageService = azureStorageService;
     }
 
     @PostMapping(path="/log-in", consumes = "application/json")
@@ -61,9 +66,11 @@ public class LoginController {
         user.setPassword(newUser.getPassword());
         user.setName(newUser.getName());
         user.setIs_student(newUser.isIs_student());
+        //TODO: DESCOMENTAR PAR LA FOTO
+        //user.setPhoto(newUser.getPhoto());
     }
     @PostMapping(path = "/sign-up", consumes = "application/json")
-    public ResponseEntity<Object> signUp(@RequestBody UserRequest newUser){
+    public ResponseEntity<Object> signUp(@RequestBody UserRequest newUser) throws IOException {
         if(newUser.getPassword().length() < 6 || newUser.getPassword().length() > 20){
             return new ResponseEntity<>("La contraseña debe tener un longitud entre 6 y 20.", HttpStatus.BAD_REQUEST);
         }
@@ -71,8 +78,14 @@ public class LoginController {
             return new ResponseEntity<>("La contraseña debe tener al menos un numero.", HttpStatus.BAD_REQUEST);
         }
         newUser.setPassword(encoder.encode(newUser.getPassword()));
+        String prefix_img = newUser.getEmail();
+        String[] extention = Objects.requireNonNull(newUser.getPhoto_file().getOriginalFilename()).split("\\.");
+        System.out.println("Nombre: " + extention[1]);
+        String photo = azureStorageService.writeBlobFile(newUser.getPhoto_file(),prefix_img + "." + extention[extention.length - 1]);
+        newUser.setPhoto(photo);
         User user = new User();
         mapUser(user, newUser);
+
         switch (userService.insert(user)) { //Es un usuario nuevo
             case 0:
                 //TODO:INGRESAR LOG

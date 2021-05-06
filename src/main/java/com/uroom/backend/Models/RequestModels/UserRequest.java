@@ -1,6 +1,8 @@
 package com.uroom.backend.Models.RequestModels;
 
 import com.uroom.backend.Models.EntitiyModels.Post;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 public class UserRequest {
@@ -15,6 +17,9 @@ public class UserRequest {
     private String cellphone;
     private boolean is_active;
     private String password;
+    private String photo;
+    private MultipartFile photo_file;
+
 
     public int getId() {
         return id;
@@ -86,5 +91,21 @@ public class UserRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public MultipartFile getPhoto_file() {
+        return photo_file;
+    }
+
+    public void setPhoto_file(MultipartFile photo_file) {
+        this.photo_file = photo_file;
     }
 }

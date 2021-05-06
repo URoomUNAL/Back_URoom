@@ -2,6 +2,7 @@ package com.uroom.backend.Controllers;
 
 import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Models.RequestModels.UserRequest;
+import com.uroom.backend.Services.AzureStorageService;
 import com.uroom.backend.Services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,11 @@ import java.util.List;
 @RestController
 public class CountController {
     private final UserService userService;
+    private final AzureStorageService azureStorageService;
 
-    public CountController(UserService userService) {
+    public CountController(UserService userService, AzureStorageService azureStorageService) {
         this.userService = userService;
+        this.azureStorageService = azureStorageService;
     }
 
     @PostMapping("update-info")
@@ -33,7 +36,7 @@ public class CountController {
             if(selectByCellphone.size() > 0 && !user.getCellphone().equals(updatedUser.getCellphone())){
                 return new ResponseEntity<>("El teléfono ingresado ya está registrado", HttpStatus.BAD_REQUEST);
             }
-            LoginController loginController = new LoginController(userService);
+            LoginController loginController = new LoginController(userService, azureStorageService);
             loginController.mapUser(user, updatedUser);
             if(userService.update(user)){
                 return new ResponseEntity<>("Actualizado correcta", HttpStatus.BAD_REQUEST);
