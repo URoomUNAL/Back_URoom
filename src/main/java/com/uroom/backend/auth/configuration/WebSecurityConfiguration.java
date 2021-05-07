@@ -46,10 +46,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             {
                     "/oauth/token",
                     "/oauth/authorize**",
-                    "/user/add",
                     "/sign-in",
-                    "/login/oauth2/code/google",
-                    "/login/oauth2/code/facebook"
             };
 
 
@@ -57,7 +54,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //habilita cors y dehabilita la verificación de csrf
-        http.cors().and().csrf().disable()
+        http.csrf().disable()
                 //delega el manejo de solicitudes no autorizadas a nuestra clase authEntryPointJwt
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 //configuración para que todas las sesiónes sean stateless
@@ -66,8 +63,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //autorizar a cualquiera para acceder a los recursos publicos
                 .authorizeRequests().antMatchers(publicResources).permitAll()
                 //pedir autenticación en cualquier otro recurso
-                .antMatchers("/student/..").hasRole("ROLE_STUDENT")
-                .antMatchers("/owner/..").hasRole("ROLE_OWNER");
+                .antMatchers("/student/**").hasRole("STUDENT")
+                .antMatchers("/owner/**").hasRole("OWNER")
+                .and()
+                // Cierre de sesión
+                .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("https://github.com/rcalvom/help-desk/blob/master/src/main/java/com/helpdesk/HelpDesk/Configuration/ConfigurationImpl.java")
+                    .invalidateHttpSession(true);
         //añadir filtro para la validación de tokens
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
