@@ -90,4 +90,8 @@ public class UserService {
         return true;
     }
 
+    public User selectById(int id){
+        return userRepository.findById(id);
+    }
+
 }
