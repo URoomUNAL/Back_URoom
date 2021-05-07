@@ -5,6 +5,7 @@ import com.uroom.backend.Models.RequestModels.PostRequest;
 import com.uroom.backend.Models.RequestModels.UserRequest;
 import com.uroom.backend.Models.ResponseModels.CalificationResponse;
 import com.uroom.backend.Models.ResponseModels.PostResponse;
+import com.uroom.backend.Models.ResponseModels.QuestionResponse;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,8 +78,13 @@ public class PostController {
             for(Calification calification : califications){
                 calificationResponses.add(new CalificationResponse(calification));
             }
+
+            List<QuestionResponse> questionResponses = new ArrayList<>();
+            for(Question question : questions){
+                questionResponses.add(new QuestionResponse(question));
+            }
             postResponse.setCalifications(calificationResponses);
-            postResponse.setQuestions(questions);
+            postResponse.setQuestions(questionResponses);
             return new ResponseEntity<>(postResponse, HttpStatus.OK);
         }
     }

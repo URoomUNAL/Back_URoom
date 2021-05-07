@@ -23,7 +23,7 @@ public class PostResponse {
     private Double score;
     private List<Image> images;
     private List<CalificationResponse> califications;
-    private List<Question> questions;
+    private List<QuestionResponse> questions;
     private Set<Rule> rules;
     private Set<Service> services;
     private User user;
@@ -140,11 +140,11 @@ public class PostResponse {
         this.califications = califications;
     }
 
-    public List<Question> getQuestions() {
+    public List<QuestionResponse> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<Question> questions) {
+    public void setQuestions(List<QuestionResponse> questions) {
         this.questions = questions;
     }
 

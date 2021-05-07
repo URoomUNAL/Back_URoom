@@ -50,6 +50,10 @@ public class Question {
     @Column(name="answer", length = 255)
     private String answer;
 
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
+
     public Post getPost() {
         return post;
     }
