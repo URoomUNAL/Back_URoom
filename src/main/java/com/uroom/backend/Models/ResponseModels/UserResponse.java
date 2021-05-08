@@ -2,6 +2,8 @@ package com.uroom.backend.Models.ResponseModels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.uroom.backend.Models.EntitiyModels.Post;
+import com.uroom.backend.Models.EntitiyModels.User;
+import com.uroom.backend.Models.RequestModels.UserRequest;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -19,5 +21,69 @@ public class UserResponse {
     private String cellphone;
     private boolean is_student;
     private boolean is_active;
-    private List<Post> posts;
+
+    public UserResponse(User user){
+        this.id = user.getId();
+        this.name = user.getName();
+        this.email = user.getEmail();
+        this.cellphone = user.getCellphone();
+        this.is_student = user.isIs_student();
+        this.is_active = user.isIs_active();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getCellphone() {
+        return cellphone;
+    }
+
+    public void setCellphone(String cellphone) {
+        this.cellphone = cellphone;
+    }
+
+    public boolean isIs_student() {
+        return is_student;
+    }
+
+    public void setIs_student(boolean is_student) {
+        this.is_student = is_student;
+    }
+
+    public boolean isIs_active() {
+        return is_active;
+    }
+
+    public void setIs_active(boolean is_active) {
+        this.is_active = is_active;
+    }
 }
