@@ -4,6 +4,9 @@ package com.uroom.backend;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uroom.backend.Controllers.LoginController;
 import com.uroom.backend.Models.EntitiyModels.User;
+import com.uroom.backend.Models.RequestModels.LogInRequest;
+import com.uroom.backend.Models.RequestModels.UserRequest;
+import com.uroom.backend.Services.AzureStorageService;
 import com.uroom.backend.Services.UserService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -29,11 +32,13 @@ public class LoginControllerTest {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private AzureStorageService azureStorageService;
 /**/
     @Test
     @Order(1)
     void createUser() throws IOException {
-        LoginController loginController = new LoginController(userService);
+        LoginController loginController = new LoginController(userService, azureStorageService);
         String newUser = "{\n" +
                 "  \"email\": \"test@test.edu.coo\",\n" +
                 "  \"name\": \"Usuario de Prueba\",\n" +
@@ -42,7 +47,7 @@ public class LoginControllerTest {
                 "  \"age\":35,\n" +
                 "  \"is_student\": true\n" +
                 "  }";
-        User user = new ObjectMapper().readValue(newUser, User.class);
+        UserRequest user = new ObjectMapper().readValue(newUser, UserRequest.class);
         assertEquals(FAILED_BAD_REQUEST, loginController.signUp(user).getStatusCode());
 
         //Succesful sign up
@@ -55,7 +60,7 @@ public class LoginControllerTest {
                 "  \"is_student\": true\n" +
                 "  }";
 
-        user = new ObjectMapper().readValue(newUser, User.class);
+        user = new ObjectMapper().readValue(newUser, UserRequest.class);
         assertEquals(SUCCESS_CREATED, loginController.signUp(user).getStatusCode());
 
         //POSSIBLE DUPLICATED USER
@@ -67,7 +72,7 @@ public class LoginControllerTest {
                 "  \"age\":35,\n" +
                 "  \"is_student\": true\n" +
                 "  }";
-        user = new ObjectMapper().readValue(newUser, User.class);
+        user = new ObjectMapper().readValue(newUser, UserRequest.class);
         assertEquals(FAILED_INTERNAL_SERVER_ERROR, loginController.signUp(user).getStatusCode());
     }
 /**/
@@ -75,14 +80,14 @@ public class LoginControllerTest {
     @Test
     @Order(2)
     void loginUser() throws IOException {
-        LoginController loginController = new LoginController(userService);
+        LoginController loginController = new LoginController(userService, azureStorageService);
         //Invalid email
         String loginUser = "{\n" +
                 "  \"email\": \"test@test.edu.cooo\",\n" +
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"MICONTRASEÑA1\"\n" +
                 "  }";
-        User user = new ObjectMapper().readValue( loginUser, User.class);
+        LogInRequest user = new ObjectMapper().readValue( loginUser, LogInRequest.class);
         assertEquals(FAILED_BAD_REQUEST, loginController.loginUser(user).getStatusCode());
 
         //Invalid password
@@ -91,7 +96,7 @@ public class LoginControllerTest {
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"mala\"\n" +
                 "  }";
-        user = new ObjectMapper().readValue(loginUser, User.class);
+        user = new ObjectMapper().readValue( loginUser, LogInRequest.class);
         assertEquals(FAILED_BAD_REQUEST, loginController.loginUser(user).getStatusCode());
 
         //Succes login
@@ -100,7 +105,7 @@ public class LoginControllerTest {
                 "  \"name\": \"Usuario de Prueba\",\n" +
                 "  \"password\": \"MICONTRASEÑA1\"\n" +
                 "  }";
-        user = new ObjectMapper().readValue(loginUser, User.class);
+        user = new ObjectMapper().readValue( loginUser, LogInRequest.class);
         assertEquals(SUCCESS_OK, loginController.loginUser(user).getStatusCode());
     }
 /**/
@@ -108,7 +113,7 @@ public class LoginControllerTest {
     @Test
     @Order(3)
     void deactivateUser() throws IOException {
-        LoginController loginController = new LoginController(userService);
+        LoginController loginController = new LoginController(userService, azureStorageService);
         //Invalid email
         String updateUser = "{\n" +
                 "  \"email\": \"test@test.edu.cooo\"\n" +
@@ -128,7 +133,7 @@ public class LoginControllerTest {
     @Test
     @Order(4)
     void deleteUser() throws IOException {
-        LoginController loginController = new LoginController(userService);
+        LoginController loginController = new LoginController(userService, azureStorageService);
         //Invalid email
         String deleteUser = "{\n" +
                 "  \"email\": \"test@test.edu.coooo\"\n" +
