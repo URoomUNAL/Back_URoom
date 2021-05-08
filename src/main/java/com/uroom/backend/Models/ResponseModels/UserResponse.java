@@ -26,6 +26,7 @@ public class UserResponse {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
+        this.age = user.getAge();
         this.cellphone = user.getCellphone();
         this.is_student = user.isIs_student();
         this.is_active = user.isIs_active();
