@@ -62,10 +62,16 @@ public class LoginController {
 
     public void mapUser(User user, UserRequest newUser){
         user.setAge(newUser.getAge());
-        user.setCellphone(newUser.getCellphone());
-        user.setEmail(newUser.getEmail());
-        user.setPassword(newUser.getPassword());
-        user.setName(newUser.getName());
+        if(newUser.getCellphone() != null){
+            user.setCellphone(newUser.getCellphone());
+        }
+        if(newUser.getEmail() != null){
+            user.setEmail(newUser.getEmail());
+        }
+        //user.setPassword(newUser.getPassword());
+        if(newUser.getName() != null){
+            user.setName(newUser.getName());
+        }
         user.setIs_student(newUser.isIs_student());
         //TODO: DESCOMENTAR PAR LA FOTO
         //user.setPhoto(newUser.getPhoto());

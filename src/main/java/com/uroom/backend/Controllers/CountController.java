@@ -39,7 +39,7 @@ public class CountController {
             LoginController loginController = new LoginController(userService, azureStorageService);
             loginController.mapUser(user, updatedUser);
             if(userService.update(user)){
-                return new ResponseEntity<>("Actualizado correcta", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Actualizado correcta", HttpStatus.OK);
             }
             else{
                 return new ResponseEntity<>("No se pudo actualizar", HttpStatus.INTERNAL_SERVER_ERROR);
