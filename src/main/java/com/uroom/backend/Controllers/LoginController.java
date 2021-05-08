@@ -2,6 +2,8 @@ package com.uroom.backend.Controllers;
 
 
 import com.uroom.backend.Models.EntitiyModels.User;
+import com.uroom.backend.Models.RequestModels.LoginRequest;
+import com.uroom.backend.Models.ResponseModels.UserResponse;
 import com.uroom.backend.Services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +33,12 @@ public class LoginController {
     public ResponseEntity<Object> loginUser(@RequestBody User loginUser){
         try{
             User user =  userService.selectByEmail(loginUser.getEmail()).iterator().next();
-            if(encoder.matches(loginUser.getPassword(), user.getPassword()) ){
+            if(encoder.matches(loginUser.getPassword(), user.getPassword())){
                 System.out.println("Usuario valido, buena muchacho");
                 user.setIs_active(true);
                 if(userService.update(user)){
-                    //TODO:INGRESAR LOG
-                    return new ResponseEntity<>(user, HttpStatus.OK);
+                    UserResponse userResponse = new UserResponse(user);
+                    return new ResponseEntity<>(userResponse, HttpStatus.OK);
                 }else{
                     //TODO:INGRESAR LOG
                     return new ResponseEntity<>("No fue posible reactivar el usuario, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
