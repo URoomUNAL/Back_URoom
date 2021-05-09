@@ -61,7 +61,7 @@ public class User {
     //Ennumerate Gustos
 
 
-    @Column(name="Photo")
+    @Column(name="photo")
     private String photo;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
