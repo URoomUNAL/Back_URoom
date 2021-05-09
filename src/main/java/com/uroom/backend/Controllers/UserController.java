@@ -4,6 +4,8 @@ package com.uroom.backend.Controllers;
 import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Models.RequestModels.LoginRequest;
 import com.uroom.backend.Models.ResponseModels.JwtResponse;
+import com.uroom.backend.Models.RequestModels.UserRequest;
+import com.uroom.backend.Services.AzureStorageService;
 import com.uroom.backend.Services.UserService;
 import com.uroom.backend.auth.jwt.JwtUtil;
 import com.uroom.backend.auth.services.UserDetailsImpl;
@@ -20,20 +22,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.io.IOException;
+import java.util.Objects;
 
 //@CrossOrigin("http://localhost:8080")
 @RestController //Es un controlador de tipo REST
-public class LoginController {
+public class UserController {
     //TODO:QUITAR LOS BADSMELLS
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private final UserService userService;
+    private final AzureStorageService azureStorageService;
 
     final AuthenticationManager authenticationManager;
 
     final JwtUtil jwtUtils;
 
-    public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtils){ //Los servicios se pasan como atributos, son globales
+    public UserController(UserService userService, AzureStorageService azureStorageService, AuthenticationManager authenticationManager, JwtUtil jwtUtils){ //Los servicios se pasan como atributos, son globales
         this.userService = userService;
+        this.azureStorageService = azureStorageService;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
     }
@@ -43,31 +49,6 @@ public class LoginController {
     public ResponseEntity<Object> pruebaa(){
         return new ResponseEntity<>(userService.selectByEmail("aaaaaaaaaaa@.edu.co"), HttpStatus.BAD_REQUEST);
     }
-
-    /*@PostMapping(path="/log-in", consumes = "application/json")
-    public ResponseEntity<Object> loginUser(@RequestBody User loginUser){
-        try{
-            User user =  userService.selectByEmail(loginUser.getEmail()).iterator().next();
-            if(encoder.matches(loginUser.getPassword(), user.getPassword()) ){
-                System.out.println("Usuario valido, buena muchacho");
-                user.setIs_active(true);
-                if(userService.update(user)){
-                    //TODO:INGRESAR LOG
-                    return new ResponseEntity<>(user, HttpStatus.OK);
-                }else{
-                    //TODO:INGRESAR LOG
-                    return new ResponseEntity<>("No fue posible reactivar el usuario, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }else {
-                //TODO:INGRESAR LOG
-                return new ResponseEntity<>("La contraseña es incorrecta, por favor intente nuevamente.", HttpStatus.BAD_REQUEST);
-            }
-        }catch (NoSuchElementException e){
-            //TODO:INGRESAR LOG
-            //System.out.println("El correo ingresado no esta registrado");
-            return new ResponseEntity<>("No se encontró el usuario, por favor intente nuevamente.", HttpStatus.BAD_REQUEST);
-        }
-    } */
 
     @PostMapping(path="/log-in", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> loginUser(@RequestBody LoginRequest loginRequest) {
@@ -110,8 +91,25 @@ public class LoginController {
         return userService.select();
     }
 
+
+    public void mapUser(User user, UserRequest newUser){
+        user.setAge(newUser.getAge());
+        if(newUser.getCellphone() != null){
+            user.setCellphone(newUser.getCellphone());
+        }
+        if(newUser.getEmail() != null){
+            user.setEmail(newUser.getEmail());
+        }
+        user.setPassword(newUser.getPassword());
+        if(newUser.getName() != null){
+            user.setName(newUser.getName());
+        }
+        user.setIs_student(newUser.isIs_student());
+        //TODO: DESCOMENTAR PAR LA FOTO
+        //user.setPhoto(newUser.getPhoto());
+    }
     @PostMapping(path = "/sign-up", consumes = "application/json")
-    public ResponseEntity<Object> signUp(@RequestBody User newUser){
+    public ResponseEntity<Object> signUp(@RequestBody UserRequest newUser) throws IOException {
         if(newUser.getPassword().length() < 6 || newUser.getPassword().length() > 20){
             return new ResponseEntity<>("La contraseña debe tener un longitud entre 6 y 20.", HttpStatus.BAD_REQUEST);
         }
@@ -119,7 +117,15 @@ public class LoginController {
             return new ResponseEntity<>("La contraseña debe tener al menos un numero.", HttpStatus.BAD_REQUEST);
         }
         newUser.setPassword(encoder.encode(newUser.getPassword()));
-        switch (userService.insert(newUser)) { //Es un usuario nuevo
+        String prefix_img = newUser.getEmail();
+        // String[] extention = Objects.requireNonNull(newUser.getPhoto_file().getOriginalFilename()).split("\\.");
+        // System.out.println("Nombre: " + extention[1]);
+        // String photo = azureStorageService.writeBlobFile(newUser.getPhoto_file(),prefix_img + "." + extention[extention.length - 1]);
+        // newUser.setPhoto(photo);
+        User user = new User();
+        mapUser(user, newUser);
+
+        switch (userService.insert(user)) { //Es un usuario nuevo
             case 0:
                 //TODO:INGRESAR LOG
                 return new ResponseEntity<>(newUser, HttpStatus.CREATED);
@@ -168,6 +174,35 @@ public class LoginController {
             //TODO:INGRESAR LOG
             return new ResponseEntity<>("No se encontró el usuario, por favor intente nuevamente.", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("update-info")
+    public ResponseEntity<Object> updateInfo(@RequestBody UserRequest updatedUser){
+        try{
+            User user = userService.selectById(updatedUser.getId()).iterator().next();
+            if(user.isIs_student() != updatedUser.isIs_student()){
+                return new ResponseEntity<>("No puede cambiar su rol en la aplicación", HttpStatus.BAD_REQUEST);
+            }
+            if(!user.getEmail().equals(updatedUser.getEmail())){
+                return new ResponseEntity<>("No puede cambiar su correo electrónico", HttpStatus.BAD_REQUEST);
+            }
+            List<User> selectByCellphone = userService.selectByCellphone(updatedUser.getCellphone());
+            if(selectByCellphone.size() > 0 && !user.getCellphone().equals(updatedUser.getCellphone())){
+                return new ResponseEntity<>("El teléfono ingresado ya está registrado", HttpStatus.BAD_REQUEST);
+            }
+            mapUser(user, updatedUser);
+            if(userService.update(user)){
+                return new ResponseEntity<>("Actualizado correcta", HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>("No se pudo actualizar", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 }

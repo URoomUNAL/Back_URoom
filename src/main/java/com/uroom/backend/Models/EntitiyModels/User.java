@@ -55,10 +55,19 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
+
     //Información Adicional
     //Foto foto?
     //Ennumerate Gustos
 
+    @Column(name="photo")
+    private String photo;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Calification> calification;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Question> questions;
 
     public User(String name, String email, String password, String cellphone, boolean is_student){
         this.cellphone = cellphone;
@@ -140,5 +149,33 @@ public class User {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public List<Calification> getCalification() {
+        return calification;
+    }
+
+    public void setCalification(List<Calification> calification) {
+        this.calification = calification;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 }

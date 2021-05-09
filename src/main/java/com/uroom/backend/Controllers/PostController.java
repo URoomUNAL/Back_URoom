@@ -3,11 +3,15 @@ package com.uroom.backend.Controllers;
 import com.uroom.backend.Models.EntitiyModels.*;
 import com.uroom.backend.Models.RequestModels.PostRequest;
 import com.uroom.backend.Models.RequestModels.UserRequest;
+import com.uroom.backend.Models.ResponseModels.CalificationResponse;
+import com.uroom.backend.Models.ResponseModels.PostResponse;
+import com.uroom.backend.Models.ResponseModels.QuestionResponse;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.HTML;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +27,18 @@ public class PostController {
     private final RuleService ruleService;
     private final ServiceService serviceService;
     private final UserService userService;
+    private final CalificationService calificationService;
+    private final QuestionService questionService;
 
-    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService ,ServiceService serviceService, UserService userService){
+    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService ,ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService){
         this.postService = postService;
         this.imageService = imageService;
         this.azureStorageService = azureStorageService;
         this.ruleService = ruleService;
         this.serviceService = serviceService;
         this.userService = userService;
+        this.calificationService = calificationService;
+        this.questionService = questionService;
     }
 
     @GetMapping("get-posts")
@@ -40,7 +48,7 @@ public class PostController {
 
     @PostMapping(path="get-my-posts", consumes = "application/json")
     public  ResponseEntity<Object> getMyPosts(@RequestBody UserRequest user_req){
-        List<User> users = userService.selectByEmail(user_req.getUsername());
+        List<User> users = userService.selectById(user_req.getId());
         if(users.size() == 0){
             return new ResponseEntity<>("Por favor regístrese para ver sus publicaciones.", HttpStatus.BAD_REQUEST);
         }
@@ -52,6 +60,32 @@ public class PostController {
             else{
                 return new ResponseEntity<>(posts, HttpStatus.OK);
             }
+        }
+    }
+
+    @GetMapping(path="get-post")
+    public ResponseEntity<Object> getPost(@RequestParam(name = "id") int post_id){
+        Post post = postService.selectById(post_id);
+        if(post == null || !post.isIs_active()){
+            return new ResponseEntity<>("No se encontró el post", HttpStatus.BAD_REQUEST);
+        }
+        else{
+            List<Calification> califications = calificationService.selectByPost(post);
+            List<Question> questions = questionService.selectByPost(post);
+            PostResponse postResponse = new PostResponse(post);
+
+            List<CalificationResponse> calificationResponses = new ArrayList<>();
+            for(Calification calification : califications){
+                calificationResponses.add(new CalificationResponse(calification));
+            }
+
+            List<QuestionResponse> questionResponses = new ArrayList<>();
+            for(Question question : questions){
+                questionResponses.add(new QuestionResponse(question));
+            }
+            postResponse.setCalifications(calificationResponses);
+            postResponse.setQuestions(questionResponses);
+            return new ResponseEntity<>(postResponse, HttpStatus.OK);
         }
     }
 
@@ -78,6 +112,39 @@ public class PostController {
     @GetMapping("get-images")
     public List<Image> getAllImages(){
         return imageService.select();
+    }
+
+    @GetMapping("test-calification")
+    public Calification testCalification(){
+        Calification myCalification = new Calification();
+        myCalification.setComment("Hola soy un comentario, Buena muchacho");
+        myCalification.setScore(4.5);
+        Post post  = postService.selectById(122);
+        User user = userService.selectById(147).iterator().next();
+        System.out.println("Post: "+post.getDescription());
+        System.out.println("Usuario: "+user.getName());
+        myCalification.setPost(post);
+        myCalification.setUser(user);
+        Calification calification = calificationService.insert(myCalification);
+        System.out.println(calification.getComment());
+        return calification;
+    }
+
+
+    @GetMapping("test-question")
+    public Question testQuestion(){
+        Question myQuestion = new Question();
+        myQuestion.setQuestion("Se permiten Uribistas?");
+        myQuestion.setAnswer("Lamentablemente no");
+        Post post = postService.selectById(122);
+        System.out.println("Post: "+post.getDescription());
+        User user = userService.selectById(147).iterator().next();
+        System.out.println("Usuario: "+user.getName());
+        myQuestion.setPost(post);
+        myQuestion.setAnonymous(false);
+        myQuestion.setUser(user);
+        Question question = questionService.insert(myQuestion);
+        return question;
     }
 
     @PostMapping(path = "add-post")

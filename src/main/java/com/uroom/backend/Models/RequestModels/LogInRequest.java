@@ -1,6 +1,6 @@
 package com.uroom.backend.Models.RequestModels;
 
-public class LoginRequest {
+public class LogInRequest {
     private String email;
     private String password;
 
