@@ -48,7 +48,7 @@ public class PostController {
 
     @PostMapping(path="get-my-posts", consumes = "application/json")
     public  ResponseEntity<Object> getMyPosts(@RequestBody UserRequest user_req){
-        List<User> users = userService.selectByEmail(user_req.getUsername());
+        List<User> users = userService.selectById(user_req.getId());
         if(users.size() == 0){
             return new ResponseEntity<>("Por favor regístrese para ver sus publicaciones.", HttpStatus.BAD_REQUEST);
         }
@@ -120,7 +120,7 @@ public class PostController {
         myCalification.setComment("Hola soy un comentario, Buena muchacho");
         myCalification.setScore(4.5);
         Post post  = postService.selectById(122);
-        User user = userService.selectById(147);
+        User user = userService.selectById(147).iterator().next();
         System.out.println("Post: "+post.getDescription());
         System.out.println("Usuario: "+user.getName());
         myCalification.setPost(post);
@@ -138,7 +138,7 @@ public class PostController {
         myQuestion.setAnswer("Lamentablemente no");
         Post post = postService.selectById(122);
         System.out.println("Post: "+post.getDescription());
-        User user = userService.selectById(147);
+        User user = userService.selectById(147).iterator().next();
         System.out.println("Usuario: "+user.getName());
         myQuestion.setPost(post);
         myQuestion.setAnonymous(false);

@@ -60,7 +60,6 @@ public class User {
     //Foto foto?
     //Ennumerate Gustos
 
-
     @Column(name="photo")
     private String photo;
 
@@ -150,5 +149,33 @@ public class User {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public List<Calification> getCalification() {
+        return calification;
+    }
+
+    public void setCalification(List<Calification> calification) {
+        this.calification = calification;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 }
