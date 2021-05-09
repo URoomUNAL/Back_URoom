@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uroom.backend.Controllers.LoginController;
 import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Services.UserService;
+import com.uroom.backend.auth.jwt.JwtUtil;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 
 
 import java.io.IOException;
@@ -21,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LoginControllerTest {
-    public final HttpStatus SUCCESS_OK = HttpStatus.OK;
+    /*public final HttpStatus SUCCESS_OK = HttpStatus.OK;
     public final HttpStatus SUCCESS_CREATED = HttpStatus.CREATED;
     public final HttpStatus SUCCESS_ACCEPTED = HttpStatus.ACCEPTED;
     public final HttpStatus FAILED_BAD_REQUEST = HttpStatus.BAD_REQUEST;
@@ -29,11 +31,20 @@ public class LoginControllerTest {
 
     @Autowired
     private UserService userService;
-/**/
+
+    final AuthenticationManager authenticationManager;
+
+    final JwtUtil jwtUtils;
+
+    public LoginControllerTest(AuthenticationManager authenticationManager, JwtUtil jwtUtils) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
+    }
+
     @Test
     @Order(1)
     void createUser() throws IOException {
-        LoginController loginController = new LoginController(userService);
+        LoginController loginController = new LoginController(userService, authenticationManager, jwtUtils);
         String newUser = "{\n" +
                 "  \"email\": \"test@test.edu.coo\",\n" +
                 "  \"name\": \"Usuario de Prueba\",\n" +
@@ -70,12 +81,11 @@ public class LoginControllerTest {
         user = new ObjectMapper().readValue(newUser, User.class);
         assertEquals(FAILED_INTERNAL_SERVER_ERROR, loginController.signUp(user).getStatusCode());
     }
-/**/
-/**/
+
     @Test
     @Order(2)
     void loginUser() throws IOException {
-        LoginController loginController = new LoginController(userService);
+        LoginController loginController = new LoginController(userService, authenticationManager, jwtUtils);
         //Invalid email
         String loginUser = "{\n" +
                 "  \"email\": \"test@test.edu.cooo\",\n" +
@@ -103,12 +113,11 @@ public class LoginControllerTest {
         user = new ObjectMapper().readValue(loginUser, User.class);
         assertEquals(SUCCESS_OK, loginController.loginUser(user).getStatusCode());
     }
-/**/
-/**/
+
     @Test
     @Order(3)
     void deactivateUser() throws IOException {
-        LoginController loginController = new LoginController(userService);
+        LoginController loginController = new LoginController(userService, authenticationManager, jwtUtils);
         //Invalid email
         String updateUser = "{\n" +
                 "  \"email\": \"test@test.edu.cooo\"\n" +
@@ -124,11 +133,10 @@ public class LoginControllerTest {
         assertEquals(SUCCESS_ACCEPTED, loginController.deactivateUser(user).getStatusCode());
     }
 
-/**/
     @Test
     @Order(4)
     void deleteUser() throws IOException {
-        LoginController loginController = new LoginController(userService);
+        LoginController loginController = new LoginController(userService, authenticationManager, jwtUtils);
         //Invalid email
         String deleteUser = "{\n" +
                 "  \"email\": \"test@test.edu.coooo\"\n" +
@@ -142,6 +150,6 @@ public class LoginControllerTest {
                 "}";
         user = new ObjectMapper().readValue(deleteUser, User.class);
         assertEquals(SUCCESS_ACCEPTED, loginController.deleteUser(user).getStatusCode());
-    }
+    }*/
 /**/
 }
