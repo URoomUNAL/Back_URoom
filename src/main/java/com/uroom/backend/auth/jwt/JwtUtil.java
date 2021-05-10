@@ -34,7 +34,12 @@ public class JwtUtil {
 
     //obtener usuario desde el token desencriptando con nuestro secret
     public String getUserNameFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+        String username = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+        Claims xd = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+        Jws<Claims> hola = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+        String pp = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getId();
+        Date pp2 = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getExpiration();
+        return username;
     }
 
     //validar token con nuestro secret
