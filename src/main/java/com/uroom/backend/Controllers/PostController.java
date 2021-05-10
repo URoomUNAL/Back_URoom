@@ -9,6 +9,8 @@ import com.uroom.backend.Models.ResponseModels.QuestionResponse;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.HTML;
@@ -48,7 +50,11 @@ public class PostController {
 
     @PostMapping(path="get-my-posts", consumes = "application/json")
     public  ResponseEntity<Object> getMyPosts(@RequestBody UserRequest user_req){
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<User> users = userService.selectById(user_req.getId());
+        if(principal.getUsername()!=users.iterator().next().getEmail()){
+            return new ResponseEntity<>("Usted no tiene permisos para ver las publicaciones de esta cuenta de usuario", HttpStatus.BAD_REQUEST);
+        }
         if(users.size() == 0){
             return new ResponseEntity<>("Por favor regístrese para ver sus publicaciones.", HttpStatus.BAD_REQUEST);
         }
@@ -92,6 +98,10 @@ public class PostController {
     @PostMapping(path="change-active", consumes = "application/json")
     public  ResponseEntity<Object> getMyPosts(@RequestBody PostRequest post_req){
         List<Post> posts = postService.selectByAddress(post_req.getAddress());
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal.getUsername()!=posts.iterator().next().getUser().getEmail()){
+            return new ResponseEntity<>("Usted no tiene permisos para desactivar esta publicación", HttpStatus.BAD_REQUEST);
+        }
         if(posts.size() == 0){
             return new ResponseEntity<>("No existe la publicación.", HttpStatus.BAD_REQUEST);
         }
@@ -157,6 +167,10 @@ public class PostController {
         post.setLongitude(requestPost.getLongitude());
         post.setTitle(requestPost.getTitle());
         User user = this.userService.selectByEmail(requestPost.getUser()).iterator().next();
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal.getUsername()!=user.getEmail()){
+            return new ResponseEntity<>("Usted no tiene permisos para registrar esta publicación", HttpStatus.BAD_REQUEST);
+        }
         if(user == null){
             System.out.println("User does not exist in the database."); // TODO: User does not exist in the database.
         }else{

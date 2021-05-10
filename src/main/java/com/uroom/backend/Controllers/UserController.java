@@ -86,12 +86,10 @@ public class UserController {
         }
     }
 
-
     @GetMapping("/get-users")
     public Iterable<User> todos(){
         return userService.select();
     }
-
 
     public void mapUser(User user, UserRequest newUser){
         user.setAge(newUser.getAge());
@@ -109,6 +107,7 @@ public class UserController {
         //TODO: DESCOMENTAR PAR LA FOTO
         //user.setPhoto(newUser.getPhoto());
     }
+
     @PostMapping(path = "/sign-up", consumes = "application/json")
     public ResponseEntity<Object> signUp(@RequestBody UserRequest newUser) throws IOException {
         if(newUser.getPassword().length() < 6 || newUser.getPassword().length() > 20){
@@ -145,7 +144,11 @@ public class UserController {
     @DeleteMapping(path = "/delete-user", consumes = "application/json")
     public ResponseEntity<Object> deleteUser(@RequestBody User deleteUser){
         try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user =  userService.selectByEmail(deleteUser.getEmail()).iterator().next();
+            if(principal.getUsername()!=user.getEmail()){
+                return new ResponseEntity<>("Usted no tiene permisos para eliminar esta cuenta de usuario", HttpStatus.BAD_REQUEST);
+            }
             if(userService.delete(user)){
                 //TODO:INGRESAR LOG
                 return new ResponseEntity<>("El usuario fue eliminado correctamente.", HttpStatus.ACCEPTED);
@@ -162,8 +165,12 @@ public class UserController {
     @PutMapping(path = "/deactivate-user", consumes = "application/json")
     public ResponseEntity<Object> deactivateUser(@RequestBody User deactivateUser){
         try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user =  userService.selectByEmail(deactivateUser.getEmail()).iterator().next();
             user.setIs_active(false);
+            if(principal.getUsername()!=user.getEmail()){
+                return new ResponseEntity<>("Usted no tiene permisos para desactivar esta cuenta de usuario", HttpStatus.BAD_REQUEST);
+            }
             if(userService.update(user)){
                 //TODO:INGRESAR LOG
                 return new ResponseEntity<>("Su cuenta fue desactivada exitosamente.", HttpStatus.ACCEPTED);
@@ -180,7 +187,11 @@ public class UserController {
     @PostMapping("update-info")
     public ResponseEntity<Object> updateInfo(@RequestBody UserRequest updatedUser){
         try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userService.selectById(updatedUser.getId()).iterator().next();
+            if(principal.getUsername()!=user.getEmail()){
+                return new ResponseEntity<>("Usted no tiene permisos para actualizar la información de esta cuenta de usuario", HttpStatus.BAD_REQUEST);
+            }
             if(user.isIs_student() != updatedUser.isIs_student()){
                 return new ResponseEntity<>("No puede cambiar su rol en la aplicación", HttpStatus.BAD_REQUEST);
             }
@@ -204,12 +215,6 @@ public class UserController {
             return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
         }
 
-    }
-
-    @GetMapping(path="/sapo")
-    public ResponseEntity<Object> prueba(){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return new ResponseEntity<>(principal, HttpStatus.BAD_REQUEST);
     }
 
 }

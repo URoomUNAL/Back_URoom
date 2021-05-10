@@ -41,7 +41,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new AuthTokenFilter();
     }
 
-    //URL's de los recursos públicos (no requieren Token)
     private static final String[] publicResources = new String[]
             {
                     "/oauth/token",
@@ -49,50 +48,39 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     "/sign-in",
             };
 
-
-    //configuración de seguridad del servidor
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //habilita cors y dehabilita la verificación de csrf
         http.csrf().disable()
-                //delega el manejo de solicitudes no autorizadas a nuestra clase authEntryPointJwt
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                //configuración para que todas las sesiónes sean stateless
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                //autorizar a cualquiera para acceder a los recursos publicos
                 .authorizeRequests().antMatchers(publicResources).permitAll()
-                //pedir autenticación en cualquier otro recurso
-                .antMatchers("/student/**").hasRole("STUDENT")
-                .antMatchers("/owner/**").hasRole("OWNER")
+                .anyRequest().authenticated() // Esto se va luego
+                //.antMatchers("/**").hasRole("STUDENT")
+                //.antMatchers("/**").hasRole("OWNER")
                 .and()
-                // Cierre de sesión
                 .logout()
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("https://github.com/rcalvom/help-desk/blob/master/src/main/java/com/helpdesk/HelpDesk/Configuration/ConfigurationImpl.java")
                     .invalidateHttpSession(true);
-        //añadir filtro para la validación de tokens
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-    //Bean del passwordEncoder utilizado en las demas clases.
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    //configuración para usar nuestra implementacion de userDetailsService con nuestro passwordEncoder
-    //en vez de la usada por defecto
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
-    //configuración para permitir siempre solicitudes tipo OPTIONS
+
     @Override
     public void configure(final WebSecurity web) {
         web.ignoring().antMatchers(HttpMethod.OPTIONS);
     }
-    //bean del autenticationManager para usar en otras clases
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
