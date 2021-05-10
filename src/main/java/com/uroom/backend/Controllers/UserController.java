@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -203,6 +204,12 @@ public class UserController {
             return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @GetMapping(path="/sapo")
+    public ResponseEntity<Object> prueba(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return new ResponseEntity<>(principal, HttpStatus.BAD_REQUEST);
     }
 
 }
