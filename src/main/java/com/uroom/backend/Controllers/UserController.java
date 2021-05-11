@@ -3,6 +3,7 @@ package com.uroom.backend.Controllers;
 
 import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Models.RequestModels.LoginRequest;
+import com.uroom.backend.Models.RequestModels.PostRequest;
 import com.uroom.backend.Models.ResponseModels.JwtResponse;
 import com.uroom.backend.Models.RequestModels.UserRequest;
 import com.uroom.backend.Services.AzureStorageService;
@@ -106,10 +107,26 @@ public class UserController {
         }
         user.setIs_student(newUser.isIs_student());
         //TODO: DESCOMENTAR PAR LA FOTO
-        //user.setPhoto(newUser.getPhoto());
+        if(newUser.getPhoto_file() != null){
+            System.out.println("FOTO RECIBIDA");
+            String prefix_img = newUser.getEmail();
+            String[] extention = Objects.requireNonNull(newUser.getPhoto_file().getOriginalFilename()).split("\\.");
+            System.out.println("Nombre: " + extention[1]);
+            String photo = null;
+            try {
+                photo = azureStorageService.writeBlobFile(newUser.getPhoto_file(),prefix_img + "." + extention[extention.length - 1]);
+            } catch (IOException e) {
+                System.out.println("No se pudo guardar la foto en Azure");
+                e.printStackTrace();
+            }
+            newUser.setPhoto(photo);
+            user.setPhoto(newUser.getPhoto());
+        }
     }
-    @PostMapping(path = "/sign-up", consumes = "application/json")
-    public ResponseEntity<Object> signUp(@RequestBody UserRequest newUser) throws IOException {
+
+    @PostMapping(path = "/sign-up")
+    public ResponseEntity<Object> signUp(@ModelAttribute UserRequest newUser) throws IOException {
+        System.out.println("Imagen: "+(newUser.getPhoto_file() == null));
         if(newUser.getPassword().length() < 6 || newUser.getPassword().length() > 20){
             return new ResponseEntity<>("La contraseña debe tener un longitud entre 6 y 20.", HttpStatus.BAD_REQUEST);
         }
@@ -117,17 +134,13 @@ public class UserController {
             return new ResponseEntity<>("La contraseña debe tener al menos un numero.", HttpStatus.BAD_REQUEST);
         }
         newUser.setPassword(encoder.encode(newUser.getPassword()));
-        String prefix_img = newUser.getEmail();
-        // String[] extention = Objects.requireNonNull(newUser.getPhoto_file().getOriginalFilename()).split("\\.");
-        // System.out.println("Nombre: " + extention[1]);
-        // String photo = azureStorageService.writeBlobFile(newUser.getPhoto_file(),prefix_img + "." + extention[extention.length - 1]);
-        // newUser.setPhoto(photo);
         User user = new User();
         mapUser(user, newUser);
 
         switch (userService.insert(user)) { //Es un usuario nuevo
             case 0:
                 //TODO:INGRESAR LOG
+                newUser.setPhoto_file(null);
                 return new ResponseEntity<>(newUser, HttpStatus.CREATED);
             case 1:
                 //TODO:INGRESAR LOG
@@ -177,7 +190,7 @@ public class UserController {
     }
 
     @PostMapping("update-info")
-    public ResponseEntity<Object> updateInfo(@RequestBody UserRequest updatedUser){
+    public ResponseEntity<Object> updateInfo(@ModelAttribute UserRequest updatedUser){
         try{
             User user = userService.selectById(updatedUser.getId()).iterator().next();
             if(user.isIs_student() != updatedUser.isIs_student()){
@@ -190,6 +203,7 @@ public class UserController {
             if(selectByCellphone.size() > 0 && !user.getCellphone().equals(updatedUser.getCellphone())){
                 return new ResponseEntity<>("El teléfono ingresado ya está registrado", HttpStatus.BAD_REQUEST);
             }
+
             mapUser(user, updatedUser);
             if(userService.update(user)){
                 return new ResponseEntity<>("Actualizado correcta", HttpStatus.OK);
