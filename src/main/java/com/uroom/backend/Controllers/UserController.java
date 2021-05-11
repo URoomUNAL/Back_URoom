@@ -53,6 +53,7 @@ public class UserController {
 
     @PostMapping(path="/log-in", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> loginUser(@RequestBody LoginRequest loginRequest) {
+        System.out.println("Hola perritos");
         try {
             User user = userService.selectByEmail(loginRequest.getEmail()).iterator().next();
             if (encoder.matches(loginRequest.getPassword(), user.getPassword())) {
@@ -211,10 +212,20 @@ public class UserController {
             }
         }
         catch(Exception e){
-            System.out.println(e);
             return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @GetMapping("/get-user")
+    public ResponseEntity<Object> getUser(){
+        try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

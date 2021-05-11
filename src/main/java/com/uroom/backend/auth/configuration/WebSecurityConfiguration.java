@@ -45,7 +45,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             {
                     "/oauth/token",
                     "/oauth/authorize**",
-                    "/sign-in",
+                    "/log-in",
+                    "/get-users",
             };
 
     @Override
