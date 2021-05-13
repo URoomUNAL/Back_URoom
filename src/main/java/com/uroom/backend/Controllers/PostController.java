@@ -9,6 +9,8 @@ import com.uroom.backend.Models.ResponseModels.QuestionResponse;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.HTML;
@@ -40,6 +42,21 @@ public class PostController {
         this.calificationService = calificationService;
         this.questionService = questionService;
     }
+
+    /*
+    @GetMapping("test-favorite")
+    public void testFavorite(){
+        Post myPost = this.postService.selectById(122);
+        User user = this.userService.selectById(182).get(0);
+        user.getFavorites().add(myPost);
+        userService.update(user);
+        User updatedUser = this.userService.selectById(182).get(0);
+        System.out.println("Lista de favoritos vacía?: "+updatedUser.getFavorites().isEmpty());
+        for(Post p : updatedUser.getFavorites()){
+            System.out.println(p.getId());
+        }
+    }
+    */
 
     @GetMapping("get-posts")
     public List<Post> getAll(){
@@ -235,4 +252,17 @@ public class PostController {
         return new ResponseEntity<>(rules, HttpStatus.OK);
     }
 
+    @PostMapping("add-favorite")
+    public ResponseEntity<Object> addFavorite(@RequestParam int id){
+        try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            Post post = postService.selectById(id);
+            user.getFavorites().add(post);
+            userService.update(user);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>("Usuario o Post no encontrado", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

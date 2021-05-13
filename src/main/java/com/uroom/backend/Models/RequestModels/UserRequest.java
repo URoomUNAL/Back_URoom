@@ -12,6 +12,7 @@ public class UserRequest {
     private boolean is_student;
     private List<Post> posts;
     //Información Actualizable
+    private List<Post> favorites;
     private String name;
     private Integer age;
     private String cellphone;
@@ -108,4 +109,8 @@ public class UserRequest {
     public void setPhoto_file(MultipartFile photo_file) {
         this.photo_file = photo_file;
     }
+
+    public List<Post> getFavorites() { return favorites; }
+
+    public void setFavorites(List<Post> favorites) { this.favorites = favorites; }
 }

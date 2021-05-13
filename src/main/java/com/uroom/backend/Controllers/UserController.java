@@ -121,6 +121,7 @@ public class UserController {
             }
             newUser.setPhoto(photo);
             user.setPhoto(newUser.getPhoto());
+            user.setFavorites(newUser.getFavorites());
         }
     }
 
@@ -218,5 +219,8 @@ public class UserController {
         }
 
     }
+
+
+
 
 }
