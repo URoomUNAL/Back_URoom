@@ -9,14 +9,14 @@ public class UserRequest {
 
     private int id;
     private String email;
-    private boolean is_student;
+    private String is_student;
     private List<Post> posts;
     //Información Actualizable
     private List<Post> favorites;
     private String name;
-    private Integer age;
+    private String age;
     private String cellphone;
-    private boolean is_active;
+    private String is_active;
     private String password;
     private String photo;
     private MultipartFile photo_file;
@@ -38,11 +38,11 @@ public class UserRequest {
         this.email = email;
     }
 
-    public boolean isIs_student() {
+    public String isIs_student() {
         return is_student;
     }
 
-    public void setIs_student(boolean is_student) {
+    public void setIs_student(String is_student) {
         this.is_student = is_student;
     }
 
@@ -62,11 +62,11 @@ public class UserRequest {
         this.name = name;
     }
 
-    public Integer getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
@@ -78,11 +78,11 @@ public class UserRequest {
         this.cellphone = cellphone;
     }
 
-    public boolean isIs_active() {
+    public String isIs_active() {
         return is_active;
     }
 
-    public void setIs_active(boolean is_active) {
+    public void setIs_active(String is_active) {
         this.is_active = is_active;
     }
 
