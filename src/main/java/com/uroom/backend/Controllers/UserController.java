@@ -6,6 +6,7 @@ import com.uroom.backend.Models.RequestModels.LoginRequest;
 import com.uroom.backend.Models.RequestModels.PostRequest;
 import com.uroom.backend.Models.ResponseModels.JwtResponse;
 import com.uroom.backend.Models.RequestModels.UserRequest;
+import com.uroom.backend.Models.ResponseModels.UserResponse;
 import com.uroom.backend.Services.AzureStorageService;
 import com.uroom.backend.Services.UserService;
 import com.uroom.backend.auth.jwt.JwtUtil;
@@ -17,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -53,6 +55,7 @@ public class UserController {
 
     @PostMapping(path="/log-in", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> loginUser(@RequestBody LoginRequest loginRequest) {
+        System.out.println("Hola perritos");
         try {
             User user = userService.selectByEmail(loginRequest.getEmail()).iterator().next();
             if (encoder.matches(loginRequest.getPassword(), user.getPassword())) {
@@ -86,12 +89,10 @@ public class UserController {
         }
     }
 
-
     @GetMapping("/get-users")
     public Iterable<User> todos(){
         return userService.select();
     }
-
 
     public void mapUser(User user, UserRequest newUser){
         user.setAge(newUser.getAge());
@@ -124,9 +125,8 @@ public class UserController {
         }
     }
 
-    @PostMapping(path = "/sign-up")
-    public ResponseEntity<Object> signUp(@ModelAttribute UserRequest newUser) throws IOException {
-        System.out.println("Imagen: "+(newUser.getPhoto_file() == null));
+    @PostMapping(path = "/sign-up", consumes = "application/json")
+    public ResponseEntity<Object> signUp(@RequestBody UserRequest newUser) throws IOException {
         if(newUser.getPassword().length() < 6 || newUser.getPassword().length() > 20){
             return new ResponseEntity<>("La contraseña debe tener un longitud entre 6 y 20.", HttpStatus.BAD_REQUEST);
         }
@@ -157,7 +157,11 @@ public class UserController {
     @DeleteMapping(path = "/delete-user", consumes = "application/json")
     public ResponseEntity<Object> deleteUser(@RequestBody User deleteUser){
         try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user =  userService.selectByEmail(deleteUser.getEmail()).iterator().next();
+            if(principal.getUsername()!=user.getEmail()){
+                return new ResponseEntity<>("Usted no tiene permisos para eliminar esta cuenta de usuario", HttpStatus.BAD_REQUEST);
+            }
             if(userService.delete(user)){
                 //TODO:INGRESAR LOG
                 return new ResponseEntity<>("El usuario fue eliminado correctamente.", HttpStatus.ACCEPTED);
@@ -174,8 +178,12 @@ public class UserController {
     @PutMapping(path = "/deactivate-user", consumes = "application/json")
     public ResponseEntity<Object> deactivateUser(@RequestBody User deactivateUser){
         try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user =  userService.selectByEmail(deactivateUser.getEmail()).iterator().next();
             user.setIs_active(false);
+            if(principal.getUsername()!=user.getEmail()){
+                return new ResponseEntity<>("Usted no tiene permisos para desactivar esta cuenta de usuario", HttpStatus.BAD_REQUEST);
+            }
             if(userService.update(user)){
                 //TODO:INGRESAR LOG
                 return new ResponseEntity<>("Su cuenta fue desactivada exitosamente.", HttpStatus.ACCEPTED);
@@ -192,7 +200,11 @@ public class UserController {
     @PostMapping("update-info")
     public ResponseEntity<Object> updateInfo(@ModelAttribute UserRequest updatedUser){
         try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userService.selectById(updatedUser.getId()).iterator().next();
+            if(principal.getUsername()!=user.getEmail()){
+                return new ResponseEntity<>("Usted no tiene permisos para actualizar la información de esta cuenta de usuario", HttpStatus.BAD_REQUEST);
+            }
             if(user.isIs_student() != updatedUser.isIs_student()){
                 return new ResponseEntity<>("No puede cambiar su rol en la aplicación", HttpStatus.BAD_REQUEST);
             }
@@ -213,10 +225,20 @@ public class UserController {
             }
         }
         catch(Exception e){
-            System.out.println(e);
             return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @GetMapping("/get-user")
+    public ResponseEntity<Object> getUser(){
+        try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            return new ResponseEntity<>(new UserResponse(user), HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
