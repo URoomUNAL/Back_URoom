@@ -5,6 +5,7 @@ import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Models.RequestModels.LoginRequest;
 import com.uroom.backend.Models.ResponseModels.JwtResponse;
 import com.uroom.backend.Models.RequestModels.UserRequest;
+import com.uroom.backend.Models.ResponseModels.UserResponse;
 import com.uroom.backend.Services.AzureStorageService;
 import com.uroom.backend.Services.UserService;
 import com.uroom.backend.auth.jwt.JwtUtil;
@@ -222,7 +223,7 @@ public class UserController {
         try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userService.selectByEmail(principal.getUsername()).iterator().next();
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return new ResponseEntity<>(new UserResponse(user), HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
         }
