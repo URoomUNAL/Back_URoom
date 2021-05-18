@@ -181,9 +181,9 @@ public class PostController {
         post.setLatitude(requestPost.getLatitude());
         post.setLongitude(requestPost.getLongitude());
         post.setTitle(requestPost.getTitle());
-        User user = this.userService.selectByEmail(requestPost.getUser()).iterator().next();
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(principal.getUsername()!=user.getEmail()){
+        User user = this.userService.selectByEmail(principal.getUsername()).iterator().next();
+        if(!principal.getUsername().equals(user.getEmail())){
             return new ResponseEntity<>("Usted no tiene permisos para registrar esta publicación", HttpStatus.BAD_REQUEST);
         }
         if(user == null){

@@ -6,6 +6,7 @@ import com.uroom.backend.Controllers.UserController;
 import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Models.RequestModels.LoginRequest;
 import com.uroom.backend.Models.RequestModels.UserRequest;
+import com.uroom.backend.Models.ResponseModels.JwtResponse;
 import com.uroom.backend.Services.AzureStorageService;
 import com.uroom.backend.Services.UserService;
 import com.uroom.backend.auth.jwt.JwtUtil;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -46,6 +48,8 @@ public class UserControllerTest {
 
     @Autowired
     private JwtUtil jwtUtils;
+
+    private JwtResponse token;
 
     @Test
     @Order(1)
@@ -115,7 +119,9 @@ public class UserControllerTest {
                 "  \"password\": \"MICONTRASEÑA1\"\n" +
                 "  }";
         user = new ObjectMapper().readValue( loginUser, LoginRequest.class);
-        assertEquals(SUCCESS_OK, userController.loginUser(user).getStatusCode());
+        ResponseEntity response = userController.loginUser(user);
+        this.token = (JwtResponse) response.getBody();
+        assertEquals(SUCCESS_OK, response.getStatusCode());
     }
 
     @Test

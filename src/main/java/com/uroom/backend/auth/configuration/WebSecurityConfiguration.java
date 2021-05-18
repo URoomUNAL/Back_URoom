@@ -48,6 +48,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     "/sign-up",
                     "/log-in",
                     "/get-users",
+                    "/get-services",
+                    "/get-rules"
             };
 
     @Override
