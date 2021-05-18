@@ -49,7 +49,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     "/log-in",
                     "/get-users",
                     "/get-services",
-                    "/get-rules"
+                    "/get-rules",
+                    "/change-active"
             };
 
     @Override
