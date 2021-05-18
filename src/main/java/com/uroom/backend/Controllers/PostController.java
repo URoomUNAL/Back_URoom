@@ -63,11 +63,11 @@ public class PostController {
         return postService.selectActivePosts();
     }
 
-    @PostMapping(path="get-my-posts", consumes = "application/json")
-    public  ResponseEntity<Object> getMyPosts(@RequestBody UserRequest user_req){
+    @GetMapping(path="get-my-posts")
+    public  ResponseEntity<Object> getMyPosts(){
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<User> users = userService.selectById(user_req.getId());
-        if(principal.getUsername()!=users.iterator().next().getEmail()){
+        List<User> users = userService.selectByEmail(principal.getUsername());
+        if(!principal.getUsername().equals(users.iterator().next().getEmail())){
             return new ResponseEntity<>("Usted no tiene permisos para ver las publicaciones de esta cuenta de usuario", HttpStatus.BAD_REQUEST);
         }
         if(users.size() == 0){
@@ -114,7 +114,7 @@ public class PostController {
     public  ResponseEntity<Object> getMyPosts(@RequestBody PostRequest post_req){
         List<Post> posts = postService.selectByAddress(post_req.getAddress());
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(principal.getUsername()!=posts.iterator().next().getUser().getEmail()){
+        if(!principal.getUsername().equals(posts.iterator().next().getUser().getEmail())){
             return new ResponseEntity<>("Usted no tiene permisos para desactivar esta publicación", HttpStatus.BAD_REQUEST);
         }
         if(posts.size() == 0){
