@@ -66,6 +66,10 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Question> questions;
 
+    @JsonIgnore
+    @ManyToMany(mappedBy = "favorites")
+    private List<User> users_favorite;
+
     @ManyToMany(/*fetch = FetchType.EAGER, cascade = CascadeType.ALL*/)
     @JoinTable(
             name = "post_rule", joinColumns = {@JoinColumn(name = "post_id")},

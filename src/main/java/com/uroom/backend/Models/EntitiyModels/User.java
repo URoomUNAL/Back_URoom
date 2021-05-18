@@ -56,6 +56,15 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name="Favorites",
+            joinColumns = @JoinColumn(name="post_id"),
+            inverseJoinColumns = @JoinColumn(name="user_id")
+    )
+    private List<Post> favorites;
+
     //Información Adicional
     //Foto foto?
     //Ennumerate Gustos
@@ -177,5 +186,13 @@ public class User {
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
+    }
+
+    public List<Post> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(List<Post> favorites) {
+        this.favorites = favorites;
     }
 }

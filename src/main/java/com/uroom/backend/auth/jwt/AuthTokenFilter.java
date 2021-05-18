@@ -33,6 +33,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             String jwt = parseJwt(request);
             //verifica si hay token y si es valido
+            System.out.println("que pasa perroooooo");
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
                 //se carga el userDetails desde el repositorio

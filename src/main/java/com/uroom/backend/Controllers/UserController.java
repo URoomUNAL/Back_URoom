@@ -93,8 +93,8 @@ public class UserController {
     }
 
 
-    public void mapUser(User user, UserRequest newUser){
-        user.setAge(newUser.getAge());
+    private void mapUser(User user, UserRequest newUser){
+        user.setAge( newUser.getAge().equals("") ? null : Integer.parseInt(newUser.getAge()));
         if(newUser.getCellphone() != null){
             user.setCellphone(newUser.getCellphone());
         }
@@ -105,7 +105,7 @@ public class UserController {
         if(newUser.getName() != null){
             user.setName(newUser.getName());
         }
-        user.setIs_student(newUser.isIs_student());
+        user.setIs_student(Boolean.parseBoolean(newUser.isIs_student()));
         //TODO: DESCOMENTAR PAR LA FOTO
         if(newUser.getPhoto_file() != null){
             System.out.println("FOTO RECIBIDA");
@@ -121,6 +121,7 @@ public class UserController {
             }
             newUser.setPhoto(photo);
             user.setPhoto(newUser.getPhoto());
+            user.setFavorites(newUser.getFavorites());
         }
     }
 
@@ -131,7 +132,7 @@ public class UserController {
             return new ResponseEntity<>("La contraseña debe tener un longitud entre 6 y 20.", HttpStatus.BAD_REQUEST);
         }
         if(!newUser.getPassword().matches(".*\\d.*")){
-            return new ResponseEntity<>("La contraseña debe tener al menos un numero.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("La contraseña debe tener al menos un número.", HttpStatus.BAD_REQUEST);
         }
         newUser.setPassword(encoder.encode(newUser.getPassword()));
         User user = new User();
@@ -193,7 +194,7 @@ public class UserController {
     public ResponseEntity<Object> updateInfo(@ModelAttribute UserRequest updatedUser){
         try{
             User user = userService.selectById(updatedUser.getId()).iterator().next();
-            if(user.isIs_student() != updatedUser.isIs_student()){
+            if(user.isIs_student() != Boolean.parseBoolean(updatedUser.isIs_student())){
                 return new ResponseEntity<>("No puede cambiar su rol en la aplicación", HttpStatus.BAD_REQUEST);
             }
             if(!user.getEmail().equals(updatedUser.getEmail())){
@@ -218,5 +219,8 @@ public class UserController {
         }
 
     }
+
+
+
 
 }

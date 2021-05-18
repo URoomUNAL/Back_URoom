@@ -9,28 +9,6 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
 
-/*
-class CalificationId implements Serializable {
-    private Post post;
-    private User user;
-
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-}
-*/
 @Entity
 //@IdClass(CalificationId.class)
 public class Calification {
