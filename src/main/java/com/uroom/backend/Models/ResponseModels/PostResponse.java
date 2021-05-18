@@ -1,7 +1,7 @@
-package com.uroom.backend.Models;
+package com.uroom.backend.Models.ResponseModels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import com.uroom.backend.Models.EntitiyModels.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -10,75 +10,47 @@ import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Set;
 
-@Entity
-public class Post {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+public class PostResponse {
     private int id;
-
-    @NotBlank
-    @Size(max=45)
-    @NotNull
-    @Column(name="title", nullable = false, length = 45)
     private String title;
-
-    @Size(max = 255)
-    @Column(name="description", nullable=true, length = 255)
     private String description;
-
-    @NotBlank
-    @Size(max = 45)
-    @NotNull
-    @Column(name="address", nullable=false, length = 45)
     private String address;
-
-    @NotNull
-    @Column(name="price", nullable=false)
     private int price;
-
-    @NotNull
-    @Column(name="latitude", nullable=false)
     private double latitude;
-
-    @NotNull
-    @Column(name="longitude", nullable=false)
     private double longitude;
-
-
-    @NotBlank
-    @Size(max = 255)
-    @NotNull
-    @Column(name="main_img", nullable=false, length = 255)
     private String main_img;
-
-    @Column(name = "is_active", nullable = false)
     private boolean is_active;
-
-    @Column(name = "score",nullable = true)
     private Double score;
-
-    @OneToMany(mappedBy = "post")
     private List<Image> images;
-
-    @ManyToMany(/*fetch = FetchType.EAGER, cascade = CascadeType.ALL*/)
-    @JoinTable(
-            name = "post_rule", joinColumns = {@JoinColumn(name = "post_id")},
-            inverseJoinColumns = {@JoinColumn(name = "rule_id")}
-    )
+    private List<CalificationResponse> califications;
+    private List<QuestionResponse> questions;
     private Set<Rule> rules;
-
-    @ManyToMany(/*fetch = FetchType.EAGER, cascade = CascadeType.ALL*/)
-    @JoinTable(
-            name = "post_service", joinColumns = {@JoinColumn(name = "post_id")},
-            inverseJoinColumns = {@JoinColumn(name = "service_id")}
-    )
     private Set<Service> services;
-
-    @NotNull
-    @JsonIgnore
-    @ManyToOne()
-    @JoinColumn(name = "user")
     private User user;
+
+    public PostResponse(Post post){
+        this.address = post.getAddress();
+        this.id = post.getId();
+        this.description = post.getDescription();
+        this.main_img = post.getMain_img();
+        this.images = post.getImages();
+        this.latitude = post.getLatitude();
+        this.longitude = post.getLongitude();
+        this.is_active = post.isIs_active();
+        this.rules = post.getRules();
+        this.services = post.getServices();
+        this.score = post.getScore();
+        this.price = post.getPrice();
+        this.title = post.getTitle();
+        this.user = post.getUser();
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -86,14 +58,6 @@ public class Post {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getDescription() {
@@ -144,16 +108,44 @@ public class Post {
         this.main_img = main_img;
     }
 
+    public boolean isIs_active() {
+        return is_active;
+    }
+
+    public void setIs_active(boolean is_active) {
+        this.is_active = is_active;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
     public List<Image> getImages() {
         return images;
     }
 
-    public Double getScore() { return score; }
-
-    public void setScore(Double score) { this.score = score; }
-
     public void setImages(List<Image> images) {
         this.images = images;
+    }
+
+    public List<CalificationResponse> getCalifications() {
+        return califications;
+    }
+
+    public void setCalifications(List<CalificationResponse> califications) {
+        this.califications = califications;
+    }
+
+    public List<QuestionResponse> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<QuestionResponse> questions) {
+        this.questions = questions;
     }
 
     public Set<Rule> getRules() {
@@ -170,14 +162,6 @@ public class Post {
 
     public void setServices(Set<Service> services) {
         this.services = services;
-    }
-
-    public boolean isIs_active() {
-        return is_active;
-    }
-
-    public void setIs_active(boolean is_active) {
-        this.is_active = is_active;
     }
 
     public User getUser() {

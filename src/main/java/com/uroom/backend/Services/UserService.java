@@ -1,6 +1,6 @@
 package com.uroom.backend.Services;
 
-import com.uroom.backend.Models.User;
+import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Repository.UserRepository;
 //import org.hibernate.exception.ConstraintViolationException;
 //import org.hibernate.exception.DataException;
@@ -33,7 +33,9 @@ public class UserService {
     public List<User> selectByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
+    public List<User> selectById(int id){
+        return userRepository.findById(id);
+    }
     public List<User> selectByCellphone(String key_cellphone){//Busca en los Usuarios por número celular
         return userRepository.findByCellphone(key_cellphone);
     }
@@ -53,13 +55,14 @@ public class UserService {
                 return 1;
             }
         }catch (Exception e){
+            System.out.println(e.getMessage());
             return -1;
         }
     }
 
     public boolean update(User user){
         try{
-            Iterable<User> query = selectByCellphone(user.getCellphone());
+            Iterable<User> query = userRepository.findById(user.getId());
             if(iterableEmpty(query)){// Es un nuevo usuario
                 System.out.println("No existe un usuario con ese teléfono");
                 return false;
@@ -76,7 +79,7 @@ public class UserService {
 
     public boolean delete(User user){
         try{
-            Iterable<User> query = selectByCellphone(user.getCellphone());
+            Iterable<User> query = userRepository.findById(user.getId());
             if(iterableEmpty(query)){//No existe ningun usuario para eliminar
                 System.out.println("No existe un usuario con ese teléfono");
                 return false;

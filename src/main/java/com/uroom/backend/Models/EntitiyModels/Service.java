@@ -1,4 +1,4 @@
-package com.uroom.backend.Models;
+package com.uroom.backend.Models.EntitiyModels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
-public class Rule {
+public class Service {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private int id;
@@ -21,8 +21,17 @@ public class Rule {
     private String name;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "rules")
+    @ManyToMany(mappedBy = "services")
     private Set<Post> posts;
+
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
 
     public int getId() {
         return id;
@@ -39,4 +48,6 @@ public class Rule {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }

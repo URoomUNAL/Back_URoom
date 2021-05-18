@@ -1,14 +1,13 @@
 package com.uroom.backend.Repository;
 
-import com.uroom.backend.Models.Post;
-import com.uroom.backend.Models.Rule;
-import com.uroom.backend.Models.Service;
-import com.uroom.backend.Models.User;
+import com.uroom.backend.Models.EntitiyModels.Post;
+import com.uroom.backend.Models.EntitiyModels.Rule;
+import com.uroom.backend.Models.EntitiyModels.Service;
+import com.uroom.backend.Models.EntitiyModels.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Set;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
     //List<Post> findBySomething(String something);

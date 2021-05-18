@@ -15,7 +15,7 @@ public class ServiceService {
         this.serviceRepository = serviceRepository;
     }
 
-    public com.uroom.backend.Models.Service insert(com.uroom.backend.Models.Service service){
+    public com.uroom.backend.Models.EntitiyModels.Service insert(com.uroom.backend.Models.EntitiyModels.Service service){
         try{
             return serviceRepository.save(service);
         }catch (Exception e){
@@ -23,7 +23,7 @@ public class ServiceService {
         }
     }
 
-    public com.uroom.backend.Models.Service update(com.uroom.backend.Models.Service newService){
+    public com.uroom.backend.Models.EntitiyModels.Service update(com.uroom.backend.Models.EntitiyModels.Service newService){
         try{
             return serviceRepository.save(newService);
         }catch (Exception e){
@@ -31,9 +31,9 @@ public class ServiceService {
         }
     }
 
-    public List<com.uroom.backend.Models.Service> select(){return serviceRepository.findAll();}
+    public List<com.uroom.backend.Models.EntitiyModels.Service> select(){return serviceRepository.findAll();}
 
-    public Set<com.uroom.backend.Models.Service> selectBySetNames(Set<String> serviceNames){
+    public Set<com.uroom.backend.Models.EntitiyModels.Service> selectBySetNames(Set<String> serviceNames){
         return serviceNames == null ? null : serviceRepository.findByNameIn(serviceNames);
     }
 }

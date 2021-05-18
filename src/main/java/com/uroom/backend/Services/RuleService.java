@@ -2,7 +2,7 @@ package com.uroom.backend.Services;
 
 import org.springframework.stereotype.Service;
 import com.uroom.backend.Repository.RuleRepository;
-import com.uroom.backend.Models.Rule;
+import com.uroom.backend.Models.EntitiyModels.Rule;
 import java.util.List;
 import java.util.Set;
 

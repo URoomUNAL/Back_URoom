@@ -1,14 +1,19 @@
 package com.uroom.backend.Controllers;
 
-import com.uroom.backend.Models.*;
-import com.uroom.backend.POJOS.PostPOJO;
-import com.uroom.backend.POJOS.UserPOJO;
+import com.uroom.backend.Models.EntitiyModels.*;
+import com.uroom.backend.Models.RequestModels.PostRequest;
+import com.uroom.backend.Models.RequestModels.UserRequest;
+import com.uroom.backend.Models.ResponseModels.CalificationResponse;
+import com.uroom.backend.Models.ResponseModels.PostResponse;
+import com.uroom.backend.Models.ResponseModels.QuestionResponse;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.HTML;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +29,34 @@ public class PostController {
     private final RuleService ruleService;
     private final ServiceService serviceService;
     private final UserService userService;
+    private final CalificationService calificationService;
+    private final QuestionService questionService;
 
-    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService ,ServiceService serviceService, UserService userService){
+    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService ,ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService){
         this.postService = postService;
         this.imageService = imageService;
         this.azureStorageService = azureStorageService;
         this.ruleService = ruleService;
         this.serviceService = serviceService;
         this.userService = userService;
+        this.calificationService = calificationService;
+        this.questionService = questionService;
     }
+
+    /*
+    @GetMapping("test-favorite")
+    public void testFavorite(){
+        Post myPost = this.postService.selectById(122);
+        User user = this.userService.selectById(182).get(0);
+        user.getFavorites().add(myPost);
+        userService.update(user);
+        User updatedUser = this.userService.selectById(182).get(0);
+        System.out.println("Lista de favoritos vacía?: "+updatedUser.getFavorites().isEmpty());
+        for(Post p : updatedUser.getFavorites()){
+            System.out.println(p.getId());
+        }
+    }
+    */
 
     @GetMapping("get-posts")
     public List<Post> getAll(){
@@ -40,8 +64,12 @@ public class PostController {
     }
 
     @PostMapping(path="get-my-posts", consumes = "application/json")
-    public  ResponseEntity<Object> getMyPosts(@RequestBody UserPOJO user_req){
-        List<User> users = userService.selectByEmail(user_req.getUsername());
+    public  ResponseEntity<Object> getMyPosts(@RequestBody UserRequest user_req){
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<User> users = userService.selectById(user_req.getId());
+        if(principal.getUsername()!=users.iterator().next().getEmail()){
+            return new ResponseEntity<>("Usted no tiene permisos para ver las publicaciones de esta cuenta de usuario", HttpStatus.BAD_REQUEST);
+        }
         if(users.size() == 0){
             return new ResponseEntity<>("Por favor regístrese para ver sus publicaciones.", HttpStatus.BAD_REQUEST);
         }
@@ -56,9 +84,39 @@ public class PostController {
         }
     }
 
+    @GetMapping(path="get-post")
+    public ResponseEntity<Object> getPost(@RequestParam(name = "id") int post_id){
+        Post post = postService.selectById(post_id);
+        if(post == null || !post.isIs_active()){
+            return new ResponseEntity<>("No se encontró el post", HttpStatus.BAD_REQUEST);
+        }
+        else{
+            List<Calification> califications = calificationService.selectByPost(post);
+            List<Question> questions = questionService.selectByPost(post);
+            PostResponse postResponse = new PostResponse(post);
+
+            List<CalificationResponse> calificationResponses = new ArrayList<>();
+            for(Calification calification : califications){
+                calificationResponses.add(new CalificationResponse(calification));
+            }
+
+            List<QuestionResponse> questionResponses = new ArrayList<>();
+            for(Question question : questions){
+                questionResponses.add(new QuestionResponse(question));
+            }
+            postResponse.setCalifications(calificationResponses);
+            postResponse.setQuestions(questionResponses);
+            return new ResponseEntity<>(postResponse, HttpStatus.OK);
+        }
+    }
+
     @PostMapping(path="change-active", consumes = "application/json")
-    public  ResponseEntity<Object> getMyPosts(@RequestBody PostPOJO post_req){
+    public  ResponseEntity<Object> getMyPosts(@RequestBody PostRequest post_req){
         List<Post> posts = postService.selectByAddress(post_req.getAddress());
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal.getUsername()!=posts.iterator().next().getUser().getEmail()){
+            return new ResponseEntity<>("Usted no tiene permisos para desactivar esta publicación", HttpStatus.BAD_REQUEST);
+        }
         if(posts.size() == 0){
             return new ResponseEntity<>("No existe la publicación.", HttpStatus.BAD_REQUEST);
         }
@@ -81,8 +139,41 @@ public class PostController {
         return imageService.select();
     }
 
+    @GetMapping("test-calification")
+    public Calification testCalification(){
+        Calification myCalification = new Calification();
+        myCalification.setComment("Hola soy un comentario, Buena muchacho");
+        myCalification.setScore(4.5);
+        Post post  = postService.selectById(122);
+        User user = userService.selectById(147).iterator().next();
+        System.out.println("Post: "+post.getDescription());
+        System.out.println("Usuario: "+user.getName());
+        myCalification.setPost(post);
+        myCalification.setUser(user);
+        Calification calification = calificationService.insert(myCalification);
+        System.out.println(calification.getComment());
+        return calification;
+    }
+
+
+    @GetMapping("test-question")
+    public Question testQuestion(){
+        Question myQuestion = new Question();
+        myQuestion.setQuestion("Se permiten Uribistas?");
+        myQuestion.setAnswer("Lamentablemente no");
+        Post post = postService.selectById(122);
+        System.out.println("Post: "+post.getDescription());
+        User user = userService.selectById(147).iterator().next();
+        System.out.println("Usuario: "+user.getName());
+        myQuestion.setPost(post);
+        myQuestion.setAnonymous(false);
+        myQuestion.setUser(user);
+        Question question = questionService.insert(myQuestion);
+        return question;
+    }
+
     @PostMapping(path = "add-post")
-    public ResponseEntity<Object> addPost(@ModelAttribute PostPOJO requestPost) throws IOException {
+    public ResponseEntity<Object> addPost(@ModelAttribute PostRequest requestPost) throws IOException {
         Post post = new Post();
         post.setDescription(requestPost.getDescription());
         post.setAddress(requestPost.getAddress());
@@ -91,6 +182,10 @@ public class PostController {
         post.setLongitude(requestPost.getLongitude());
         post.setTitle(requestPost.getTitle());
         User user = this.userService.selectByEmail(requestPost.getUser()).iterator().next();
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal.getUsername()!=user.getEmail()){
+            return new ResponseEntity<>("Usted no tiene permisos para registrar esta publicación", HttpStatus.BAD_REQUEST);
+        }
         if(user == null){
             System.out.println("User does not exist in the database."); // TODO: User does not exist in the database.
         }else{
@@ -169,4 +264,17 @@ public class PostController {
         return new ResponseEntity<>(rules, HttpStatus.OK);
     }
 
+    @PostMapping("add-favorite")
+    public ResponseEntity<Object> addFavorite(@RequestParam int id){
+        try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            Post post = postService.selectById(id);
+            user.getFavorites().add(post);
+            userService.update(user);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>("Usuario o Post no encontrado", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

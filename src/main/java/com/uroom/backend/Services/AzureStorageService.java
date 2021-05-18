@@ -19,7 +19,7 @@ public class AzureStorageService {
     private ResourceLoader resourceLoader;
 
     public String readBlobFile(String filename) throws IOException {
-        String link = "azure-blob://images/" + filename;
+        String link = "azure-blob://userimages/" + filename;
         Resource blobFile = resourceLoader.getResource(link);
         return StreamUtils.copyToString(
                 blobFile.getInputStream(),
@@ -27,11 +27,11 @@ public class AzureStorageService {
     }
 
     public String writeBlobFile(MultipartFile file, String filename) throws IOException {
-        String link = "azure-blob://images/" + filename;
+        String link = "azure-blob://userimages/" + filename;
         Resource blobFile = resourceLoader.getResource(link);
         try (OutputStream os = ((WritableResource) blobFile).getOutputStream()) {
             os.write(file.getBytes());
         }
-        return "https://uroom20211.blob.core.windows.net/images/" + filename;
+        return "https://uroomstorage2021.blob.core.windows.net/userimages/" + filename;
     }
 }

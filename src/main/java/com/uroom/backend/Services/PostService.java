@@ -1,13 +1,12 @@
 package com.uroom.backend.Services;
 
-import com.uroom.backend.Models.Post;
-import com.uroom.backend.Models.Rule;
-import com.uroom.backend.Models.User;
+import com.uroom.backend.Models.EntitiyModels.Post;
+import com.uroom.backend.Models.EntitiyModels.Rule;
+import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Repository.PostRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class PostService {
@@ -75,18 +74,18 @@ public class PostService {
         }
     }
 
-    public List<Post> filterAll(int minPrice, int maxPrice, double minScore, com.uroom.backend.Models.Service service, Rule rule) {
+    public List<Post> filterAll(int minPrice, int maxPrice, double minScore, com.uroom.backend.Models.EntitiyModels.Service service, Rule rule) {
         return postRepository.findPostByPriceBetweenAndScoreBetweenAndServicesAndRules(minPrice, maxPrice, minScore, 5, service, rule);
     }
-    public List<Post> filterAllNoScore(int minPrice, int maxPrice, com.uroom.backend.Models.Service service, Rule rule) {
+    public List<Post> filterAllNoScore(int minPrice, int maxPrice, com.uroom.backend.Models.EntitiyModels.Service service, Rule rule) {
         return postRepository.findPostByPriceBetweenAndAndServicesAndRules(minPrice, maxPrice, service, rule);
     }
 
-    public List<Post> filterServices(int minPrice, int maxPrice, double minScore, com.uroom.backend.Models.Service service) {
+    public List<Post> filterServices(int minPrice, int maxPrice, double minScore, com.uroom.backend.Models.EntitiyModels.Service service) {
         return postRepository.findPostByPriceBetweenAndScoreBetweenAndServices(minPrice, maxPrice, minScore, 5,  service);
     }
 
-    public List<Post> filterServicesNoScore(int minPrice, int maxPrice, com.uroom.backend.Models.Service service) {
+    public List<Post> filterServicesNoScore(int minPrice, int maxPrice, com.uroom.backend.Models.EntitiyModels.Service service) {
         return postRepository.findPostByPriceBetweenAndAndServices(minPrice, maxPrice, service);
     }
 
