@@ -32,13 +32,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
+<<<<<<< HEAD
             //verifica si hay token y si es valido
             System.out.println("que pasa perroooooo");
+=======
+>>>>>>> 38d13292b3d4f567214aac569d3cfec540b25c80
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
-                //se carga el userDetails desde el repositorio
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                //se autentica al usuario ante spring para acceder a los recursos
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -52,7 +53,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    //funcion encargada de extraer el token del header del request
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
 
