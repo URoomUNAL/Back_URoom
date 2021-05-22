@@ -51,7 +51,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     "/get-services",
                     "/get-rules",
                     "/change-active",
-                    "/get-posts"
+                    "/get-posts",
+                    "/get-post**"
             };
 
     @Override
