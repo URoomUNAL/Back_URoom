@@ -127,8 +127,9 @@ public class UserController {
         }
     }
 
-    @PostMapping(path = "/sign-up", consumes = "application/json")
-    public ResponseEntity<Object> signUp(@RequestBody UserRequest newUser) throws IOException {
+    @PostMapping(path = "/sign-up")
+    public ResponseEntity<Object> signUp(@ModelAttribute UserRequest newUser) throws IOException {
+        System.out.println("Imagen: "+(newUser.getPhoto_file() == null));
         if(newUser.getPassword().length() < 6 || newUser.getPassword().length() > 20){
             return new ResponseEntity<>("La contraseña debe tener un longitud entre 6 y 20.", HttpStatus.BAD_REQUEST);
         }
