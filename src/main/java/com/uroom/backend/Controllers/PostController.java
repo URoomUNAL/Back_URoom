@@ -43,20 +43,20 @@ public class PostController {
         this.questionService = questionService;
     }
 
-    /*
+
     @GetMapping("test-favorite")
     public void testFavorite(){
-        Post myPost = this.postService.selectById(122);
-        User user = this.userService.selectById(182).get(0);
+        Post myPost = this.postService.selectById(27);
+        User user = this.userService.selectById(30).get(0);
         user.getFavorites().add(myPost);
         userService.update(user);
-        User updatedUser = this.userService.selectById(182).get(0);
+        User updatedUser = this.userService.selectById(30).get(0);
         System.out.println("Lista de favoritos vacía?: "+updatedUser.getFavorites().isEmpty());
         for(Post p : updatedUser.getFavorites()){
             System.out.println(p.getId());
         }
     }
-    */
+
 
     @GetMapping("get-posts")
     public List<Post> getAll(){
