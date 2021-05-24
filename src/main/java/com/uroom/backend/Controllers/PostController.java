@@ -265,4 +265,16 @@ public class PostController {
             return new ResponseEntity<>("Usuario o Post no encontrado", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("get-favorites")
+    public ResponseEntity<Object> getFavorites(){
+        try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            return new ResponseEntity<>(user.getFavorites(), HttpStatus.OK);
+
+        }catch(Exception e){
+            return new ResponseEntity<>("Usuario o Post no encontrado", HttpStatus.BAD_REQUEST);
+        }
+    }
 }
