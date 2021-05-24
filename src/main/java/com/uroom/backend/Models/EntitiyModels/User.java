@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -60,8 +61,8 @@ public class User {
     @ManyToMany
     @JoinTable(
             name="Favorites",
-            joinColumns = @JoinColumn(name="post_id"),
-            inverseJoinColumns = @JoinColumn(name="user_id")
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="post_id")
     )
     private List<Post> favorites;
 
@@ -77,6 +78,10 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Question> questions;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "interestedUsers")
+    private Set<Post> interestedPosts;
 
     public User(String name, String email, String password, String cellphone, boolean is_student){
         this.cellphone = cellphone;
@@ -194,5 +199,13 @@ public class User {
 
     public void setFavorites(List<Post> favorites) {
         this.favorites = favorites;
+    }
+
+    public Set<Post> getInterestedPosts() {
+        return interestedPosts;
+    }
+
+    public void setInterestedPosts(Set<Post> interestedPosts) {
+        this.interestedPosts = interestedPosts;
     }
 }

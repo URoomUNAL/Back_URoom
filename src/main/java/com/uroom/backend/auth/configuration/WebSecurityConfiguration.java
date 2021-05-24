@@ -51,7 +51,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     "/get-services",
                     "/get-rules",
                     "/change-active",
-                    "/get-posts",
+                    "/test-favorite",
                     "/get-post**"
             };
 

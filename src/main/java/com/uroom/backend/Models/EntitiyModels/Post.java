@@ -84,6 +84,13 @@ public class Post {
     )
     private Set<Service> services;
 
+    @ManyToMany(/*fetch = FetchType.EAGER, cascade = CascadeType.ALL*/)
+    @JoinTable(
+            name = "interested", joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_name")}
+    )
+    private Set<User> interestedUsers;
+
     @NotNull
     @JsonIgnore
     @ManyToOne()
@@ -196,5 +203,13 @@ public class Post {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Set<User> getInterestedUsers() {
+        return interestedUsers;
+    }
+
+    public void setInterestedUsers(Set<User> interestedUsers) {
+        this.interestedUsers = interestedUsers;
     }
 }

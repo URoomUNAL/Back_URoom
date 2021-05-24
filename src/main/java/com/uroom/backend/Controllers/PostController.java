@@ -6,6 +6,7 @@ import com.uroom.backend.Models.RequestModels.UserRequest;
 import com.uroom.backend.Models.ResponseModels.CalificationResponse;
 import com.uroom.backend.Models.ResponseModels.PostResponse;
 import com.uroom.backend.Models.ResponseModels.QuestionResponse;
+import com.uroom.backend.Models.ResponseModels.UserResponse;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,20 +44,20 @@ public class PostController {
         this.questionService = questionService;
     }
 
-    /*
+
     @GetMapping("test-favorite")
     public void testFavorite(){
-        Post myPost = this.postService.selectById(122);
-        User user = this.userService.selectById(182).get(0);
+        Post myPost = this.postService.selectById(27);
+        User user = this.userService.selectById(30).get(0);
         user.getFavorites().add(myPost);
         userService.update(user);
-        User updatedUser = this.userService.selectById(182).get(0);
+        User updatedUser = this.userService.selectById(30).get(0);
         System.out.println("Lista de favoritos vacía?: "+updatedUser.getFavorites().isEmpty());
         for(Post p : updatedUser.getFavorites()){
             System.out.println(p.getId());
         }
     }
-    */
+
 
     @GetMapping("get-posts")
     public List<Post> getAll(){
@@ -277,4 +278,33 @@ public class PostController {
             return new ResponseEntity<>("Usuario o Post no encontrado", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("get-favorites")
+    public ResponseEntity<Object> getFavorites(){
+        try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            return new ResponseEntity<>(user.getFavorites(), HttpStatus.OK);
+
+        }catch(Exception e){
+            return new ResponseEntity<>("Usuario o Post no encontrado", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/contact-owner")
+    public ResponseEntity<Object> contact(@RequestParam int PostId){
+        try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if(principal.toString()==""){
+                return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
+            }else{
+                Post post = postService.selectById(PostId);
+                User owner = post.getUser();
+                return new ResponseEntity<>(owner.getCellphone(), HttpStatus.OK);
+            }
+        }catch(Exception e){
+            return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
