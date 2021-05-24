@@ -6,7 +6,6 @@ import com.uroom.backend.Models.RequestModels.UserRequest;
 import com.uroom.backend.Models.ResponseModels.CalificationResponse;
 import com.uroom.backend.Models.ResponseModels.PostResponse;
 import com.uroom.backend.Models.ResponseModels.QuestionResponse;
-import com.uroom.backend.Models.ResponseModels.UserResponse;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,13 +63,9 @@ public class PostController {
         return postService.selectActivePosts();
     }
 
-    @GetMapping(path="get-my-posts")
-    public  ResponseEntity<Object> getMyPosts(){
-        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<User> users = userService.selectByEmail(principal.getUsername());
-        if(!principal.getUsername().equals(users.iterator().next().getEmail())){
-            return new ResponseEntity<>("Usted no tiene permisos para ver las publicaciones de esta cuenta de usuario", HttpStatus.BAD_REQUEST);
-        }
+    @PostMapping(path="get-my-posts", consumes = "application/json")
+    public  ResponseEntity<Object> getMyPosts(@RequestBody UserRequest user_req){
+        List<User> users = userService.selectById(user_req.getId());
         if(users.size() == 0){
             return new ResponseEntity<>("Por favor regístrese para ver sus publicaciones.", HttpStatus.BAD_REQUEST);
         }
@@ -114,10 +109,6 @@ public class PostController {
     @PostMapping(path="change-active", consumes = "application/json")
     public  ResponseEntity<Object> getMyPosts(@RequestBody PostRequest post_req){
         List<Post> posts = postService.selectByAddress(post_req.getAddress());
-        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(!principal.getUsername().equals(posts.iterator().next().getUser().getEmail())){
-            return new ResponseEntity<>("Usted no tiene permisos para desactivar esta publicación", HttpStatus.BAD_REQUEST);
-        }
         if(posts.size() == 0){
             return new ResponseEntity<>("No existe la publicación.", HttpStatus.BAD_REQUEST);
         }
@@ -182,11 +173,7 @@ public class PostController {
         post.setLatitude(requestPost.getLatitude());
         post.setLongitude(requestPost.getLongitude());
         post.setTitle(requestPost.getTitle());
-        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = this.userService.selectByEmail(principal.getUsername()).iterator().next();
-        if(!principal.getUsername().equals(user.getEmail())){
-            return new ResponseEntity<>("Usted no tiene permisos para registrar esta publicación", HttpStatus.BAD_REQUEST);
-        }
+        User user = this.userService.selectByEmail(requestPost.getUser()).iterator().next();
         if(user == null){
             System.out.println("User does not exist in the database."); // TODO: User does not exist in the database.
         }else{
@@ -279,20 +266,15 @@ public class PostController {
         }
     }
 
-    @GetMapping("/contact-owner")
-    public ResponseEntity<Object> contact(@RequestParam int PostId){
+    @GetMapping("get-favorites")
+    public ResponseEntity<Object> getFavorites(){
         try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if(principal.toString()==""){
-                return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
-            }else{
-                Post post = postService.selectById(PostId);
-                User owner = post.getUser();
-                return new ResponseEntity<>(owner.getCellphone(), HttpStatus.OK);
-            }
+            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            return new ResponseEntity<>(user.getFavorites(), HttpStatus.OK);
+
         }catch(Exception e){
-            return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Usuario o Post no encontrado", HttpStatus.BAD_REQUEST);
         }
     }
-
 }
