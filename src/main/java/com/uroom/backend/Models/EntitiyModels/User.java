@@ -61,8 +61,8 @@ public class User {
     @ManyToMany
     @JoinTable(
             name="Favorites",
-            joinColumns = @JoinColumn(name="post_id"),
-            inverseJoinColumns = @JoinColumn(name="user_id")
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="post_id")
     )
     private List<Post> favorites;
 
