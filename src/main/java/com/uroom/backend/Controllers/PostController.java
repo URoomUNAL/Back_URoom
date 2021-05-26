@@ -270,8 +270,24 @@ public class PostController {
         try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            if(!user.isIs_student()) return new ResponseEntity<>("El usuario es un propietario", HttpStatus.BAD_REQUEST);
             Post post = postService.selectById(id);
             user.getFavorites().add(post);
+            userService.update(user);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>("Usuario o Post no encontrado", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("remove-favorite")
+    public ResponseEntity<Object> removeFavorite(@RequestParam int id){
+        try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            if(!user.isIs_student()) return new ResponseEntity<>("El usuario es un propietario", HttpStatus.BAD_REQUEST);
+            Post post = postService.selectById(id);
+            user.getFavorites().remove(post);
             userService.update(user);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch(Exception e){
@@ -284,6 +300,7 @@ public class PostController {
         try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            if(!user.isIs_student()) return new ResponseEntity<>("El usuario es un propietario", HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(user.getFavorites(), HttpStatus.OK);
 
         }catch(Exception e){
