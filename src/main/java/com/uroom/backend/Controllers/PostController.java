@@ -270,8 +270,24 @@ public class PostController {
         try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            if(!user.isIs_student()) return new ResponseEntity<>("El usuario es un propietario", HttpStatus.BAD_REQUEST);
             Post post = postService.selectById(id);
             user.getFavorites().add(post);
+            userService.update(user);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>("Usuario o Post no encontrado", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("remove-favorite")
+    public ResponseEntity<Object> removeFavorite(@RequestParam int id){
+        try{
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            if(!user.isIs_student()) return new ResponseEntity<>("El usuario es un propietario", HttpStatus.BAD_REQUEST);
+            Post post = postService.selectById(id);
+            user.getFavorites().remove(post);
             userService.update(user);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch(Exception e){
@@ -284,6 +300,7 @@ public class PostController {
         try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userService.selectByEmail(principal.getUsername()).iterator().next();
+            if(!user.isIs_student()) return new ResponseEntity<>("El usuario es un propietario", HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(user.getFavorites(), HttpStatus.OK);
 
         }catch(Exception e){
@@ -295,11 +312,14 @@ public class PostController {
     public ResponseEntity<Object> contact(@RequestParam int PostId){
         try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
             if(principal.toString()==""){
                 return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
             }else{
                 Post post = postService.selectById(PostId);
                 User owner = post.getUser();
+                post.getInterestedUsers().add(user);
+                postService.update(post);
                 return new ResponseEntity<>(owner.getCellphone(), HttpStatus.OK);
             }
         }catch(Exception e){
