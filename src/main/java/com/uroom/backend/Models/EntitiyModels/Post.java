@@ -85,6 +85,7 @@ public class Post {
     private Set<Service> services;
 
     @ManyToMany(/*fetch = FetchType.EAGER, cascade = CascadeType.ALL*/)
+    @JsonIgnore
     @JoinTable(
             name = "interested", joinColumns = {@JoinColumn(name = "post_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_name")}
