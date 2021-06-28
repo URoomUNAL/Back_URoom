@@ -321,11 +321,14 @@ public class PostController {
     public ResponseEntity<Object> contact(@RequestParam int PostId){
         try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
             if(principal.toString()==""){
                 return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
             }else{
                 Post post = postService.selectById(PostId);
                 User owner = post.getUser();
+                post.getInterestedUsers().add(user);
+                postService.update(post);
                 return new ResponseEntity<>(owner.getCellphone(), HttpStatus.OK);
             }
         }catch(Exception e){
