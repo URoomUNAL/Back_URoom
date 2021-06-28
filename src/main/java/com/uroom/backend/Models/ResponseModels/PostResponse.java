@@ -20,6 +20,7 @@ public class PostResponse {
     private double longitude;
     private String main_img;
     private boolean is_active;
+    private boolean is_favorite;
     private Double score;
     private List<Image> images;
     private List<CalificationResponse> califications;
@@ -111,6 +112,10 @@ public class PostResponse {
     public boolean isIs_active() {
         return is_active;
     }
+
+    public boolean isIs_favorite() { return is_favorite; }
+
+    public void setIs_favorite(boolean is_favorite) { this.is_favorite = is_favorite; }
 
     public void setIs_active(boolean is_active) {
         this.is_active = is_active;

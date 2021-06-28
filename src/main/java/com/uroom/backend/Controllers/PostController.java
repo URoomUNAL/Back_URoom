@@ -60,8 +60,17 @@ public class PostController {
 
 
     @GetMapping("get-posts")
-    public List<Post> getAll(){
-        return postService.selectActivePosts();
+    public List<PostResponse> getAll(){
+        User user = getCurrentUser();
+        List<Post> posts = postService.selectActivePosts();
+        if(user == null) return post_to_postResponse(posts);
+        List<PostResponse> postResponses = new ArrayList<>();
+        for(Post post : posts){
+            PostResponse aux = new PostResponse(post);
+            aux.setIs_favorite(user.getFavorites().contains(post));
+            postResponses.add(aux);
+        }
+        return postResponses;
     }
 
     @GetMapping(path="get-my-posts")
@@ -80,7 +89,7 @@ public class PostController {
                 return new ResponseEntity<>("Aún no tiene publicaciones.", HttpStatus.OK);
             }
             else{
-                return new ResponseEntity<>(posts, HttpStatus.OK);
+                return new ResponseEntity<>(post_to_postResponse(posts), HttpStatus.OK);
             }
         }
     }
@@ -131,8 +140,8 @@ public class PostController {
 
 
     @GetMapping("get-posts-even-no-actives")
-    public List<Post> getAllEvenNoActives(){
-        return postService.select();
+    public List<PostResponse> getAllEvenNoActives(){
+        return post_to_postResponse(postService.select());
     }
 
     @GetMapping("get-images")
@@ -324,4 +333,16 @@ public class PostController {
         }
     }
 
+    public List<PostResponse> post_to_postResponse(List<Post> posts){
+        List<PostResponse> postResponses = new ArrayList<>();
+        for(Post post : posts){
+            postResponses.add(new PostResponse(post));
+        }
+        return postResponses;
+    }
+
+    public User getCurrentUser(){
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userService.selectByEmail(principal.getUsername()).iterator().next();
+    }
 }
