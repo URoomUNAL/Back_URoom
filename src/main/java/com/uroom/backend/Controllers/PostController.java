@@ -44,7 +44,6 @@ public class PostController {
         this.questionService = questionService;
     }
 
-
     @GetMapping("test-favorite")
     public void testFavorite(){
         Post myPost = this.postService.selectById(27);
