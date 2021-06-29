@@ -344,7 +344,11 @@ public class PostController {
     }
 
     public User getCurrentUser(){
-        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userService.selectByEmail(principal.getUsername()).iterator().next();
+        try {
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return userService.selectByEmail(principal.getUsername()).iterator().next();
+        }catch(Exception e){
+            return null;
+        }
     }
 }
