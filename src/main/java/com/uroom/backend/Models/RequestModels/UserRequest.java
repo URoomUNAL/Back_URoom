@@ -4,6 +4,7 @@ import com.uroom.backend.Models.EntitiyModels.Post;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 public class UserRequest {
 
@@ -12,7 +13,7 @@ public class UserRequest {
     private String is_student;
     private List<Post> posts;
     //Información Actualizable
-    private List<Post> favorites;
+    private Set<Post> favorites;
     private String name;
     private String age;
     private String cellphone;
@@ -110,7 +111,7 @@ public class UserRequest {
         this.photo_file = photo_file;
     }
 
-    public List<Post> getFavorites() { return favorites; }
+    public Set<Post> getFavorites() { return favorites; }
 
-    public void setFavorites(List<Post> favorites) { this.favorites = favorites; }
+    public void setFavorites(Set<Post> favorites) { this.favorites = favorites; }
 }

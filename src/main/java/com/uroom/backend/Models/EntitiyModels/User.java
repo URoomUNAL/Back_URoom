@@ -64,7 +64,7 @@ public class User {
             joinColumns = @JoinColumn(name="user_id"),
             inverseJoinColumns = @JoinColumn(name="post_id")
     )
-    private List<Post> favorites;
+    private Set<Post> favorites;
 
     //Información Adicional
     //Foto foto?
@@ -193,11 +193,11 @@ public class User {
         this.questions = questions;
     }
 
-    public List<Post> getFavorites() {
+    public Set<Post> getFavorites() {
         return favorites;
     }
 
-    public void setFavorites(List<Post> favorites) {
+    public void setFavorites(Set<Post> favorites) {
         this.favorites = favorites;
     }
 
