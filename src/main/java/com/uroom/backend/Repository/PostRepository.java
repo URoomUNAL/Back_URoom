@@ -28,7 +28,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findByUser(User user);
 
 
+    //@Query(
+    //value = "select * from post where ST_Distance_Sphere( ST_GeomFromText( CONCAT('POINT(',latitude,' ', longitude,')'), 4326), ST_GeomFromText(CONCAT('POINT(', ?1, ' ', ?2 ,')'), 4326)) <= ?3 * 1000", nativeQuery = true)
     @Query(
-    value = "select * from post where ST_Distance_Sphere( ST_GeomFromText( CONCAT('POINT(',latitude,' ', longitude,')'), 4326, 'axis-order=lat-long'), ST_GeomFromText(CONCAT('POINT(', ?1, ' ', ?2 ,')'), 4326)) <= ?3 * 1000", nativeQuery = true)
+    value = "select * from post where SQRT(POWER((latitude-?1),2) + POWER((longitude-?2), 2)) * 111.1 <= ?3", nativeQuery = true)
     List<Post> filterByDistance(double latitude, double longitude, double distancia);
 }

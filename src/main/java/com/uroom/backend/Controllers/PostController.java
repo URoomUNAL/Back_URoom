@@ -119,19 +119,18 @@ public class PostController {
         }
     }
 
-    @PostMapping(path="change-active", consumes = "application/json")
-    public  ResponseEntity<Object> getMyPosts(@RequestBody PostRequest post_req){
-        List<Post> posts = postService.selectByAddress(post_req.getAddress());
+    @PostMapping(path="change-active")
+    public  ResponseEntity<Object> changeActive(@RequestParam(name = "id") int post_id){
+        Post post = postService.selectById(post_id);
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(!principal.getUsername().equals(posts.iterator().next().getUser().getEmail())){
-            return new ResponseEntity<>("Usted no tiene permisos para desactivar esta publicación", HttpStatus.BAD_REQUEST);
-        }
-        if(posts.size() == 0){
+        if(post == null){
             return new ResponseEntity<>("No existe la publicación.", HttpStatus.BAD_REQUEST);
         }
+        if(!principal.getUsername().equals(post.getUser().getEmail())){
+            return new ResponseEntity<>("Usted no tiene permisos para desactivar esta publicación", HttpStatus.BAD_REQUEST);
+        }
         else{
-            Post post = posts.iterator().next();
-            post.setIs_active(post_req.isIs_active());
+            post.setIs_active(!post.isIs_active());
             postService.update(post);
             return new ResponseEntity<>("Actualización exitosa.", HttpStatus.OK);
         }
