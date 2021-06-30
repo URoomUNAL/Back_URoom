@@ -44,7 +44,6 @@ public class PostController {
         this.questionService = questionService;
     }
 
-
     @GetMapping("test-favorite")
     public void testFavorite(){
         Post myPost = this.postService.selectById(27);
@@ -60,8 +59,17 @@ public class PostController {
 
 
     @GetMapping("get-posts")
-    public List<Post> getAll(){
-        return postService.selectActivePosts();
+    public List<PostResponse> getAll(){
+        User user = getCurrentUser();
+        List<Post> posts = postService.selectActivePosts();
+        if(user == null) return post_to_postResponse(posts);
+        List<PostResponse> postResponses = new ArrayList<>();
+        for(Post post : posts){
+            PostResponse aux = new PostResponse(post);
+            aux.setIs_favorite(user.getFavorites().contains(post));
+            postResponses.add(aux);
+        }
+        return postResponses;
     }
 
     @GetMapping(path="get-my-posts")
@@ -80,7 +88,7 @@ public class PostController {
                 return new ResponseEntity<>("Aún no tiene publicaciones.", HttpStatus.OK);
             }
             else{
-                return new ResponseEntity<>(posts, HttpStatus.OK);
+                return new ResponseEntity<>(post_to_postResponse(posts), HttpStatus.OK);
             }
         }
     }
@@ -111,19 +119,18 @@ public class PostController {
         }
     }
 
-    @PostMapping(path="change-active", consumes = "application/json")
-    public  ResponseEntity<Object> getMyPosts(@RequestBody PostRequest post_req){
-        List<Post> posts = postService.selectByAddress(post_req.getAddress());
+    @PostMapping(path="change-active")
+    public  ResponseEntity<Object> changeActive(@RequestParam(name = "id") int post_id){
+        Post post = postService.selectById(post_id);
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(!principal.getUsername().equals(posts.iterator().next().getUser().getEmail())){
-            return new ResponseEntity<>("Usted no tiene permisos para desactivar esta publicación", HttpStatus.BAD_REQUEST);
-        }
-        if(posts.size() == 0){
+        if(post == null){
             return new ResponseEntity<>("No existe la publicación.", HttpStatus.BAD_REQUEST);
         }
+        if(!principal.getUsername().equals(post.getUser().getEmail())){
+            return new ResponseEntity<>("Usted no tiene permisos para desactivar esta publicación", HttpStatus.BAD_REQUEST);
+        }
         else{
-            Post post = posts.iterator().next();
-            post.setIs_active(post_req.isIs_active());
+            post.setIs_active(!post.isIs_active());
             postService.update(post);
             return new ResponseEntity<>("Actualización exitosa.", HttpStatus.OK);
         }
@@ -131,8 +138,8 @@ public class PostController {
 
 
     @GetMapping("get-posts-even-no-actives")
-    public List<Post> getAllEvenNoActives(){
-        return postService.select();
+    public List<PostResponse> getAllEvenNoActives(){
+        return post_to_postResponse(postService.select());
     }
 
     @GetMapping("get-images")
@@ -327,4 +334,20 @@ public class PostController {
         }
     }
 
+    public List<PostResponse> post_to_postResponse(List<Post> posts){
+        List<PostResponse> postResponses = new ArrayList<>();
+        for(Post post : posts){
+            postResponses.add(new PostResponse(post));
+        }
+        return postResponses;
+    }
+
+    public User getCurrentUser(){
+        try {
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return userService.selectByEmail(principal.getUsername()).iterator().next();
+        }catch(Exception e){
+            return null;
+        }
+    }
 }

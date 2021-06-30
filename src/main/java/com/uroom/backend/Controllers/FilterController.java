@@ -24,7 +24,15 @@ public class FilterController {
         this.postService = postService;
         this.ruleService = ruleService;
     }
-
+    public List<Post> activePosts(List<Post> posts){
+        List<Post> activePosts = new ArrayList<>();
+        for(Post post : posts){
+            if(post.isIs_active()) {
+                activePosts.add(post);
+            }
+        }
+        return activePosts;
+    }
     public List<Post> completeFilterServices(List<Post> posts, Set<Service> services){
         List<Post> filteredPostByServices = new ArrayList<>();
         for(Post post : posts){
@@ -109,6 +117,7 @@ public class FilterController {
                 posts = postService.filterBasicNoScore(filterPost.getPrice().getMin(),filterPost.getPrice().getMax());
             }
         }
+        posts = activePosts(posts); // Just Active posts
         if(filterPost.getDistance().getOrigin().size() != 0) {
             List<Post> postDistance = postService.filterDistance(filterPost.getDistance().getOrigin().get(0), filterPost.getDistance().getOrigin().get(1), filterPost.getDistance().getRadius());
             List<Post> finalPost = match(postDistance, posts);
