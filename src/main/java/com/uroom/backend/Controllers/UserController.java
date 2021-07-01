@@ -4,6 +4,7 @@ package com.uroom.backend.Controllers;
 import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Models.RequestModels.LoginRequest;
 import com.uroom.backend.Models.RequestModels.PostRequest;
+import com.uroom.backend.Models.RequestModels.UpdateUserRequest;
 import com.uroom.backend.Models.ResponseModels.JwtResponse;
 import com.uroom.backend.Models.RequestModels.UserRequest;
 import com.uroom.backend.Models.ResponseModels.UserResponse;
@@ -201,8 +202,9 @@ public class UserController {
     }
 
     @PostMapping("update-info")
-    public ResponseEntity<Object> updateInfo(@ModelAttribute UserRequest updatedUser){
-        try{
+    public ResponseEntity<Object> updateInfo(@ModelAttribute UpdateUserRequest updatedUser){
+        return null;
+        /*try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userService.selectById(updatedUser.getId()).iterator().next();
 
@@ -231,7 +233,7 @@ public class UserController {
         }
         catch(Exception e){
             return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
-        }
+        }*/
 
     }
 
