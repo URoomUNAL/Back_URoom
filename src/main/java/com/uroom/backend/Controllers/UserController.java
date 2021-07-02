@@ -104,12 +104,11 @@ public class UserController {
         if(newUser.getEmail() != null){
             user.setEmail(newUser.getEmail());
         }
-        user.setPassword(newUser.getPassword());
         if(newUser.getName() != null){
             user.setName(newUser.getName());
         }
         user.setIs_student(Boolean.parseBoolean(newUser.isIs_student()));
-        //TODO: DESCOMENTAR PAR LA FOTO
+
         if(newUser.getPhoto_file() != null){
             System.out.println("FOTO RECIBIDA");
             String prefix_img = newUser.getEmail();
@@ -202,13 +201,12 @@ public class UserController {
     }
 
     @PostMapping("update-info")
-    public ResponseEntity<Object> updateInfo(@ModelAttribute UpdateUserRequest updatedUser){
-        return null;
-        /*try{
+    public ResponseEntity<Object> updateInfo(@ModelAttribute UserRequest updatedUser){
+        try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            User user = userService.selectById(updatedUser.getId()).iterator().next();
+            User user = userService.selectByEmail(updatedUser.getEmail()).iterator().next();
 
-            if(principal.getUsername()!=user.getEmail()){
+            if(!principal.getUsername().equals(user.getEmail())){
                 return new ResponseEntity<>("Usted no tiene permisos para actualizar la información de esta cuenta de usuario", HttpStatus.BAD_REQUEST);
             }
             if(user.isIs_student() != Boolean.parseBoolean(updatedUser.isIs_student())){
@@ -233,7 +231,7 @@ public class UserController {
         }
         catch(Exception e){
             return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
-        }*/
+        }
 
     }
 

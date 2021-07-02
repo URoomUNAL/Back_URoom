@@ -90,4 +90,12 @@ public class UserResponse {
     public void setIs_active(boolean is_active) {
         this.is_active = is_active;
     }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 }
