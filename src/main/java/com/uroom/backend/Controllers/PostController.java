@@ -334,6 +334,17 @@ public class PostController {
         }
     }
 
+    @GetMapping(path="get-statistics")
+    public  ResponseEntity<Object> getStatistics(int postId){
+        User user = getCurrentUser();
+        if(user == null){
+            return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
+        }else{
+            Post myPost = this.postService.selectById(postId);
+            return new ResponseEntity<>(myPost.getInterestedUsers().size(), HttpStatus.OK);
+        }
+    }
+
     public List<PostResponse> post_to_postResponse(List<Post> posts){
         List<PostResponse> postResponses = new ArrayList<>();
         for(Post post : posts){
