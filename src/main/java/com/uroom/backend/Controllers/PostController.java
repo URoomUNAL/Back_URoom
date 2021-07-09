@@ -1,20 +1,23 @@
 package com.uroom.backend.Controllers;
 
 import com.uroom.backend.Models.EntitiyModels.*;
+import com.uroom.backend.Models.POJOS.QuestionNotification;
 import com.uroom.backend.Models.RequestModels.PostRequest;
-import com.uroom.backend.Models.RequestModels.UserRequest;
 import com.uroom.backend.Models.ResponseModels.CalificationResponse;
 import com.uroom.backend.Models.ResponseModels.PostResponse;
 import com.uroom.backend.Models.ResponseModels.QuestionResponse;
-import com.uroom.backend.Models.ResponseModels.UserResponse;
 import com.uroom.backend.Services.*;
+import com.uroom.backend.auth.configuration.EmailConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.HTML;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +35,9 @@ public class PostController {
     private final UserService userService;
     private final CalificationService calificationService;
     private final QuestionService questionService;
+    private final EmailConfiguration emailConfiguration;
 
-    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService ,ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService){
+    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService, ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService, EmailConfiguration emailConfiguration){
         this.postService = postService;
         this.imageService = imageService;
         this.azureStorageService = azureStorageService;
@@ -42,6 +46,7 @@ public class PostController {
         this.userService = userService;
         this.calificationService = calificationService;
         this.questionService = questionService;
+        this.emailConfiguration = emailConfiguration;
     }
 
     @GetMapping("test-favorite")
@@ -349,5 +354,34 @@ public class PostController {
         }catch(Exception e){
             return null;
         }
+    }
+
+
+
+    //TODO: Solo una prueba para las notificaciones
+    @PostMapping("/testNotification")
+    public ResponseEntity<Object> questionNotificationTest(@RequestBody QuestionNotification questionNotification, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return new ResponseEntity<>("mal pa", HttpStatus.BAD_REQUEST);
+        }
+        //Create a mail sender
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(this.emailConfiguration.getHost());
+        mailSender.setPort(this.emailConfiguration.getPort());
+        mailSender.setUsername(this.emailConfiguration.getUsername());
+        mailSender.setPassword(this.emailConfiguration.getPassword());
+
+
+        //Create mail instance
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom(questionNotification.getEmail());
+        mailMessage.setTo("propietario@uroom.com.co");
+        mailMessage.setSubject("Nueva pregunta de: " + questionNotification.getName());
+        mailMessage.setText(questionNotification.getQuestion());
+
+
+        //send email
+        mailSender.send(mailMessage);
+        return new ResponseEntity<>("buena muchacho", HttpStatus.OK);
     }
 }

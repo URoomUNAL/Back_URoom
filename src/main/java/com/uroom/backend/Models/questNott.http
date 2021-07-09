@@ -1,0 +1,10 @@
+POST http://localhost:9000/testNotification
+Content-Type: application/json
+
+{
+  "name": "Sebastian",
+  "email": "sebas@unal.edu.co",
+  "question": "Buena muchachos"
+}
+
+###
