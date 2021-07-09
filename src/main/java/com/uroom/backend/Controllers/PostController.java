@@ -163,23 +163,6 @@ public class PostController {
         return calification;
     }
 
-
-    @GetMapping("test-question")
-    public Question testQuestion(){
-        Question myQuestion = new Question();
-        myQuestion.setQuestion("Se permiten Uribistas?");
-        myQuestion.setAnswer("Lamentablemente no");
-        Post post = postService.selectById(122);
-        System.out.println("Post: "+post.getDescription());
-        User user = userService.selectById(147).iterator().next();
-        System.out.println("Usuario: "+user.getName());
-        myQuestion.setPost(post);
-        myQuestion.setAnonymous(false);
-        myQuestion.setUser(user);
-        Question question = questionService.insert(myQuestion);
-        return question;
-    }
-
     @PostMapping(path = "add-post")
     public ResponseEntity<Object> addPost(@ModelAttribute PostRequest requestPost) throws IOException {
         Post post = new Post();
@@ -334,6 +317,12 @@ public class PostController {
         }
     }
 
+    /*
+    @PostMapping("add-answer")
+    public ResponseEntity<Object> addAnswer(@RequestParam int PostId, @RequestParam int QuestionIndex){
+
+    }
+    */
     public List<PostResponse> post_to_postResponse(List<Post> posts){
         List<PostResponse> postResponses = new ArrayList<>();
         for(Post post : posts){

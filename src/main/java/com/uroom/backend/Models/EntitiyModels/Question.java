@@ -26,12 +26,12 @@ public class Question {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "post_id", nullable = false)
     @JsonIgnore
     private Post post;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     private User user;
@@ -45,14 +45,13 @@ public class Question {
     @Column(name="question", nullable = false, length = 255)
     private String question;
 
-    @NotBlank
     @Size(max=255)
     @Column(name="answer", length = 255)
     private String answer;
 
     public int getId() { return id; }
 
-    public void setId(int id) { this.id = id; }
+    public void setId(int id) { this.id = id;}
 
     public Post getPost() {
         return post;
