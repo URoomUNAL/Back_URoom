@@ -213,4 +213,28 @@ public class Post {
     public void setInterestedUsers(Set<User> interestedUsers) {
         this.interestedUsers = interestedUsers;
     }
+
+    public List<Calification> getCalifications() {
+        return califications;
+    }
+
+    public void setCalifications(List<Calification> califications) {
+        this.califications = califications;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public List<User> getUsers_favorite() {
+        return users_favorite;
+    }
+
+    public void setUsers_favorite(List<User> users_favorite) {
+        this.users_favorite = users_favorite;
+    }
 }
