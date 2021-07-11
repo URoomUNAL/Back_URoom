@@ -351,6 +351,8 @@ public class PostController {
             calification.setUser(user);
             calification.setScore(calificationRequest.getScore());
             calification.setComment(calificationRequest.getComment());
+            calification.setPros(calificationRequest.getPros());
+            calification.setCons(calificationRequest.getCons());
             double score;
             if(post.getCalifications().size()==0){
                 score = calification.getScore();

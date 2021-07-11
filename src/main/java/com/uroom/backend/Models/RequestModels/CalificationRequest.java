@@ -6,12 +6,16 @@ public class CalificationRequest {
     private String user_username;
     private double score;
     private String comment;
+    private String pros;
+    private String cons;
 
-    public CalificationRequest(int post_id, String user_username, double score, String comment) {
+    public CalificationRequest(int post_id, String user_username, double score, String comment, String pros, String cons) {
         this.post_id = post_id;
         this.user_username = user_username;
         this.score = score;
         this.comment = comment;
+        this.pros = pros;
+        this.cons = cons;
     }
 
     public int getPost_id() {
@@ -44,5 +48,21 @@ public class CalificationRequest {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getPros() {
+        return pros;
+    }
+
+    public void setPros(String pros) {
+        this.pros = pros;
+    }
+
+    public String getCons() {
+        return cons;
+    }
+
+    public void setCons(String cons) {
+        this.cons = cons;
     }
 }

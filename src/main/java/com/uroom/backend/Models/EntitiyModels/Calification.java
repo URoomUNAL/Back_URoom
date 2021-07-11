@@ -34,6 +34,16 @@ public class Calification {
     @Column(name="comment", length = 255)
     private String comment;
 
+    @NotBlank
+    @Size(max=255)
+    @Column(name="pros", length = 255)
+    private String pros;
+
+    @NotBlank
+    @Size(max=255)
+    @Column(name="cons", length = 255)
+    private String cons;
+
     public int getId() {
         return id;
     }
@@ -72,5 +82,21 @@ public class Calification {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getPros() {
+        return pros;
+    }
+
+    public void setPros(String pros) {
+        this.pros = pros;
+    }
+
+    public String getCons() {
+        return cons;
+    }
+
+    public void setCons(String cons) {
+        this.cons = cons;
     }
 }
