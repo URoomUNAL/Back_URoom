@@ -98,6 +98,9 @@ public class Post {
     @JoinColumn(name = "user")
     private User user;
 
+    @OneToMany(mappedBy = "post")
+    private List<Visit> visits;
+
     public String getTitle() {
         return title;
     }
@@ -212,5 +215,13 @@ public class Post {
 
     public void setInterestedUsers(Set<User> interestedUsers) {
         this.interestedUsers = interestedUsers;
+    }
+
+    public List<Visit> getVisits() {
+        return visits;
+    }
+
+    public void setVisits(List<Visit> visits) {
+        this.visits = visits;
     }
 }

@@ -2,11 +2,9 @@ package com.uroom.backend.Controllers;
 
 import com.uroom.backend.Models.EntitiyModels.*;
 import com.uroom.backend.Models.RequestModels.PostRequest;
-import com.uroom.backend.Models.RequestModels.UserRequest;
 import com.uroom.backend.Models.ResponseModels.CalificationResponse;
 import com.uroom.backend.Models.ResponseModels.PostResponse;
 import com.uroom.backend.Models.ResponseModels.QuestionResponse;
-import com.uroom.backend.Models.ResponseModels.UserResponse;
 import com.uroom.backend.Services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.HTML;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 public class PostController {
@@ -32,8 +27,9 @@ public class PostController {
     private final UserService userService;
     private final CalificationService calificationService;
     private final QuestionService questionService;
+    private final VisitService visitService;
 
-    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService ,ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService){
+    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService, ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService, VisitService visitService){
         this.postService = postService;
         this.imageService = imageService;
         this.azureStorageService = azureStorageService;
@@ -42,6 +38,7 @@ public class PostController {
         this.userService = userService;
         this.calificationService = calificationService;
         this.questionService = questionService;
+        this.visitService = visitService;
     }
 
     @GetMapping("test-favorite")
@@ -98,8 +95,13 @@ public class PostController {
         Post post = postService.selectById(post_id);
         if(post == null || !post.isIs_active()){
             return new ResponseEntity<>("No se encontró el post", HttpStatus.BAD_REQUEST);
-        }
-        else{
+        }else{
+            Date date = new Date(System.currentTimeMillis());
+            Visit visit = new Visit();
+            visit.setPost(post);
+            visit.setDate(date);
+            this.visitService.insert(visit);
+
             List<Calification> califications = calificationService.selectByPost(post);
             List<Question> questions = questionService.selectByPost(post);
             PostResponse postResponse = new PostResponse(post);
@@ -115,6 +117,13 @@ public class PostController {
             }
             postResponse.setCalifications(calificationResponses);
             postResponse.setQuestions(questionResponses);
+            long DAY_IN_MS = 1000 * 60 * 60 * 24;
+            Date end = new Date();
+            Date begin = new Date(end.getTime() - (30 * DAY_IN_MS));
+            int NumberVisits = this.visitService.NumberVisits(post,begin,end);
+            postResponse.setVisits(NumberVisits);
+            postResponse.setInterested(post.getInterestedUsers().size());
+
             return new ResponseEntity<>(postResponse, HttpStatus.OK);
         }
     }
@@ -334,16 +343,6 @@ public class PostController {
         }
     }
 
-    @GetMapping(path="get-statistics")
-    public  ResponseEntity<Object> getStatistics(int postId){
-        User user = getCurrentUser();
-        if(user == null){
-            return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
-        }else{
-            Post myPost = this.postService.selectById(postId);
-            return new ResponseEntity<>(myPost.getInterestedUsers().size(), HttpStatus.OK);
-        }
-    }
 
     public List<PostResponse> post_to_postResponse(List<Post> posts){
         List<PostResponse> postResponses = new ArrayList<>();
@@ -360,5 +359,17 @@ public class PostController {
         }catch(Exception e){
             return null;
         }
+    }
+
+    @PostMapping(path = "add-visit")
+    public  ResponseEntity<Object> addVisit(@RequestParam int postId, @RequestParam int time){
+        Post myPost = this.postService.selectById(postId);
+        long DAY_IN_MS = 1000 * 60 * 60 * 24;
+        Date date = new Date(System.currentTimeMillis() - (time * DAY_IN_MS));
+        Visit visit = new Visit();
+        visit.setPost(myPost);
+        visit.setDate(date);
+        this.visitService.insert(visit);
+        return new ResponseEntity<>("Si se añadio xd", HttpStatus.OK);
     }
 }
