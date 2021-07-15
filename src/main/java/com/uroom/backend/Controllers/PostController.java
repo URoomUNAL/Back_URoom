@@ -94,14 +94,19 @@ public class PostController {
     @GetMapping(path="get-post")
     public ResponseEntity<Object> getPost(@RequestParam(name = "id") int post_id){
         Post post = postService.selectById(post_id);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(post == null || !post.isIs_active()){
             return new ResponseEntity<>("No se encontró el post", HttpStatus.BAD_REQUEST);
         }else{
-            Date date = new Date(System.currentTimeMillis());
-            Visit visit = new Visit();
-            visit.setPost(post);
-            visit.setDate(date);
-            this.visitService.insert(visit);
+            if(principal.toString().equals("anonymousUser")){
+                addVisit(post);
+            }else{
+                UserDetails userActive = (UserDetails) principal;
+                User user = this.userService.selectByEmail(userActive.getUsername()).iterator().next();
+                if(user.getId()!=post.getUser().getId()){
+                    addVisit(post);
+                }
+            }
 
             List<Calification> califications = calificationService.selectByPost(post);
             List<Question> questions = questionService.selectByPost(post);
@@ -378,5 +383,13 @@ public class PostController {
         visit.setDate(date);
         this.visitService.insert(visit);
         return new ResponseEntity<>("Si se añadio xd", HttpStatus.OK);
+    }
+
+    public void addVisit(Post post){
+        Date date = new Date(System.currentTimeMillis());
+        Visit visit = new Visit();
+        visit.setPost(post);
+        visit.setDate(date);
+        this.visitService.insert(visit);
     }
 }
