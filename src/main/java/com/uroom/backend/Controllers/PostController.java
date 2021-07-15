@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -28,8 +27,9 @@ public class PostController {
     private final CalificationService calificationService;
     private final QuestionService questionService;
     private final VisitService visitService;
+    private final InterestedService interestedService;
 
-    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService, ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService, VisitService visitService){
+    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService, ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService, VisitService visitService, InterestedService interestedService){
         this.postService = postService;
         this.imageService = imageService;
         this.azureStorageService = azureStorageService;
@@ -39,6 +39,7 @@ public class PostController {
         this.calificationService = calificationService;
         this.questionService = questionService;
         this.visitService = visitService;
+        this.interestedService = interestedService;
     }
 
     @GetMapping("test-favorite")
@@ -122,7 +123,8 @@ public class PostController {
             Date begin = new Date(end.getTime() - (30 * DAY_IN_MS));
             int NumberVisits = this.visitService.NumberVisits(post,begin,end);
             postResponse.setVisits(NumberVisits);
-            postResponse.setInterested(post.getInterestedUsers().size());
+            int NumberInterested = this.interestedService.NumberInterested(post,begin,end);
+            postResponse.setInterested(NumberInterested);
 
             return new ResponseEntity<>(postResponse, HttpStatus.OK);
         }
@@ -328,15 +330,20 @@ public class PostController {
     public ResponseEntity<Object> contact(@RequestParam int PostId){
         try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
             if(principal.toString()==""){
                 return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
             }else{
-                Post post = postService.selectById(PostId);
-                User owner = post.getUser();
-                post.getInterestedUsers().add(user);
-                postService.update(post);
-                return new ResponseEntity<>(owner.getCellphone(), HttpStatus.OK);
+                Post post = this.postService.selectById(PostId);
+                User interestedUser = this.userService.selectByEmail(principal.getUsername()).iterator().next();
+                Date date = new Date(System.currentTimeMillis());
+                InterestedKey id = new InterestedKey(interestedUser.getId(),post.getId());
+                Interested interested = new Interested(id,interestedUser,post,date);
+                this.interestedService.insert(interested);
+                post.getInterestedUsers().add(interested);
+                this.postService.update(post);
+                interestedUser.getInterestedPosts().add(interested);
+                this.userService.update(interestedUser);
+                return new ResponseEntity<>(post.getUser().getCellphone(), HttpStatus.OK);
             }
         }catch(Exception e){
             return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);

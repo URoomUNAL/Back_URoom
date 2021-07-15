@@ -9,6 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface VisitRepository extends JpaRepository<Visit, Integer> {
-    List<Visit> findByPostAndAndDateBetween(Post post, Date begin, Date end);
+    List<Visit> findByPostAndDateBetween(Post post, Date begin, Date end);
 
 }

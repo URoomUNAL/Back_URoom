@@ -30,7 +30,7 @@ public class VisitService {
     }
 
     public int NumberVisits(Post post, Date begin, Date end){
-        return visitRepository.findByPostAndAndDateBetween(post,begin,end).size();
+        return visitRepository.findByPostAndDateBetween(post,begin,end).size();
     }
 
 }

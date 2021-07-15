@@ -1,5 +1,7 @@
 package com.uroom.backend.Models.EntitiyModels;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -13,6 +15,7 @@ public class Visit {
 
     @ManyToOne()
     @NotNull
+    @JsonIgnore
     @JoinColumn(name = "post")
     private Post post;
 
