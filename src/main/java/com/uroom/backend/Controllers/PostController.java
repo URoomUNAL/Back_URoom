@@ -13,12 +13,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -356,11 +361,8 @@ public class PostController {
         }
     }
 
-
-
-    //TODO: Solo una prueba para las notificaciones
     @PostMapping("/testNotification")
-    public ResponseEntity<Object> questionNotificationTest(@RequestBody QuestionNotification questionNotification, BindingResult bindingResult){
+    public ResponseEntity<Object> questionNotificationTest(@RequestBody QuestionNotification questionNotification, BindingResult bindingResult) throws MessagingException, UnsupportedEncodingException {
         if(bindingResult.hasErrors()){
             return new ResponseEntity<>("mal pa", HttpStatus.BAD_REQUEST);
         }
@@ -372,16 +374,55 @@ public class PostController {
         mailSender.setPassword(this.emailConfiguration.getPassword());
 
 
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
         //Create mail instance
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom(questionNotification.getEmail());
-        mailMessage.setTo("propietario@uroom.com.co");
-        mailMessage.setSubject("Nueva pregunta de: " + questionNotification.getName());
-        mailMessage.setText(questionNotification.getQuestion());
+        //SimpleMailMessage mailMessage = new SimpleMailMessage();
+        helper.setFrom(questionNotification.getEmail(), "URoom");
+        helper.setTo("sdelgadom@unal.edu.co");
+        helper.setSubject("Nueva pregunta de: " + questionNotification.getName());
 
-
+        String content = "\n" +
+                "<style>\n" +
+                "@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Jost:wght@200&family=Knewave&family=Permanent+Marker&family=Trade+Winds&display=swap');\n" +
+                "</style>\n" +
+                "\n" +
+                "<h3 style=\"font-family:'Permanent Marker', cursive; display: inline\"> Tienes una nueva pregunta en una de tus publicaciones: </h3>\n" +
+                "<div style=\"\n" +
+                "  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);\n" +
+                "  transition: 0.3s;\n" +
+                "  background-color: #670071\">\n" +
+                "  \n" +
+                "  <div style=\"padding: 16px;\">\n" +
+                "    <h3 style=\"font-family:'Jost', cursive;\n" +
+                "              display: inline;\n" +
+                "              color: white;\n" +
+                "              \"> "+questionNotification.getName() + " pregunta: </h3>\n" +
+                "  \n" +
+                "  \n" +
+                "  </div>\n" +
+                "  \n" +
+                "  \n" +
+                "  <div style=\"padding: 2px 16px;\n" +
+                "              background-color: #FFFF\">\n" +
+                "    <p>" + questionNotification.getQuestion() + "</p>\n" +
+                "      <button style = \"background-color: #670071;\n" +
+                "                       color: white;\n" +
+                "                       padding: 10px;\n" +
+                "                       border-radius: 10%;\n" +
+                "                       font-family:'Jost', cursive;\">\n" +
+                "                       <h3 style = \"margin: 0px 20px\">\n" +
+                "                          Responder                 \n" +
+                "                       </h3>\n" +
+                "      \n" +
+                "    </button>\n" +
+                "  </div>\n" +
+                "  \n" +
+                "</div>\n";
+        helper.setText(content, true);
         //send email
-        mailSender.send(mailMessage);
+        mailSender.send(message);
         return new ResponseEntity<>("buena muchacho", HttpStatus.OK);
     }
 }
