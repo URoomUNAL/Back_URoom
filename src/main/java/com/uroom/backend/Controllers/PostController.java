@@ -361,6 +361,47 @@ public class PostController {
         }
     }
 
+    public String template_question(String name, String question){
+        String content = "\n" +
+                "<style>\n" +
+                "@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Jost:wght@200&family=Knewave&family=Permanent+Marker&family=Trade+Winds&display=swap');\n" +
+                "</style>\n" +
+                "\n" +
+                "<h3 style=\"font-family:'Permanent Marker', cursive; display: inline\"> Tienes una nueva pregunta en una de tus publicaciones: </h3>\n" +
+                "<div style=\"\n" +
+                "  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);\n" +
+                "  transition: 0.3s;\n" +
+                "  background-color: #670071\">\n" +
+                "  \n" +
+                "  <div style=\"padding: 16px;\">\n" +
+                "    <h3 style=\"font-family:'Jost', cursive;\n" +
+                "              display: inline;\n" +
+                "              color: white;\n" +
+                "              \"> "+ name + " pregunta: </h3>\n" +
+                "  \n" +
+                "  \n" +
+                "  </div>\n" +
+                "  \n" +
+                "  \n" +
+                "  <div style=\"padding: 2px 16px;\n" +
+                "              background-color: #FFFF\">\n" +
+                "    <p>" + question + "</p>\n" +
+                "      <button style = \"background-color: #670071;\n" +
+                "                       color: white;\n" +
+                "                       padding: 10px;\n" +
+                "                       border-radius: 10%;\n" +
+                "                       font-family:'Jost', cursive;\">\n" +
+                "                       <h3 style = \"margin: 0px 20px\">\n" +
+                "                          Responder                 \n" +
+                "                       </h3>\n" +
+                "      \n" +
+                "    </button>\n" +
+                "  </div>\n" +
+                "  \n" +
+                "</div>\n";
+        return content;
+    }
+
     @PostMapping("/testNotification")
     public ResponseEntity<Object> questionNotificationTest(@RequestBody QuestionNotification questionNotification, BindingResult bindingResult) throws MessagingException, UnsupportedEncodingException {
         if(bindingResult.hasErrors()){
@@ -383,44 +424,7 @@ public class PostController {
         helper.setTo("sdelgadom@unal.edu.co");
         helper.setSubject("Nueva pregunta de: " + questionNotification.getName());
 
-        String content = "\n" +
-                "<style>\n" +
-                "@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Jost:wght@200&family=Knewave&family=Permanent+Marker&family=Trade+Winds&display=swap');\n" +
-                "</style>\n" +
-                "\n" +
-                "<h3 style=\"font-family:'Permanent Marker', cursive; display: inline\"> Tienes una nueva pregunta en una de tus publicaciones: </h3>\n" +
-                "<div style=\"\n" +
-                "  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);\n" +
-                "  transition: 0.3s;\n" +
-                "  background-color: #670071\">\n" +
-                "  \n" +
-                "  <div style=\"padding: 16px;\">\n" +
-                "    <h3 style=\"font-family:'Jost', cursive;\n" +
-                "              display: inline;\n" +
-                "              color: white;\n" +
-                "              \"> "+questionNotification.getName() + " pregunta: </h3>\n" +
-                "  \n" +
-                "  \n" +
-                "  </div>\n" +
-                "  \n" +
-                "  \n" +
-                "  <div style=\"padding: 2px 16px;\n" +
-                "              background-color: #FFFF\">\n" +
-                "    <p>" + questionNotification.getQuestion() + "</p>\n" +
-                "      <button style = \"background-color: #670071;\n" +
-                "                       color: white;\n" +
-                "                       padding: 10px;\n" +
-                "                       border-radius: 10%;\n" +
-                "                       font-family:'Jost', cursive;\">\n" +
-                "                       <h3 style = \"margin: 0px 20px\">\n" +
-                "                          Responder                 \n" +
-                "                       </h3>\n" +
-                "      \n" +
-                "    </button>\n" +
-                "  </div>\n" +
-                "  \n" +
-                "</div>\n";
-        helper.setText(content, true);
+        helper.setText(template_question(questionNotification.getName(), questionNotification.getQuestion()), true);
         //send email
         mailSender.send(message);
         return new ResponseEntity<>("buena muchacho", HttpStatus.OK);
