@@ -123,13 +123,6 @@ public class PostController {
             }
             postResponse.setCalifications(calificationResponses);
             postResponse.setQuestions(questionResponses);
-            long DAY_IN_MS = 1000 * 60 * 60 * 24;
-            Date end = new Date();
-            Date begin = new Date(end.getTime() - (30 * DAY_IN_MS));
-            int NumberVisits = this.visitService.NumberVisits(post,begin,end);
-            postResponse.setVisits(NumberVisits);
-            int NumberInterested = this.interestedService.NumberInterested(post,begin,end);
-            postResponse.setInterested(NumberInterested);
 
             return new ResponseEntity<>(postResponse, HttpStatus.OK);
         }
@@ -359,7 +352,16 @@ public class PostController {
     public List<PostResponse> post_to_postResponse(List<Post> posts){
         List<PostResponse> postResponses = new ArrayList<>();
         for(Post post : posts){
-            postResponses.add(new PostResponse(post));
+            PostResponse postResp = new PostResponse(post);
+            long DAY_IN_MS = 1000 * 60 * 60 * 24;
+            Date end = new Date();
+            Date begin = new Date(end.getTime() - (30 * DAY_IN_MS));
+            int NumberVisits = this.visitService.NumberVisits(post,begin,end);
+            postResp.setVisits(NumberVisits);
+            int NumberInterested = this.interestedService.NumberInterested(post,begin,end);
+            postResp.setInterested(NumberInterested);
+            postResponses.add(postResp);
+
         }
         return postResponses;
     }
