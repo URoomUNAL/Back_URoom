@@ -19,7 +19,7 @@ public class EmailService {
     private final EmailConfiguration emailConfiguration;
     @Value("${uroom.info-mail-sender}")
     private String from;
-    @Value("${uroom.info-mail-sender-name")
+    @Value("${uroom.info-mail-sender-name}")
     private String personal;
 
 
