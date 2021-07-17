@@ -1,7 +1,18 @@
 package com.uroom.backend.auth.configuration;
 
+import com.uroom.backend.Models.POJOS.Email_type;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.thymeleaf.templateresolver.ITemplateResolver;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 
 @Component
 public class EmailConfiguration {
@@ -32,7 +43,6 @@ public class EmailConfiguration {
     public void setPort(int port) {
         this.port = port;
     }
-
     public String getUsername() {
         return username;
     }
@@ -49,3 +59,5 @@ public class EmailConfiguration {
         this.password = password;
     }
 }
+
+
