@@ -1,7 +1,9 @@
 package com.uroom.backend.Services;
 
+import com.uroom.backend.Models.EntitiyModels.Post;
 import com.uroom.backend.Models.EntitiyModels.Rent;
 import com.uroom.backend.Models.EntitiyModels.Rent.Status;
+import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Repository.RentRepository;
 import org.springframework.stereotype.Service;
 
@@ -51,20 +53,29 @@ public class RentService {
         }
     }
 
-    public List<Rent> selectByUser_id(int user_id){
+    public List<Rent> selectByUser(User user){
         try{
-            return rentRepository.findByUser_id(user_id);
+            return rentRepository.findByUser(user);
         }catch (Exception e){
-            System.out.println("Error al buscar los arriendos del usuario "+user_id);
+            System.out.println("Error al buscar los arriendos del usuario "+user);
             return null;
         }
     }
 
-    public List<Rent> selectByPost_id(int post_id){
+    public List<Rent> selectByPost(Post post){
         try{
-            return rentRepository.findByPost_id(post_id);
+            return rentRepository.findByPost(post);
         }catch (Exception e){
-            System.out.println("Error al seleccionar los arriendos asociados al post "+post_id);
+            System.out.println("Error al seleccionar los arriendos asociados al post "+post);
+            return null;
+        }
+    }
+
+    public List<Rent> selectByPostAndStatus(Post post, Status status){
+        try{
+            return rentRepository.findByPostAndStatus(post, status);
+        }catch (Exception e){
+            System.out.println("Error al seleccionar los arriendos asociados al post y status"+post);
             return null;
         }
     }

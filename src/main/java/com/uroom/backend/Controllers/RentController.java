@@ -8,8 +8,14 @@ import com.uroom.backend.Services.RentService;
 import com.uroom.backend.Services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.time.LocalDate;
 
 @Controller
 public class RentController {
@@ -23,17 +29,78 @@ public class RentController {
         this.postService = postService;
     }
 
+    @PostMapping
+    public ResponseEntity<Object> rent_post(@RequestParam(name="id") int post_id){
+        Post post = this.postService.selectById(post_id);
+        User authenticaded_user = getCurrentUser();
+        if(authenticaded_user == null){
+            return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
+        }else {
+            User user = post.getUser();
+            if(user.getId()!=authenticaded_user.getId()){
+                return new ResponseEntity<>("El usuario autenticado no corresponde con el propietario", HttpStatus.BAD_REQUEST);
+            }
+            else{
+                Rent myRent = new Rent();
+                myRent.setUser(user);
+                myRent.setPost(post);
+                myRent.setStatus(Rent.Status.RENT);
+                myRent.setBegin(LocalDate.now());
+                this.rentService.insert(myRent);
+                return new ResponseEntity<>("Habitación arrendada satisfactoriamente", HttpStatus.OK);
+            }
+        }
+    }
+
+
+    @PostMapping
+    public ResponseEntity<Object> unrent_post(@RequestParam(name="id") int post_id){
+        Post post = this.postService.selectById(post_id);
+        User authenticaded_user = getCurrentUser();
+        if(authenticaded_user == null){
+            return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
+        }else {
+            User user = post.getUser();
+            if(user.getId()!=authenticaded_user.getId()){
+                return new ResponseEntity<>("El usuario autenticado no corresponde con el propietario", HttpStatus.BAD_REQUEST);
+            }
+            else{
+                Rent rented = this.rentService.selectByPostAndStatus(post, Rent.Status.RENT).get(0);
+                rented.setUser(user);
+                rented.setPost(post);
+                rented.setStatus(Rent.Status.ENDED);
+                rented.setBegin(LocalDate.now());
+                this.rentService.insert(rented);
+                return new ResponseEntity<>("Habitación arrendada satisfactoriamente", HttpStatus.OK);
+            }
+        }
+    }
+
     @GetMapping("test-rent")
     public ResponseEntity<Object> testRent(){
         try {
             Rent myRent = new Rent();
-            User user = userService.selectById(17).get(0);
-            Post post = postService.selectById(21);
+            User user = userService.selectById(21).get(0);
+            Post post = postService.selectById(29);
             myRent.setUser(user);
             myRent.setPost(post);
-            return new ResponseEntity<Object>(rentService.insert(myRent), HttpStatus.CREATED);
+            myRent.setStatus(Rent.Status.RENT);
+            myRent.setBegin(LocalDate.now());
+
+            this.rentService.insert(myRent);
+            return new ResponseEntity<Object>("buena muchacho", HttpStatus.CREATED);
         }catch (Exception e){
+            System.out.println(e);
             return new ResponseEntity<Object>("Hubo un problema en la prueba, gg", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public User getCurrentUser(){
+        try {
+            UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return userService.selectByEmail(principal.getUsername()).iterator().next();
+        }catch(Exception e){
+            return null;
         }
     }
 }

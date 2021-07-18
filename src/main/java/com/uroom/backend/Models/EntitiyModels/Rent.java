@@ -31,7 +31,7 @@ public class Rent {
     @Column(name = "begin", columnDefinition = "DATE")
     private LocalDate begin;
 
-    @Column(name = "begin", columnDefinition = "DATE")
+    @Column(name = "end", columnDefinition = "DATE")
     private LocalDate end;
 
     public int getId() {

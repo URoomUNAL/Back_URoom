@@ -57,6 +57,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     "/update-question",
                     "/update-answer",
                     "/test-question",
+                    "/test-rent",
                     "/get-post**"
             };
 
