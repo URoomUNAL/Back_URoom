@@ -29,8 +29,8 @@ public class RentController {
         this.postService = postService;
     }
 
-    @PostMapping
-    public ResponseEntity<Object> rent_post(@RequestParam(name="id") int post_id){
+    @PostMapping("rent-post")
+    public ResponseEntity<Object> rent_post(@RequestParam(name="post_id") int post_id, @RequestParam(name="student_id") Integer student_id){
         Post post = this.postService.selectById(post_id);
         User authenticaded_user = getCurrentUser();
         if(authenticaded_user == null){
@@ -41,19 +41,27 @@ public class RentController {
                 return new ResponseEntity<>("El usuario autenticado no corresponde con el propietario", HttpStatus.BAD_REQUEST);
             }
             else{
-                Rent myRent = new Rent();
-                myRent.setUser(user);
-                myRent.setPost(post);
-                myRent.setStatus(Rent.Status.RENT);
-                myRent.setBegin(LocalDate.now());
-                this.rentService.insert(myRent);
-                return new ResponseEntity<>("Habitación arrendada satisfactoriamente", HttpStatus.OK);
+                try{
+                    Rent myRent = new Rent();
+                    if(student_id != null){
+                        User student = this.userService.selectById(student_id).get(0);
+                        myRent.setUser(student);
+                    }
+                    myRent.setPost(post);
+                    myRent.setStatus(Rent.Status.RENT);
+                    myRent.setBegin(LocalDate.now());
+                    this.rentService.insert(myRent);
+                    return new ResponseEntity<>("Habitación arrendada satisfactoriamente", HttpStatus.OK);
+                }catch (Exception e){
+                    System.out.println(e);
+                    return new ResponseEntity<>("No se encontró el estudiante", HttpStatus.BAD_REQUEST);
+                }
             }
         }
     }
 
 
-    @PostMapping
+    @PostMapping("unrent-post")
     public ResponseEntity<Object> unrent_post(@RequestParam(name="id") int post_id){
         Post post = this.postService.selectById(post_id);
         User authenticaded_user = getCurrentUser();
