@@ -70,7 +70,7 @@ public class RentController {
 
 
     @PostMapping("unrent-post")
-    public ResponseEntity<Object> unrent_post(@RequestParam(name="id") int post_id){
+    public ResponseEntity<Object> unrent_post(@RequestParam(name="post_id") int post_id){
         Post post = this.postService.selectById(post_id);
         User authenticaded_user = getCurrentUser();
         if(authenticaded_user == null){
@@ -82,12 +82,10 @@ public class RentController {
             }
             else{
                 Rent rented = this.rentService.selectByPostAndStatus(post, Rent.Status.RENT).get(0);
-                rented.setUser(user);
-                rented.setPost(post);
                 rented.setStatus(Rent.Status.ENDED);
-                rented.setBegin(LocalDate.now());
+                rented.setEnd(LocalDate.now());
                 this.rentService.insert(rented);
-                return new ResponseEntity<>("Habitación arrendada satisfactoriamente", HttpStatus.OK);
+                return new ResponseEntity<>("Habitación desarrendada satisfactoriamente", HttpStatus.OK);
             }
         }
     }
