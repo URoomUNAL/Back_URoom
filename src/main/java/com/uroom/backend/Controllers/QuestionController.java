@@ -53,7 +53,7 @@ public class QuestionController {
             newQuestion.setQuestion(questionRequest.getQuestion());
             Question addedQuestion = questionService.insert(newQuestion);
             try{
-                emailService.send_question_email(post.getUser().getEmail(), user.getName(), addedQuestion.getQuestion());
+                emailService.send_question_email(post.getUser().getEmail(), user.getName(), addedQuestion.getQuestion(), post.getId());
             }catch(Exception e){
                 new ResponseEntity<>("No pudimos enviar correo de notificación", HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -150,7 +150,7 @@ public class QuestionController {
         if(bindingResult.hasErrors()){
             return new ResponseEntity<>("mal pa", HttpStatus.BAD_REQUEST);
         }
-        emailService.send_question_email(questionNotification.getEmail(), questionNotification.getName(), questionNotification.getQuestion());
+        emailService.send_question_email(questionNotification.getEmail(), questionNotification.getName(), questionNotification.getQuestion(), 17);
 
         return new ResponseEntity<>("buena muchacho", HttpStatus.OK);
     }

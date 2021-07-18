@@ -21,6 +21,8 @@ public class EmailService {
     private String from;
     @Value("${uroom.info-mail-sender-name}")
     private String personal;
+    @Value("${uroom.frontend-url}")
+    private String link;
 
 
     public EmailService(TemplateEngine templateEngine, JavaMailSenderImpl mailSender, EmailConfiguration emailConfiguration) {
@@ -34,7 +36,7 @@ public class EmailService {
     }
 
 
-    public void send_question_email(String to, String who, String question) throws MessagingException, UnsupportedEncodingException {
+    public void send_question_email(String to, String who, String question, int post_id) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = this.mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
@@ -47,6 +49,7 @@ public class EmailService {
         Context context = new Context();
         context.setVariable("name", who);
         context.setVariable("question", question);
+        context.setVariable("link", this.link + "Post/" + post_id);
         String process = templateEngine.process("question-template.html", context);
         helper.setText(process, true);
         this.mailSender.send(message);
