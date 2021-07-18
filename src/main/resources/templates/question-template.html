@@ -1,0 +1,33 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../static/css/fonts.css" th:href="@{css/fonts.css}">
+        <link rel="stylesheet" type="text/css" href="../static/css/bootstrap-vue.css" th:href="@{css/bootstrap-vue.css}">
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200&display=swap');
+        </style>
+        <style th:insert="../static/css/bootstrap-vue.css"/>
+        <style th:insert="../static/css/uroom-styles.css"/>
+        <style th:insert="../static/css/fonts.css"/>
+
+    </head>
+    <body>
+        <div class = "container">
+            <div class="col">
+                <div class="row">
+                    <div class="card text-left" style="min-width: 100%;">
+                        <div class ="card-body">
+                            <h4 class = "title primary" style="display:inline-block !important;"><strong>URoom te informa que tienes una nueva pregunta de&nbsp;:&nbsp; </strong></h4><h4 style="display:inline-block !important;" th:text = "${name}"></h4>
+                            <p class = "card-text">
+                                <strong th:text="${question}"></strong>
+                            </p>
+                            <a class = "btn btn-primary" th:href="${link}">
+                               <strong> Responder </strong>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

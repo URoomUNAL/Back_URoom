@@ -40,9 +40,9 @@ public class PostController {
     private final UserService userService;
     private final CalificationService calificationService;
     private final QuestionService questionService;
-    private final EmailConfiguration emailConfiguration;
 
-    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService, ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService, EmailConfiguration emailConfiguration){
+
+    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService, ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService){
         this.postService = postService;
         this.imageService = imageService;
         this.azureStorageService = azureStorageService;
@@ -51,7 +51,6 @@ public class PostController {
         this.userService = userService;
         this.calificationService = calificationService;
         this.questionService = questionService;
-        this.emailConfiguration = emailConfiguration;
     }
 
     @GetMapping("test-favorite")
@@ -348,74 +347,5 @@ public class PostController {
         }catch(Exception e){
             return null;
         }
-    }
-
-    public String template_question(String name, String question){
-        String content = "\n" +
-                "<style>\n" +
-                "@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Jost:wght@200&family=Knewave&family=Permanent+Marker&family=Trade+Winds&display=swap');\n" +
-                "</style>\n" +
-                "\n" +
-                "<h3 style=\"font-family:'Permanent Marker', cursive; display: inline\"> Tienes una nueva pregunta en una de tus publicaciones: </h3>\n" +
-                "<div style=\"\n" +
-                "  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);\n" +
-                "  transition: 0.3s;\n" +
-                "  background-color: #670071\">\n" +
-                "  \n" +
-                "  <div style=\"padding: 16px;\">\n" +
-                "    <h3 style=\"font-family:'Jost', cursive;\n" +
-                "              display: inline;\n" +
-                "              color: white;\n" +
-                "              \"> "+ name + " pregunta: </h3>\n" +
-                "  \n" +
-                "  \n" +
-                "  </div>\n" +
-                "  \n" +
-                "  \n" +
-                "  <div style=\"padding: 2px 16px;\n" +
-                "              background-color: #FFFF\">\n" +
-                "    <p>" + question + "</p>\n" +
-                "      <button style = \"background-color: #670071;\n" +
-                "                       color: white;\n" +
-                "                       padding: 10px;\n" +
-                "                       border-radius: 10%;\n" +
-                "                       font-family:'Jost', cursive;\">\n" +
-                "                       <h3 style = \"margin: 0px 20px\">\n" +
-                "                          Responder                 \n" +
-                "                       </h3>\n" +
-                "      \n" +
-                "    </button>\n" +
-                "  </div>\n" +
-                "  \n" +
-                "</div>\n";
-        return content;
-    }
-
-    @PostMapping("/testNotification")
-    public ResponseEntity<Object> questionNotificationTest(@RequestBody QuestionNotification questionNotification, BindingResult bindingResult) throws MessagingException, UnsupportedEncodingException {
-        if(bindingResult.hasErrors()){
-            return new ResponseEntity<>("mal pa", HttpStatus.BAD_REQUEST);
-        }
-        //Create a mail sender
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(this.emailConfiguration.getHost());
-        mailSender.setPort(this.emailConfiguration.getPort());
-        mailSender.setUsername(this.emailConfiguration.getUsername());
-        mailSender.setPassword(this.emailConfiguration.getPassword());
-
-
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-
-        //Create mail instance
-        //SimpleMailMessage mailMessage = new SimpleMailMessage();
-        helper.setFrom(questionNotification.getEmail(), "URoom");
-        helper.setTo("sdelgadom@unal.edu.co");
-        helper.setSubject("Nueva pregunta de: " + questionNotification.getName());
-
-        helper.setText(template_question(questionNotification.getName(), questionNotification.getQuestion()), true);
-        //send email
-        mailSender.send(message);
-        return new ResponseEntity<>("buena muchacho", HttpStatus.OK);
     }
 }

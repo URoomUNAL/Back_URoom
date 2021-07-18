@@ -3,27 +3,41 @@ package com.uroom.backend.Controllers;
 import com.uroom.backend.Models.EntitiyModels.Post;
 import com.uroom.backend.Models.EntitiyModels.Question;
 import com.uroom.backend.Models.EntitiyModels.User;
+import com.uroom.backend.Models.POJOS.EmailPOJO;
+import com.uroom.backend.Models.POJOS.Email_type;
+import com.uroom.backend.Models.POJOS.QuestionNotification;
 import com.uroom.backend.Models.RequestModels.QuestionRequest;
 import com.uroom.backend.Models.ResponseModels.QuestionResponse;
+import com.uroom.backend.Services.EmailService;
 import com.uroom.backend.Services.PostService;
 import com.uroom.backend.Services.QuestionService;
 import com.uroom.backend.Services.UserService;
+import com.uroom.backend.auth.configuration.EmailConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 public class QuestionController {
     private QuestionService questionService;
     private PostService postService;
     private UserService userService;
+    private final EmailService emailService;
 
-    public QuestionController(QuestionService questionService, PostService postService, UserService userService) {
+    public QuestionController(QuestionService questionService, PostService postService, UserService userService, EmailConfiguration emailConfiguration, EmailService emailService) {
         this.questionService = questionService;
         this.postService = postService;
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @PostMapping("add-question")
@@ -38,6 +52,12 @@ public class QuestionController {
             newQuestion.setAnonymous(questionRequest.isAnonymous());
             newQuestion.setQuestion(questionRequest.getQuestion());
             Question addedQuestion = questionService.insert(newQuestion);
+            try{
+                emailService.send_question_email(post.getUser().getEmail(), user.getName(), addedQuestion.getQuestion(), post.getId());
+            }catch(Exception e){
+                new ResponseEntity<>("No pudimos enviar correo de notificación", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
             return new ResponseEntity<>(new QuestionResponse(addedQuestion), HttpStatus.CREATED);
         }catch(Exception e){
             return new ResponseEntity<>("Algo salio mal al agregar la pregunta, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -120,5 +140,18 @@ public class QuestionController {
         }catch(Exception e){
             return null;
         }
+    }
+
+
+
+    //public sendEmail(question)
+    @PostMapping("/testNotification")
+    public ResponseEntity<Object> questionNotificationTest(@RequestBody QuestionNotification questionNotification, BindingResult bindingResult) throws MessagingException, UnsupportedEncodingException {
+        if(bindingResult.hasErrors()){
+            return new ResponseEntity<>("mal pa", HttpStatus.BAD_REQUEST);
+        }
+        emailService.send_question_email(questionNotification.getEmail(), questionNotification.getName(), questionNotification.getQuestion(), 17);
+
+        return new ResponseEntity<>("buena muchacho", HttpStatus.OK);
     }
 }
