@@ -335,7 +335,7 @@ public class PostController {
         }
     }
 
-    @GetMapping("rate-posts")
+    @PostMapping("rate-post")
     public ResponseEntity<Object> ratePost(@RequestBody CalificationRequest calificationRequest){
         User authenticaded_user = getCurrentUser();
         if(authenticaded_user == null){
@@ -362,7 +362,7 @@ public class PostController {
             post.setScore(score);
             post.getCalifications().add(calification);
             postService.update(post);
-            return new ResponseEntity<>("El post fue calificado satisfactoriamente", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("El post fue calificado satisfactoriamente", HttpStatus.OK);
         }
     }
 
