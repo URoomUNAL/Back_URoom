@@ -2,6 +2,7 @@ package com.uroom.backend.Controllers;
 
 import com.uroom.backend.Models.EntitiyModels.*;
 import com.uroom.backend.Models.POJOS.QuestionNotification;
+import com.uroom.backend.Models.RequestModels.CalificationRequest;
 import com.uroom.backend.Models.RequestModels.PostRequest;
 import com.uroom.backend.Models.ResponseModels.CalificationResponse;
 import com.uroom.backend.Models.ResponseModels.PostResponse;
@@ -332,6 +333,38 @@ public class PostController {
 
     }
     */
+
+    @PostMapping("rate-post")
+    public ResponseEntity<Object> ratePost(@RequestBody CalificationRequest calificationRequest){
+        User authenticaded_user = getCurrentUser();
+        if(authenticaded_user == null){
+            return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
+        }else{
+            User user = this.userService.selectByEmail(calificationRequest.getUser_username()).iterator().next();
+            if(user.getId()!=authenticaded_user.getId()){
+                return new ResponseEntity<>("El usuario autenticado no corresponde con el calificador", HttpStatus.BAD_REQUEST);
+            }
+            Post post = postService.selectById(calificationRequest.getPost_id());
+            Calification calification = new Calification();
+            calification.setPost(post);
+            calification.setUser(user);
+            calification.setScore(calificationRequest.getScore());
+            calification.setComment(calificationRequest.getComment());
+            calification.setPros(calificationRequest.getPros());
+            calification.setCons(calificationRequest.getCons());
+            double score;
+            if(post.getCalifications().size()==0){
+                score = calification.getScore();
+            }else{
+                score = ((post.getScore() * post.getCalifications().size()) + calification.getScore())/(post.getCalifications().size() + 1);
+            }
+            post.setScore(score);
+            post.getCalifications().add(calification);
+            postService.update(post);
+            return new ResponseEntity<>("El post fue calificado satisfactoriamente", HttpStatus.OK);
+        }
+    }
+
     public List<PostResponse> post_to_postResponse(List<Post> posts){
         List<PostResponse> postResponses = new ArrayList<>();
         for(Post post : posts){
