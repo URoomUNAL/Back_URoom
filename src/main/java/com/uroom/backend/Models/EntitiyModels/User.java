@@ -13,7 +13,6 @@ import java.util.Set;
 @Entity
 public class User {
 
-    //TODO: AÑADIR FOTO
     //Información Básica y Obligatoria
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -67,7 +66,6 @@ public class User {
     private Set<Post> favorites;
 
     //Información Adicional
-    //Foto foto?
     //Ennumerate Gustos
 
     @Column(name="photo")
