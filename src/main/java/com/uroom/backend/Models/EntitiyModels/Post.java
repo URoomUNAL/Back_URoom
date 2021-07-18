@@ -84,19 +84,18 @@ public class Post {
     )
     private Set<Service> services;
 
-    @ManyToMany(/*fetch = FetchType.EAGER, cascade = CascadeType.ALL*/)
+    @OneToMany(mappedBy = "post")
     @JsonIgnore
-    @JoinTable(
-            name = "interested", joinColumns = {@JoinColumn(name = "post_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_name")}
-    )
-    private Set<User> interestedUsers;
+    private Set<Interested> interestedUsers;
 
     @NotNull
     @JsonIgnore
     @ManyToOne()
     @JoinColumn(name = "user")
     private User user;
+
+    @OneToMany(mappedBy = "post")
+    private List<Visit> visits;
 
     public String getTitle() {
         return title;
@@ -206,11 +205,11 @@ public class Post {
         this.user = user;
     }
 
-    public Set<User> getInterestedUsers() {
+    public Set<Interested> getInterestedUsers() {
         return interestedUsers;
     }
 
-    public void setInterestedUsers(Set<User> interestedUsers) {
+    public void setInterestedUsers(Set<Interested> interestedUsers) {
         this.interestedUsers = interestedUsers;
     }
 
@@ -236,5 +235,13 @@ public class Post {
 
     public void setUsers_favorite(List<User> users_favorite) {
         this.users_favorite = users_favorite;
+    }
+
+    public List<Visit> getVisits() {
+        return visits;
+    }
+
+    public void setVisits(List<Visit> visits) {
+        this.visits = visits;
     }
 }

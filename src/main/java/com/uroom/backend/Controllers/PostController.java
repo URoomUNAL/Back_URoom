@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
 @RestController
 public class PostController {
@@ -41,9 +43,11 @@ public class PostController {
     private final UserService userService;
     private final CalificationService calificationService;
     private final QuestionService questionService;
+    private final VisitService visitService;
+    private final InterestedService interestedService;
 
 
-    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService, ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService){
+    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService, ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService, VisitService visitService, InterestedService interestedService){
         this.postService = postService;
         this.imageService = imageService;
         this.azureStorageService = azureStorageService;
@@ -52,6 +56,8 @@ public class PostController {
         this.userService = userService;
         this.calificationService = calificationService;
         this.questionService = questionService;
+        this.visitService = visitService;
+        this.interestedService = interestedService;
     }
 
     @GetMapping("test-favorite")
@@ -106,10 +112,20 @@ public class PostController {
     @GetMapping(path="get-post")
     public ResponseEntity<Object> getPost(@RequestParam(name = "id") int post_id){
         Post post = postService.selectById(post_id);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(post == null || !post.isIs_active()){
             return new ResponseEntity<>("No se encontró el post", HttpStatus.BAD_REQUEST);
-        }
-        else{
+        }else{
+            if(principal.toString().equals("anonymousUser")){
+                addVisit(post);
+            }else{
+                UserDetails userActive = (UserDetails) principal;
+                User user = this.userService.selectByEmail(userActive.getUsername()).iterator().next();
+                if(user.getId()!=post.getUser().getId()){
+                    addVisit(post);
+                }
+            }
+
             List<Calification> califications = calificationService.selectByPost(post);
             List<Question> questions = questionService.selectByPost(post);
             PostResponse postResponse = new PostResponse(post);
@@ -125,6 +141,7 @@ public class PostController {
             }
             postResponse.setCalifications(calificationResponses);
             postResponse.setQuestions(questionResponses);
+
             return new ResponseEntity<>(postResponse, HttpStatus.OK);
         }
     }
@@ -312,15 +329,20 @@ public class PostController {
     public ResponseEntity<Object> contact(@RequestParam int PostId){
         try{
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            User user = userService.selectByEmail(principal.getUsername()).iterator().next();
             if(principal.toString()==""){
                 return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
             }else{
-                Post post = postService.selectById(PostId);
-                User owner = post.getUser();
-                post.getInterestedUsers().add(user);
-                postService.update(post);
-                return new ResponseEntity<>(owner.getCellphone(), HttpStatus.OK);
+                Post post = this.postService.selectById(PostId);
+                User interestedUser = this.userService.selectByEmail(principal.getUsername()).iterator().next();
+                Date date = new Date(System.currentTimeMillis());
+                InterestedKey id = new InterestedKey(interestedUser.getId(),post.getId());
+                Interested interested = new Interested(id,interestedUser,post,date);
+                this.interestedService.insert(interested);
+                post.getInterestedUsers().add(interested);
+                this.postService.update(post);
+                interestedUser.getInterestedPosts().add(interested);
+                this.userService.update(interestedUser);
+                return new ResponseEntity<>(post.getUser().getCellphone(), HttpStatus.OK);
             }
         }catch(Exception e){
             return new ResponseEntity<>("Usuario no encontrado", HttpStatus.BAD_REQUEST);
@@ -368,7 +390,16 @@ public class PostController {
     public List<PostResponse> post_to_postResponse(List<Post> posts){
         List<PostResponse> postResponses = new ArrayList<>();
         for(Post post : posts){
-            postResponses.add(new PostResponse(post));
+            PostResponse postResp = new PostResponse(post);
+            long DAY_IN_MS = 1000 * 60 * 60 * 24;
+            Date end = new Date();
+            Date begin = new Date(end.getTime() - (30 * DAY_IN_MS));
+            int NumberVisits = this.visitService.NumberVisits(post,begin,end);
+            postResp.setVisits(NumberVisits);
+            int NumberInterested = this.interestedService.NumberInterested(post,begin,end);
+            postResp.setInterested(NumberInterested);
+            postResponses.add(postResp);
+
         }
         return postResponses;
     }
@@ -380,5 +411,25 @@ public class PostController {
         }catch(Exception e){
             return null;
         }
+    }
+
+    @PostMapping(path = "add-visit")
+    public  ResponseEntity<Object> addVisit(@RequestParam int postId, @RequestParam int time){
+        Post myPost = this.postService.selectById(postId);
+        long DAY_IN_MS = 1000 * 60 * 60 * 24;
+        Date date = new Date(System.currentTimeMillis() - (time * DAY_IN_MS));
+        Visit visit = new Visit();
+        visit.setPost(myPost);
+        visit.setDate(date);
+        this.visitService.insert(visit);
+        return new ResponseEntity<>("Si se añadio xd", HttpStatus.OK);
+    }
+
+    public void addVisit(Post post){
+        Date date = new Date(System.currentTimeMillis());
+        Visit visit = new Visit();
+        visit.setPost(post);
+        visit.setDate(date);
+        this.visitService.insert(visit);
     }
 }
