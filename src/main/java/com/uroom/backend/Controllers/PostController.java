@@ -4,12 +4,10 @@ import com.uroom.backend.Models.EntitiyModels.*;
 import com.uroom.backend.Models.POJOS.QuestionNotification;
 import com.uroom.backend.Models.RequestModels.CalificationRequest;
 import com.uroom.backend.Models.RequestModels.PostRequest;
-import com.uroom.backend.Models.ResponseModels.CalificationResponse;
-import com.uroom.backend.Models.ResponseModels.PostResponse;
-import com.uroom.backend.Models.ResponseModels.QuestionResponse;
-import com.uroom.backend.Models.ResponseModels.UserResponse;
+import com.uroom.backend.Models.ResponseModels.*;
 import com.uroom.backend.Services.*;
 import com.uroom.backend.auth.configuration.EmailConfiguration;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -21,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import reactor.util.function.Tuple2;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -358,10 +357,9 @@ public class PostController {
         }else{
             Post post = this.postService.selectById(post_id);
             List<Interested> interesteds = this.interestedService.selectByPost(post);
-            List<String> interested_users = new ArrayList<>();
+            List<UserInterestedResponse> interested_users = new ArrayList<>();
             for (Interested interested : interesteds){
-                User curr = interested.getUser();
-                interested_users.add(interested.getUser().getName());
+                boolean add = interested_users.add(new UserInterestedResponse(interested.getUser()));
             }
             return new ResponseEntity<>(interested_users, HttpStatus.OK);
         }
