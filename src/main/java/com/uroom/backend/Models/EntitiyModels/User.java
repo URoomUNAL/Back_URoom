@@ -17,6 +17,7 @@ public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
+
     @Column(name="name", nullable=false, length = 60)
     @Size(max = 60)
     @NotNull
@@ -78,8 +79,8 @@ public class User {
     private List<Question> questions;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "interestedUsers")
-    private Set<Post> interestedPosts;
+    @OneToMany(mappedBy = "user")
+    private Set<Interested> interestedPosts;
 
     public User(String name, String email, String password, String cellphone, boolean is_student){
         this.cellphone = cellphone;
@@ -199,11 +200,11 @@ public class User {
         this.favorites = favorites;
     }
 
-    public Set<Post> getInterestedPosts() {
+    public Set<Interested> getInterestedPosts() {
         return interestedPosts;
     }
 
-    public void setInterestedPosts(Set<Post> interestedPosts) {
+    public void setInterestedPosts(Set<Interested> interestedPosts) {
         this.interestedPosts = interestedPosts;
     }
 }
