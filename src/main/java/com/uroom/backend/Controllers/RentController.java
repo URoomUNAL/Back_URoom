@@ -85,7 +85,7 @@ public class RentController {
                 rented.setStatus(Rent.Status.ENDED);
                 rented.setEnd(LocalDate.now());
                 this.rentService.insert(rented);
-                return new ResponseEntity<>("Habitación desarrendada satisfactoriamente", HttpStatus.OK);
+                return new ResponseEntity<>(rented.getUser(), HttpStatus.OK);
             }
         }
     }
