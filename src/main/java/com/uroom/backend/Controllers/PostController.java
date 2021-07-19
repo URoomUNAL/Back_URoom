@@ -1,35 +1,21 @@
 package com.uroom.backend.Controllers;
 
 import com.uroom.backend.Models.EntitiyModels.*;
-import com.uroom.backend.Models.POJOS.QuestionNotification;
 import com.uroom.backend.Models.RequestModels.CalificationRequest;
 import com.uroom.backend.Models.RequestModels.PostRequest;
 import com.uroom.backend.Models.ResponseModels.*;
 import com.uroom.backend.Services.*;
-import com.uroom.backend.auth.configuration.EmailConfiguration;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMailMessage;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import reactor.util.function.Tuple2;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -45,9 +31,10 @@ public class PostController {
     private final QuestionService questionService;
     private final VisitService visitService;
     private final InterestedService interestedService;
+    private final RentService rentService;
 
 
-    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService, ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService, VisitService visitService, InterestedService interestedService){
+    public PostController(PostService postService, ImageService imageService, AzureStorageService azureStorageService, RuleService ruleService, ServiceService serviceService, UserService userService, CalificationService calificationService, QuestionService questionService, VisitService visitService, InterestedService interestedService, RentService rentService){
         this.postService = postService;
         this.imageService = imageService;
         this.azureStorageService = azureStorageService;
@@ -58,6 +45,7 @@ public class PostController {
         this.questionService = questionService;
         this.visitService = visitService;
         this.interestedService = interestedService;
+        this.rentService = rentService;
     }
 
     @GetMapping("test-favorite")
@@ -413,6 +401,8 @@ public class PostController {
             postResp.setVisits(NumberVisits);
             int NumberInterested = this.interestedService.NumberInterested(post,begin,end);
             postResp.setInterested(NumberInterested);
+            List<Rent> rented = this.rentService.selectByPostAndStatus(post, Rent.Status.RENT);
+            postResp.setIs_rented(rented.size() > 0);
             postResponses.add(postResp);
 
         }
