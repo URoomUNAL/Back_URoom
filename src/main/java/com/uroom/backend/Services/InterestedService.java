@@ -33,4 +33,8 @@ public class InterestedService {
     public int NumberInterested(Post post, Date begin, Date end){
         return interestedRepository.findByPostAndDateBetween(post,begin,end).size();
     }
+
+    public List<Interested> selectByPost(Post post){
+        return interestedRepository.findByPost(post);
+    }
 }

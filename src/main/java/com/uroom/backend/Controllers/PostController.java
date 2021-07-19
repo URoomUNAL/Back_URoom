@@ -7,6 +7,7 @@ import com.uroom.backend.Models.RequestModels.PostRequest;
 import com.uroom.backend.Models.ResponseModels.CalificationResponse;
 import com.uroom.backend.Models.ResponseModels.PostResponse;
 import com.uroom.backend.Models.ResponseModels.QuestionResponse;
+import com.uroom.backend.Models.ResponseModels.UserResponse;
 import com.uroom.backend.Services.*;
 import com.uroom.backend.auth.configuration.EmailConfiguration;
 import org.springframework.http.HttpStatus;
@@ -349,6 +350,22 @@ public class PostController {
         }
     }
 
+    @GetMapping("get-interested-users")
+    public ResponseEntity<Object> getInterestedUsers(@RequestParam(name = "post_id") int post_id){
+        User authenticaded_user = getCurrentUser();
+        if(authenticaded_user == null){
+            return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
+        }else{
+            Post post = this.postService.selectById(post_id);
+            List<Interested> interesteds = this.interestedService.selectByPost(post);
+            List<String> interested_users = new ArrayList<>();
+            for (Interested interested : interesteds){
+                User curr = interested.getUser();
+                interested_users.add(interested.getUser().getName());
+            }
+            return new ResponseEntity<>(interested_users, HttpStatus.OK);
+        }
+    }
     /*
     @PostMapping("add-answer")
     public ResponseEntity<Object> addAnswer(@RequestParam int PostId, @RequestParam int QuestionIndex){

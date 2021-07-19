@@ -14,7 +14,6 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 public class UserResponse {
-    //TODO: AÑADIR TOKEN, IMÁGEN
     private int id;
     private String name;
     private String email;
