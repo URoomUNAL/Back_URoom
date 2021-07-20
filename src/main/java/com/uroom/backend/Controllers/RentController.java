@@ -128,4 +128,24 @@ public class RentController {
             return null;
         }
     }
+
+    @PostMapping("rate-student")
+    public ResponseEntity<Object> rateStudent(@RequestParam(name="rent_id") int rent_id, @RequestParam(name="score") int score){
+        User authenticaded_user = getCurrentUser();
+        if(authenticaded_user == null){
+            return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
+        }else {
+            Rent rent = rentService.selectById(rent_id);
+            if(rent.getEnd()!=null){
+                rent.setStudentScore((double) score);
+                rentService.update(rent);
+                User user = rent.getUser();
+                user.setScore(rentService.getStudentScore(user));
+                userService.update(user);
+                return new ResponseEntity<>("La calificación fue satisfactoria", HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>("El usuario no puede ser calificado actualmente", HttpStatus.BAD_REQUEST);
+            }
+        }
+    }
 }
