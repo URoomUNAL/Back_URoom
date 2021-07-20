@@ -15,12 +15,16 @@ public class CalificationResponse {
     private String user_name;
     private double score;
     private String comment;
+    private String pros;
+    private String cons;
 
     public CalificationResponse(Calification calification){
         this.id = calification.getId();
         this.user_name = calification.getUser().getName();
         this.score = calification.getScore();
         this.comment = calification.getComment();
+        this.pros = calification.getPros();
+        this.cons = calification.getCons();
     }
 
     public int getId() {
@@ -54,4 +58,12 @@ public class CalificationResponse {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+    public String getPros() { return pros; }
+
+    public void setPros(String pros) { this.pros = pros; }
+
+    public String getCons() { return cons; }
+
+    public void setCons(String cons) { this.cons = cons; }
 }
