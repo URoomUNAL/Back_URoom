@@ -36,6 +36,7 @@ public class RentController {
         this.rentService = rentService;
         this.userService = userService;
         this.postService = postService;
+        this.calificationService = calificationService;
     }
 
     @PostMapping("rent-post")
@@ -73,6 +74,7 @@ public class RentController {
 
     @PostMapping("unrent-post")
     public ResponseEntity<Object> unrent_post(@RequestParam(name="post_id") int post_id){
+        System.out.println("Estoy en unrent");
         Post post = this.postService.selectById(post_id);
         User authenticaded_user = getCurrentUser();
         if(authenticaded_user == null){
@@ -95,26 +97,6 @@ public class RentController {
         }
     }
 
-    @GetMapping("test-rent")
-    public ResponseEntity<Object> testRent(){
-        try {
-            Rent myRent = new Rent();
-            User user = userService.selectById(21).get(0);
-            Post post = postService.selectById(29);
-            myRent.setUser(user);
-            myRent.setPost(post);
-            myRent.setStatus(Rent.Status.RENT);
-            myRent.setBegin(LocalDate.now());
-            this.rentService.insert(myRent);
-            return new ResponseEntity<Object>("buena muchacho", HttpStatus.CREATED);
-
-        }catch (Exception e){
-            System.out.println(e);
-            return new ResponseEntity<Object>("Hubo un problema en la prueba, gg", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
     @GetMapping("get-rated")
     public ResponseEntity<Object> getRatedRooms(){
         try{
@@ -122,9 +104,8 @@ public class RentController {
             List<Rent> rents = rentService.selectByUser(user);
             List<PostRentResponse> posts = new ArrayList<PostRentResponse>();
             for(Rent rent : rents){
-                Post aux = rent.getPost();
-                PostRentResponse ratedPost = new PostRentResponse(aux);
-                for(Calification calification : calificationService.selectByPost(aux)){
+                PostRentResponse ratedPost = new PostRentResponse(rent.getPost());
+                for(Calification calification : calificationService.selectByPost(rent.getPost())){
                     if(calification.getUser().getId() == user.getId()){
                         ratedPost.setIs_rated(true);
                         ratedPost.setCalification(new CalificationResponse(calification));
@@ -135,7 +116,7 @@ public class RentController {
             }
             return  new ResponseEntity<Object>(posts, HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<Object>("Hubo un problema buscando las habitaciones calificadas.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Object>("Hubo un problema buscando las habitaciones rentadas.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
