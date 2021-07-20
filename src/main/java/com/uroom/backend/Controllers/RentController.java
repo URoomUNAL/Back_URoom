@@ -6,6 +6,7 @@ import com.uroom.backend.Models.EntitiyModels.Rent;
 import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Models.ResponseModels.CalificationResponse;
 import com.uroom.backend.Models.ResponseModels.PostRentResponse;
+import com.uroom.backend.Models.ResponseModels.UserResponse;
 import com.uroom.backend.Services.CalificationService;
 import com.uroom.backend.Services.PostService;
 import com.uroom.backend.Services.RentService;
@@ -58,6 +59,7 @@ public class RentController {
                     myRent.setPost(post);
                     myRent.setStatus(Rent.Status.RENT);
                     myRent.setBegin(LocalDate.now());
+                    post.setIs_active(false);
                     this.rentService.insert(myRent);
                     return new ResponseEntity<>("Habitación arrendada satisfactoriamente", HttpStatus.OK);
                 }catch (Exception e){
@@ -84,8 +86,11 @@ public class RentController {
                 Rent rented = this.rentService.selectByPostAndStatus(post, Rent.Status.RENT).get(0);
                 rented.setStatus(Rent.Status.ENDED);
                 rented.setEnd(LocalDate.now());
+                post.setIs_active(true);
                 this.rentService.insert(rented);
-                return new ResponseEntity<>(rented.getUser(), HttpStatus.OK);
+                UserResponse userResponse = new UserResponse(rented.getUser());
+                userResponse.setActual_rent_id(rented.getId());
+                return new ResponseEntity<>(userResponse, HttpStatus.OK);
             }
         }
     }
