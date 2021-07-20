@@ -28,6 +28,8 @@ public class PostResponse {
     private Set<Rule> rules;
     private Set<Service> services;
     private User user;
+    private int visits;
+    private int interested;
 
     public PostResponse(Post post){
         this.address = post.getAddress();
@@ -175,5 +177,21 @@ public class PostResponse {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public int getVisits() {
+        return visits;
+    }
+
+    public void setVisits(int visits) {
+        this.visits = visits;
+    }
+
+    public int getInterested() {
+        return interested;
+    }
+
+    public void setInterested(int interested) {
+        this.interested = interested;
     }
 }

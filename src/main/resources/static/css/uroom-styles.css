@@ -1,0 +1,69 @@
+.btn {
+    letter-spacing: 0.5px;
+    padding-right: 1.3rem;
+    padding-left: 1.3rem;
+    border-radius: 1.5rem;
+}
+
+.form-control {
+    letter-spacing: 0.5px;
+    padding-right: 1.3rem;
+    padding-left: 1.3rem;
+    border-radius: 1.5rem;
+}
+
+.primary {
+    color: var(--primary) !important;
+}
+
+.secondary {
+    color: var(--secondary) !important;
+}
+
+.white {
+    color: #FFFFFF !important;
+}
+
+.form-width {
+    max-width: 75%;
+}
+
+.rounded {
+    border-radius: 0.9rem !important;
+}
+
+.carousel-control-prev, .carousel-control-next {
+    background-color: #464646b3;
+    width: 10%;
+}
+
+
+.card {
+    margin-bottom: 10px;
+    border-radius: 20px;
+}
+h2, h4 {
+    color: var(--primary);
+}
+.modal-dialog > .modal-content{
+    background-color: #ffffff !important;
+    border-radius: 20px;
+}
+
+
+
+.card {
+    margin-bottom: 10px;
+    border-radius: 20px;
+}
+h4 {
+    color: var(--primary);
+}
+
+
+.carousel .item {
+    height: 200px;
+}
+.toast, .b-toast{
+    max-width: 100% !important;
+}

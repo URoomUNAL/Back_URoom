@@ -52,6 +52,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     "/get-rules",
                     "/change-active",
                     "/test-favorite",
+                    "/add-question",
+                    "/remove-question",
+                    "/update-question",
+                    "/update-answer",
+                    "/test-question",
+                    "/testNotification",
+                    "/test-rent",
                     "/get-post**"
             };
 
