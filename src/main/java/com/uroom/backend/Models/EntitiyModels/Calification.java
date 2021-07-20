@@ -34,12 +34,10 @@ public class Calification {
     @Column(name="comment", length = 255)
     private String comment;
 
-    @NotBlank
     @Size(max=255)
     @Column(name="pros", length = 255)
     private String pros;
 
-    @NotBlank
     @Size(max=255)
     @Column(name="cons", length = 255)
     private String cons;
