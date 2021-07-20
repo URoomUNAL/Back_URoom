@@ -54,4 +54,23 @@ public class EmailService {
         helper.setText(process, true);
         this.mailSender.send(message);
     }
+
+
+    public void send_rent_email(String to, String who, int post_id) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = this.mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        //Create mail instance
+        //SimpleMailMessage mailMessage = new SimpleMailMessage();
+        helper.setFrom(from, personal);
+        helper.setTo(to);
+        helper.setSubject("Felicidades por tu nueva habitación");
+
+        Context context = new Context();
+        context.setVariable("name", who);
+        context.setVariable("link", this.link + "Post/" + post_id);
+        String process = templateEngine.process("rent-template.html", context);
+        helper.setText(process, true);
+        this.mailSender.send(message);
+    }
 }
