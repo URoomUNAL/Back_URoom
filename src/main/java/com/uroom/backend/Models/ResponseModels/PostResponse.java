@@ -112,11 +112,11 @@ public class PostResponse {
         this.main_img = main_img;
     }
 
-    public boolean isIs_active() {
+    public boolean getIs_active() {
         return is_active;
     }
 
-    public boolean isIs_favorite() { return is_favorite; }
+    public boolean getIs_favorite() { return is_favorite; }
 
     public void setIs_favorite(boolean is_favorite) { this.is_favorite = is_favorite; }
 
@@ -196,7 +196,7 @@ public class PostResponse {
         this.interested = interested;
     }
 
-    public boolean isIs_rented() {
+    public boolean getIs_rented() {
         return is_rented;
     }
 
