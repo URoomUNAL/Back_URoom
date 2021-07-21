@@ -105,6 +105,8 @@ public class RentController {
             List<PostRentResponse> posts = new ArrayList<PostRentResponse>();
             for(Rent rent : rents){
                 PostRentResponse ratedPost = new PostRentResponse(rent.getPost());
+                ratedPost.setRent_id(rent.getId());
+                ratedPost.setRent_status(rent.getStatus().toString());
                 for(Calification calification : calificationService.selectByPost(rent.getPost())){
                     if(calification.getUser().getId() == user.getId()){
                         ratedPost.setIs_rated(true);
