@@ -10,4 +10,5 @@ import java.util.List;
 
 public interface InterestedRepository extends JpaRepository<Interested, InterestedKey> {
     List<Interested> findByPostAndDateBetween(Post post, Date begin, Date end);
+    List<Interested> findByPost(Post post);
 }

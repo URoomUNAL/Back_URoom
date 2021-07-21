@@ -6,6 +6,7 @@ import com.uroom.backend.Models.EntitiyModels.Rent;
 import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Models.ResponseModels.CalificationResponse;
 import com.uroom.backend.Models.ResponseModels.PostRentResponse;
+import com.uroom.backend.Models.ResponseModels.UserResponse;
 import com.uroom.backend.Services.CalificationService;
 import com.uroom.backend.Services.PostService;
 import com.uroom.backend.Services.RentService;
@@ -35,6 +36,7 @@ public class RentController {
         this.rentService = rentService;
         this.userService = userService;
         this.postService = postService;
+        this.calificationService = calificationService;
     }
 
     @PostMapping("rent-post")
@@ -58,6 +60,7 @@ public class RentController {
                     myRent.setPost(post);
                     myRent.setStatus(Rent.Status.RENT);
                     myRent.setBegin(LocalDate.now());
+                    post.setIs_active(false);
                     this.rentService.insert(myRent);
                     return new ResponseEntity<>("Habitación arrendada satisfactoriamente", HttpStatus.OK);
                 }catch (Exception e){
@@ -71,6 +74,7 @@ public class RentController {
 
     @PostMapping("unrent-post")
     public ResponseEntity<Object> unrent_post(@RequestParam(name="post_id") int post_id){
+        System.out.println("Estoy en unrent");
         Post post = this.postService.selectById(post_id);
         User authenticaded_user = getCurrentUser();
         if(authenticaded_user == null){
@@ -84,31 +88,14 @@ public class RentController {
                 Rent rented = this.rentService.selectByPostAndStatus(post, Rent.Status.RENT).get(0);
                 rented.setStatus(Rent.Status.ENDED);
                 rented.setEnd(LocalDate.now());
+                post.setIs_active(true);
                 this.rentService.insert(rented);
-                return new ResponseEntity<>("Habitación desarrendada satisfactoriamente", HttpStatus.OK);
+                UserResponse userResponse = new UserResponse(rented.getUser());
+                userResponse.setActual_rent_id(rented.getId());
+                return new ResponseEntity<>(userResponse, HttpStatus.OK);
             }
         }
     }
-
-    @GetMapping("test-rent")
-    public ResponseEntity<Object> testRent(){
-        try {
-            Rent myRent = new Rent();
-            User user = userService.selectById(21).get(0);
-            Post post = postService.selectById(29);
-            myRent.setUser(user);
-            myRent.setPost(post);
-            myRent.setStatus(Rent.Status.RENT);
-            myRent.setBegin(LocalDate.now());
-            this.rentService.insert(myRent);
-            return new ResponseEntity<Object>("buena muchacho", HttpStatus.CREATED);
-
-        }catch (Exception e){
-            System.out.println(e);
-            return new ResponseEntity<Object>("Hubo un problema en la prueba, gg", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
 
     @GetMapping("get-rated")
     public ResponseEntity<Object> getRatedRooms(){
@@ -117,9 +104,10 @@ public class RentController {
             List<Rent> rents = rentService.selectByUser(user);
             List<PostRentResponse> posts = new ArrayList<PostRentResponse>();
             for(Rent rent : rents){
-                Post aux = rent.getPost();
-                PostRentResponse ratedPost = new PostRentResponse(aux);
-                for(Calification calification : calificationService.selectByPost(aux)){
+                PostRentResponse ratedPost = new PostRentResponse(rent.getPost());
+                ratedPost.setRent_id(rent.getId());
+                ratedPost.setRent_status(rent.getStatus().toString());
+                for(Calification calification : calificationService.selectByPost(rent.getPost())){
                     if(calification.getUser().getId() == user.getId()){
                         ratedPost.setIs_rated(true);
                         ratedPost.setCalification(new CalificationResponse(calification));
@@ -130,7 +118,7 @@ public class RentController {
             }
             return  new ResponseEntity<Object>(posts, HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<Object>("Hubo un problema buscando las habitaciones calificadas.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Object>("Hubo un problema buscando las habitaciones rentadas.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -140,6 +128,26 @@ public class RentController {
             return userService.selectByEmail(principal.getUsername()).iterator().next();
         }catch(Exception e){
             return null;
+        }
+    }
+
+    @PostMapping("rate-student")
+    public ResponseEntity<Object> rateStudent(@RequestParam(name="rent_id") int rent_id, @RequestParam(name="score") int score){
+        User authenticaded_user = getCurrentUser();
+        if(authenticaded_user == null){
+            return new ResponseEntity<>("El usuario no se encuentra autenticado", HttpStatus.BAD_REQUEST);
+        }else {
+            Rent rent = rentService.selectById(rent_id);
+            if(rent.getEnd()!=null){
+                rent.setStudentScore((double) score);
+                rentService.update(rent);
+                User user = rent.getUser();
+                user.setScore(rentService.getStudentScore(user));
+                userService.update(user);
+                return new ResponseEntity<>("La calificación fue satisfactoria", HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>("El usuario no puede ser calificado actualmente", HttpStatus.BAD_REQUEST);
+            }
         }
     }
 }

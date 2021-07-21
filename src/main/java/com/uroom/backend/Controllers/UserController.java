@@ -108,7 +108,9 @@ public class UserController {
             user.setName(newUser.getName());
         }
         user.setIs_student(Boolean.parseBoolean(newUser.isIs_student()));
-
+        if(newUser.getPassword() != null){
+            user.setPassword(newUser.getPassword());
+        }
         if(newUser.getPhoto_file() != null){
             System.out.println("FOTO RECIBIDA");
             String prefix_img = newUser.getEmail();

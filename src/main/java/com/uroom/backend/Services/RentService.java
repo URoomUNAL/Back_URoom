@@ -35,6 +35,14 @@ public class RentService {
         }
     }
 
+    public Rent update(Rent rent) {
+        try {
+            return rentRepository.save(rent);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public List<Rent> selectByStatus(Rent.Status status){
         try{
             return rentRepository.findByStatus(status);
@@ -77,6 +85,24 @@ public class RentService {
         }catch (Exception e){
             System.out.println("Error al seleccionar los arriendos asociados al post y status"+post);
             return null;
+        }
+    }
+
+    public double getStudentScore(User user){
+        try{
+            List<Rent> rents = rentRepository.findByUser(user);
+            double score = 0;
+            int NumberScores = 0;
+            for(Rent rent : rents){
+                if(rent.getStudentScore()!=null){
+                    score += rent.getStudentScore();
+                    NumberScores++;
+                }
+            }
+            return score / NumberScores;
+        }catch (Exception e){
+            System.out.println("Error al buscar los arriendos del usuario "+user);
+            return 0;
         }
     }
 }

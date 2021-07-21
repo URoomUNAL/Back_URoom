@@ -7,6 +7,8 @@ import java.util.Set;
 
 public class PostRentResponse {
     private int id;
+    private int rent_id;
+    private String rent_status;
     private String title;
     private String address;
     private int price;
@@ -87,5 +89,21 @@ public class PostRentResponse {
 
     public void setCalification(CalificationResponse calification) {
         this.calification = calification;
+    }
+
+    public int getRent_id() {
+        return rent_id;
+    }
+
+    public void setRent_id(int rent_id) {
+        this.rent_id = rent_id;
+    }
+
+    public String getRent_status() {
+        return rent_status;
+    }
+
+    public void setRent_status(String rent_status) {
+        this.rent_status = rent_status;
     }
 }

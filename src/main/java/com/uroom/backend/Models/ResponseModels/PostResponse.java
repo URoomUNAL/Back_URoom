@@ -30,6 +30,7 @@ public class PostResponse {
     private User user;
     private int visits;
     private int interested;
+    private boolean is_rented;
 
     public PostResponse(Post post){
         this.address = post.getAddress();
@@ -111,11 +112,11 @@ public class PostResponse {
         this.main_img = main_img;
     }
 
-    public boolean isIs_active() {
+    public boolean getIs_active() {
         return is_active;
     }
 
-    public boolean isIs_favorite() { return is_favorite; }
+    public boolean getIs_favorite() { return is_favorite; }
 
     public void setIs_favorite(boolean is_favorite) { this.is_favorite = is_favorite; }
 
@@ -193,5 +194,13 @@ public class PostResponse {
 
     public void setInterested(int interested) {
         this.interested = interested;
+    }
+
+    public boolean getIs_rented() {
+        return is_rented;
+    }
+
+    public void setIs_rented(boolean is_rented) {
+        this.is_rented = is_rented;
     }
 }

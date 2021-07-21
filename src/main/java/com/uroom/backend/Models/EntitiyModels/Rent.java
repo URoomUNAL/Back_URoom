@@ -34,6 +34,9 @@ public class Rent {
     @Column(name = "end", columnDefinition = "DATE")
     private LocalDate end;
 
+    @Column(name = "studentScore")
+    private Double studentScore;
+
     public int getId() {
         return id;
     }
@@ -84,6 +87,14 @@ public class Rent {
 
     public boolean isRent(){
         return getStatus() == Status.RENT;
+    }
+
+    public Double getStudentScore() {
+        return studentScore;
+    }
+
+    public void setStudentScore(Double studentScore) {
+        this.studentScore = studentScore;
     }
 }
 
