@@ -82,6 +82,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<Interested> interestedPosts;
 
+    @Column(name = "score")
+    private Double score;
+
     public User(String name, String email, String password, String cellphone, boolean is_student){
         this.cellphone = cellphone;
         this.email = email;
@@ -206,5 +209,13 @@ public class User {
 
     public void setInterestedPosts(Set<Interested> interestedPosts) {
         this.interestedPosts = interestedPosts;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
     }
 }

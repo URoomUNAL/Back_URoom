@@ -17,9 +17,9 @@ public class Post {
     private int id;
 
     @NotBlank
-    @Size(max=45)
+    @Size(max=100)
     @NotNull
-    @Column(name="title", nullable = false, length = 45)
+    @Column(name="title", nullable = false, length = 100)
     private String title;
 
     @Size(max = 255)

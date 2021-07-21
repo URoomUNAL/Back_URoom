@@ -14,7 +14,6 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 public class UserResponse {
-    //TODO: AÑADIR TOKEN, IMÁGEN
     private int id;
     private String name;
     private String email;
@@ -23,6 +22,7 @@ public class UserResponse {
     private boolean is_student;
     private boolean is_active;
     private String photo;
+    private int actual_rent_id;
 
     public UserResponse(User user){
         this.id = user.getId();
@@ -97,5 +97,13 @@ public class UserResponse {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public int getActual_rent_id() {
+        return actual_rent_id;
+    }
+
+    public void setActual_rent_id(int actual_rent_id) {
+        this.actual_rent_id = actual_rent_id;
     }
 }

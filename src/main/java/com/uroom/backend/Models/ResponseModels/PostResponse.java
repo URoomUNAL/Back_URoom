@@ -30,6 +30,7 @@ public class PostResponse {
     private User user;
     private int visits;
     private int interested;
+    private boolean is_rented;
 
     public PostResponse(Post post){
         this.address = post.getAddress();
@@ -193,5 +194,13 @@ public class PostResponse {
 
     public void setInterested(int interested) {
         this.interested = interested;
+    }
+
+    public boolean isIs_rented() {
+        return is_rented;
+    }
+
+    public void setIs_rented(boolean is_rented) {
+        this.is_rented = is_rented;
     }
 }
