@@ -11,6 +11,7 @@ import org.thymeleaf.context.Context;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.util.Properties;
 
 @Service
 public class EmailService {
@@ -32,6 +33,7 @@ public class EmailService {
         mailSender.setUsername(emailConfiguration.getUsername());
         mailSender.setPort(emailConfiguration.getPort());
         mailSender.setPassword(emailConfiguration.getPassword());
+        Properties props = mailSender.getJavaMailProperties();
         this.emailConfiguration = emailConfiguration;
     }
 

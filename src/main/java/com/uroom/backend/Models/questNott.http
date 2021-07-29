@@ -2,9 +2,9 @@ POST http://localhost:9000/testNotification
 Content-Type: application/json
 
 {
-  "name": "Sebastian",
-  "email": "sebas@uroom.com.co",
-  "question": "Cómo es lo del transmi?"
+  "name": "Leo",
+  "email": "sdelgadom@unal.edu.co",
+  "question": "No te quito mucho tiempo?"
 }
 
 ###
