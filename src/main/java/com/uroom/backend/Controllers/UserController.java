@@ -56,7 +56,6 @@ public class UserController {
 
     @PostMapping(path="/log-in", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> loginUser(@RequestBody LoginRequest loginRequest) {
-        System.out.println("Hola perritos");
         try {
             User user = userService.selectByEmail(loginRequest.getEmail()).iterator().next();
             if (encoder.matches(loginRequest.getPassword(), user.getPassword())) {

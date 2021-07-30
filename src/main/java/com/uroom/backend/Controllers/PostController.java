@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -394,15 +396,31 @@ public class PostController {
         List<PostResponse> postResponses = new ArrayList<>();
         for(Post post : posts){
             PostResponse postResp = new PostResponse(post);
-            long DAY_IN_MS = 1000 * 60 * 60 * 24;
-            Date end = new Date();
-            Date begin = new Date(end.getTime() - (30 * DAY_IN_MS));
-            int NumberVisits = this.visitService.NumberVisits(post,begin,end);
-            postResp.setVisits(NumberVisits);
-            int NumberInterested = this.interestedService.NumberInterested(post,begin,end);
-            postResp.setInterested(NumberInterested);
             List<Rent> rented = this.rentService.selectByPostAndStatus(post, Rent.Status.RENT);
             postResp.setIs_rented(rented.size() > 0);
+            if(rented.size() > 0){
+                postResp.setVisits(0);
+                postResp.setInterested(0);
+            }else{
+                LocalDate lastTimeRented = this.rentService.getLastRent(post);
+                long DAY_IN_MS = 1000 * 60 * 60 * 24;
+                Date end = new Date();
+                Date begin = new Date(end.getTime() - (30 * DAY_IN_MS));
+                LocalDate localDate = begin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                if(lastTimeRented.isBefore(localDate)){
+                    int NumberVisits = this.visitService.NumberVisits(post,begin,end);
+                    postResp.setVisits(NumberVisits);
+                    int NumberInterested = this.interestedService.NumberInterested(post,begin,end);
+                    postResp.setInterested(NumberInterested);
+                }else{
+                    begin = Date.from(lastTimeRented.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                    int NumberVisits = this.visitService.NumberVisits(post,begin,end);
+                    postResp.setVisits(NumberVisits);
+                    int NumberInterested = this.interestedService.NumberInterested(post,begin,end);
+                    postResp.setInterested(NumberInterested);
+                }
+
+            }
             postResponses.add(postResp);
 
         }
