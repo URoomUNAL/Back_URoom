@@ -403,7 +403,7 @@ public class PostController {
                 postResp.setInterested(0);
             }else{
                 LocalDate lastTimeRented = this.rentService.getLastRent(post);
-                long DAY_IN_MS = 1000 * 60 * 60 * 24;
+                long DAY_IN_MS = 1000 * 60 * 60 * 24L;
                 Date end = new Date();
                 Date begin = new Date(end.getTime() - (30 * DAY_IN_MS));
                 LocalDate localDate = begin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();

@@ -109,12 +109,17 @@ public class RentService {
 
     public LocalDate getLastRent(Post post){
         List<Rent> rents = rentRepository.findByPostAndStatus(post, Rent.Status.ENDED);
-        LocalDate date = rents.get(0).getEnd();
-        for(Rent rent : rents){
-            if(date.isBefore(rent.getEnd())){
-                date = rent.getEnd();
+        if(rents.size() > 0){
+            LocalDate date = rents.get(0).getEnd();
+            for(Rent rent : rents){
+                if(date.isBefore(rent.getEnd())){
+                    date = rent.getEnd();
+                }
             }
+            return date;
         }
-        return date;
+        else{
+            return LocalDate.MIN;
+        }
     }
 }
