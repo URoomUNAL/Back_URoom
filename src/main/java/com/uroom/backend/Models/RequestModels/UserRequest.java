@@ -10,7 +10,7 @@ public class UserRequest {
 
     private int id;
     private String email;
-    private String is_student;
+    private Boolean is_student;
     private List<Post> posts;
     //Información Actualizable
     private Set<Post> favorites;
@@ -39,11 +39,11 @@ public class UserRequest {
         this.email = email;
     }
 
-    public String isIs_student() {
+    public Boolean isIs_student() {
         return is_student;
     }
 
-    public void setIs_student(String is_student) {
+    public void setIs_student(Boolean is_student) {
         this.is_student = is_student;
     }
 
