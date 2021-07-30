@@ -56,7 +56,6 @@ public class UserController {
 
     @PostMapping(path="/log-in", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> loginUser(@RequestBody LoginRequest loginRequest) {
-        System.out.println("Hola perritos");
         try {
             User user = userService.selectByEmail(loginRequest.getEmail()).iterator().next();
             if (encoder.matches(loginRequest.getPassword(), user.getPassword())) {
@@ -107,11 +106,13 @@ public class UserController {
         if(newUser.getName() != null){
             user.setName(newUser.getName());
         }
-        user.setIs_student(Boolean.parseBoolean(newUser.isIs_student()));
+        if(newUser.isIs_student() != null){
+            user.setIs_student(newUser.isIs_student());
+        }
         if(newUser.getPassword() != null){
             user.setPassword(newUser.getPassword());
         }
-        if(newUser.getPhoto_file() != null){
+        if(!newUser.getPhoto_file().isEmpty()){
             System.out.println("FOTO RECIBIDA");
             String prefix_img = newUser.getEmail();
             String[] extention = Objects.requireNonNull(newUser.getPhoto_file().getOriginalFilename()).split("\\.");
@@ -131,12 +132,16 @@ public class UserController {
 
     @PostMapping(path = "/sign-up")
     public ResponseEntity<Object> signUp(@ModelAttribute UserRequest newUser) throws IOException {
-        System.out.println("Imagen: "+(newUser.getPhoto_file() == null));
+        System.out.println("Imagen: "+(newUser.getPhoto_file().isEmpty()));
         if(newUser.getPassword().length() < 6 || newUser.getPassword().length() > 20){
             return new ResponseEntity<>("La contraseña debe tener un longitud entre 6 y 20.", HttpStatus.BAD_REQUEST);
         }
         if(!newUser.getPassword().matches(".*\\d.*")){
             return new ResponseEntity<>("La contraseña debe tener al menos un número.", HttpStatus.BAD_REQUEST);
+        }
+        boolean correct_cellphone = newUser.getCellphone().matches("3[0-9]{9}");
+        if(!correct_cellphone){
+            return new ResponseEntity<>("El número de celular debe comenzar por 3 y tener 10 dígitos.", HttpStatus.BAD_REQUEST);
         }
         newUser.setPassword(encoder.encode(newUser.getPassword()));
         User user = new User();
@@ -211,8 +216,7 @@ public class UserController {
             if(!principal.getUsername().equals(user.getEmail())){
                 return new ResponseEntity<>("Usted no tiene permisos para actualizar la información de esta cuenta de usuario", HttpStatus.BAD_REQUEST);
             }
-            if(user.isIs_student() != Boolean.parseBoolean(updatedUser.isIs_student())){
-
+            if(updatedUser.isIs_student() != null && user.isIs_student() != updatedUser.isIs_student()){
                 return new ResponseEntity<>("No puede cambiar su rol en la aplicación", HttpStatus.BAD_REQUEST);
             }
             if(!user.getEmail().equals(updatedUser.getEmail())){

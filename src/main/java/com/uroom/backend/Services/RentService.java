@@ -7,6 +7,7 @@ import com.uroom.backend.Models.EntitiyModels.User;
 import com.uroom.backend.Repository.RentRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -104,5 +105,16 @@ public class RentService {
             System.out.println("Error al buscar los arriendos del usuario "+user);
             return 0;
         }
+    }
+
+    public LocalDate getLastRent(Post post){
+        List<Rent> rents = rentRepository.findByPostAndStatus(post, Rent.Status.ENDED);
+        LocalDate date = rents.get(0).getEnd();
+        for(Rent rent : rents){
+            if(date.isBefore(rent.getEnd())){
+                date = rent.getEnd();
+            }
+        }
+        return date;
     }
 }
