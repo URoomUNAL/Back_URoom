@@ -119,8 +119,8 @@ public class UserControllerTest {
                 "  \"password\": \"MICONTRASEÑA1\"\n" +
                 "  }";
         user = new ObjectMapper().readValue( loginUser, LoginRequest.class);
-        ResponseEntity response = userController.loginUser(user);
-        this.token = (JwtResponse) response.getBody();
+        //ResponseEntity response = userController.loginUser(user);
+        //this.token = (JwtResponse) response.getBody();
         //assertEquals(SUCCESS_OK, response.getStatusCode());
     }
 
