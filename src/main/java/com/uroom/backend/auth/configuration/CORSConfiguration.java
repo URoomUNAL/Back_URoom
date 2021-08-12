@@ -21,6 +21,8 @@ public class CORSConfiguration
         //config.setAllowCredentials(true);
         config.addAllowedOrigin( "http://localhost:8080");
         config.addAllowedOrigin( "https://proud-grass-0191ffe10.azurestaticapps.net");
+        config.addAllowedOrigin( "https://uroom.com.co");
+        config.addAllowedOrigin( "https://uroom-ef7ce.web.app");
         config.addAllowedHeader( "*" );
         config.addAllowedMethod( "*");
         source.registerCorsConfiguration( "/**", config );
