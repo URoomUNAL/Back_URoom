@@ -3,7 +3,6 @@ package com.uroom.backend.auth.configuration;
 import com.uroom.backend.auth.jwt.AuthEntryPointJwt;
 import com.uroom.backend.auth.jwt.AuthTokenFilter;
 import com.uroom.backend.auth.services.UserDetailsServiceImpl;
-import com.uroom.backend.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,9 +24,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(
         prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    UserRepository userRepository;
 
     @Autowired
     UserDetailsServiceImpl userDetailsService;

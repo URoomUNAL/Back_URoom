@@ -2,13 +2,13 @@ package com.uroom.backend;
 
 //import org.h2.util.json.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.uroom.backend.Controllers.UserController;
-import com.uroom.backend.Models.EntitiyModels.User;
-import com.uroom.backend.Models.RequestModels.LoginRequest;
-import com.uroom.backend.Models.RequestModels.UserRequest;
-import com.uroom.backend.Models.ResponseModels.JwtResponse;
-import com.uroom.backend.Services.AzureStorageService;
-import com.uroom.backend.Services.UserService;
+import com.uroom.backend.controllers.UserController;
+import com.uroom.backend.models.entity.User;
+import com.uroom.backend.models.requests.LoginRequest;
+import com.uroom.backend.models.requests.UserRequest;
+import com.uroom.backend.models.responses.JwtResponse;
+import com.uroom.backend.services.StorageService;
+import com.uroom.backend.services.UserService;
 import com.uroom.backend.auth.jwt.JwtUtil;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -17,11 +17,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 
 
 import java.io.IOException;
@@ -41,7 +37,7 @@ public class UserControllerTest {
     private UserService userService;
 
     @Autowired
-    private AzureStorageService azureStorageService;
+    private StorageService storageService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -54,7 +50,7 @@ public class UserControllerTest {
     @Test
     @Order(1)
     void createUser() throws IOException {
-        UserController userController = new UserController(userService, azureStorageService, authenticationManager, jwtUtils);
+        UserController userController = new UserController(userService, storageService, authenticationManager, jwtUtils);
 
         String newUser = "{\n" +
                 "  \"email\": \"test@test.edu.coo\",\n" +
@@ -96,7 +92,7 @@ public class UserControllerTest {
     @Test
     @Order(2)
     void loginUser() throws IOException {
-        UserController userController = new UserController(userService, azureStorageService, authenticationManager, jwtUtils);
+        UserController userController = new UserController(userService, storageService, authenticationManager, jwtUtils);
         //Invalid email
         String loginUser = "{\n" +
                 "  \"email\": \"test@test.edu.cooo\",\n" +
@@ -127,7 +123,7 @@ public class UserControllerTest {
     @Test
     @Order(3)
     void deactivateUser() throws IOException {
-        UserController userController = new UserController(userService, azureStorageService, authenticationManager, jwtUtils);
+        UserController userController = new UserController(userService, storageService, authenticationManager, jwtUtils);
         //Invalid email
         String updateUser = "{\n" +
                 "  \"email\": \"test@test.edu.cooo\"\n" +
@@ -146,7 +142,7 @@ public class UserControllerTest {
     @Test
     @Order(4)
     void deleteUser() throws IOException {
-        UserController userController = new UserController(userService, azureStorageService, authenticationManager, jwtUtils);
+        UserController userController = new UserController(userService, storageService, authenticationManager, jwtUtils);
 
         //Invalid email
         String deleteUser = "{\n" +

@@ -6,9 +6,10 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200&display=swap');
     </style>
-    <style th:insert="../static/css/bootstrap-vue.css"/>
-    <style th:insert="../static/css/uroom-styles.css"/>
-    <style th:insert="../static/css/fonts.css"/>
+    <style th:insert="../static/css/bootstrap-vue.css"></style>
+    <style th:insert="../static/css/uroom-styles.css"></style>
+    <style th:insert="../static/css/fonts.css"></style>
+    <title>Habitacion arrendada</title>
 
 </head>
 <body>
@@ -17,7 +18,7 @@
         <div class="row">
             <div class="card text-left" style="min-width: 100%;">
                 <div class ="card-body">
-                    <h4 class = "title primary" style="display:inline-block !important;"><strong>URoom te informa que </strong> <p th:text="${name}"></p>&nbsp;te arrendó la habittación en la que estabas interesado</h4>
+                    <h4 class = "title primary" style="display:inline-block !important;"><strong>URoom te informa que </strong> <p th:text="${name}"></p>&nbsp;te arrendó la habitación en la que estabas interesado</h4>
                     <p class = "card-text">
                         <strong th:text="${question}"></strong>
                     </p>

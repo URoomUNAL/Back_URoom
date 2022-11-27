@@ -1,7 +1,7 @@
 package com.uroom.backend.auth.services;
 
-import com.uroom.backend.Models.EntitiyModels.User;
-import com.uroom.backend.Repository.UserRepository;
+import com.uroom.backend.models.entity.User;
+import com.uroom.backend.repository.entity.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

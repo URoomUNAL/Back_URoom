@@ -1,7 +1,7 @@
 package com.uroom.backend.auth.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.uroom.backend.Models.EntitiyModels.User;
+import com.uroom.backend.models.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -59,7 +59,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return "password";
     }
 
     @Override
