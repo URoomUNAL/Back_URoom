@@ -11,6 +11,8 @@ import com.uroom.backend.services.StorageService;
 import com.uroom.backend.services.UserService;
 import com.uroom.backend.auth.jwt.JwtUtil;
 import com.uroom.backend.auth.services.UserDetailsImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,6 +34,8 @@ import java.util.Objects;
 
 @RestController
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private final UserService userService;
     private final StorageService storageService;
@@ -76,23 +80,25 @@ public class UserController {
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     String jwt = jwtUtils.generateJwtToken(authentication);
-
+                    logger.info("Inicio de sesión exitoso");
                     return ResponseEntity.ok(new JwtResponse(jwt,
                             user.getName(),
                             user.getEmail(),
                             authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())));
                 } else {
-                    //TODO:INGRESAR LOG
+                    logger.error("No se pudo reactivar el usuario");
                     return new ResponseEntity<>("No fue posible reactivar el usuario, por favor intente nuevamente.", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             } else {
-                //TODO:INGRESAR LOG
+                logger.error("Contraseña ingresada por el usuario es incorrecta");
                 return new ResponseEntity<>("La contraseña es incorrecta, por favor intente nuevamente.", HttpStatus.BAD_REQUEST);
             }
         } catch (NoSuchElementException e) {
+            logger.error("No se encontró el usuario, por favor intente nuevamente.");
             return new ResponseEntity<>("No se encontró el usuario, por favor intente nuevamente.", HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             e.printStackTrace();
+            logger.error("Error iniciando sesión");
             return new ResponseEntity<>("Error.", HttpStatus.BAD_REQUEST);
         }
     }

@@ -1,0 +1,80 @@
+2022-12-01 00:04:14,253 - INFO  com.uroom.backend.URoomApplication - Starting URoomApplication using Java 11.0.12 on Ricardo with PID 21043 (/home/ricardo/Documents/Personal/Cripto/Back_URoom/target/classes started by ricardo in /home/ricardo/Documents/Personal/Cripto/Back_URoom)
+2022-12-01 00:04:14,255 - INFO  com.uroom.backend.URoomApplication - No active profile set, falling back to default profiles: default
+2022-12-01 00:04:14,272 - INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 6.1.7.Final
+2022-12-01 00:04:15,079 - INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
+2022-12-01 00:04:15,080 - INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-12-01 00:04:15,143 - INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.uroom.backend.repository.ldap.UserLdapRepository. If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: javax.persistence.Entity, javax.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository.
+2022-12-01 00:04:15,166 - INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 79 ms. Found 10 JPA repository interfaces.
+2022-12-01 00:04:15,173 - INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
+2022-12-01 00:04:15,174 - INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data LDAP repositories in DEFAULT mode.
+2022-12-01 00:04:15,180 - INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data LDAP - Could not safely identify store assignment for repository candidate interface com.uroom.backend.repository.entity.CalificationRepository. If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository.
+2022-12-01 00:04:15,181 - INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data LDAP - Could not safely identify store assignment for repository candidate interface com.uroom.backend.repository.entity.ImageRepository. If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository.
+2022-12-01 00:04:15,181 - INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data LDAP - Could not safely identify store assignment for repository candidate interface com.uroom.backend.repository.entity.InterestedRepository. If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository.
+2022-12-01 00:04:15,182 - INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data LDAP - Could not safely identify store assignment for repository candidate interface com.uroom.backend.repository.entity.PostRepository. If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository.
+2022-12-01 00:04:15,182 - INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data LDAP - Could not safely identify store assignment for repository candidate interface com.uroom.backend.repository.entity.QuestionRepository. If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository.
+2022-12-01 00:04:15,183 - INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data LDAP - Could not safely identify store assignment for repository candidate interface com.uroom.backend.repository.entity.RentRepository. If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository.
+2022-12-01 00:04:15,184 - INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data LDAP - Could not safely identify store assignment for repository candidate interface com.uroom.backend.repository.entity.RuleRepository. If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository.
+2022-12-01 00:04:15,184 - INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data LDAP - Could not safely identify store assignment for repository candidate interface com.uroom.backend.repository.entity.ServiceRepository. If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository.
+2022-12-01 00:04:15,185 - INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data LDAP - Could not safely identify store assignment for repository candidate interface com.uroom.backend.repository.entity.UserRepository. If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository.
+2022-12-01 00:04:15,185 - INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data LDAP - Could not safely identify store assignment for repository candidate interface com.uroom.backend.repository.entity.VisitRepository. If you want this repository to be a LDAP repository, consider annotating your entities with one of these annotations: org.springframework.ldap.odm.annotations.Entry (preferred), or consider extending one of the following types with your repository: org.springframework.data.ldap.repository.LdapRepository.
+2022-12-01 00:04:15,191 - INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 16 ms. Found 1 LDAP repository interfaces.
+2022-12-01 00:04:15,558 - INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@71f1cc02' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2022-12-01 00:04:15,563 - INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2022-12-01 00:04:15,799 - INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 9000 (http)
+2022-12-01 00:04:15,808 - INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9000"]
+2022-12-01 00:04:15,809 - INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2022-12-01 00:04:15,809 - INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.44]
+2022-12-01 00:04:15,885 - INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2022-12-01 00:04:15,885 - INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1566 ms
+2022-12-01 00:04:15,974 - WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-12-01 00:04:16,068 - INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-12-01 00:04:16,102 - INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.4.29.Final
+2022-12-01 00:04:16,186 - INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-12-01 00:04:16,260 - INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2022-12-01 00:04:16,577 - INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2022-12-01 00:04:16,591 - INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+2022-12-01 00:04:16,886 - WARN  org.hibernate.mapping.RootClass - HHH000038: Composite-id class does not override equals(): com.uroom.backend.models.entity.InterestedKey
+2022-12-01 00:04:16,887 - WARN  org.hibernate.mapping.RootClass - HHH000039: Composite-id class does not override hashCode(): com.uroom.backend.models.entity.InterestedKey
+2022-12-01 00:04:17,436 - INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-12-01 00:04:17,445 - INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-12-01 00:04:18,451 - INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure Ant [pattern='/**', OPTIONS] with []
+2022-12-01 00:04:18,493 - INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1a99744a, org.springframework.security.web.context.SecurityContextPersistenceFilter@1512efe9, org.springframework.security.web.header.HeaderWriterFilter@2389f546, org.springframework.security.web.authentication.logout.LogoutFilter@2daa5092, com.uroom.backend.auth.jwt.AuthTokenFilter@7962c1d5, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@bb1b872, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@55a5eea3, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@32084a01, org.springframework.security.web.session.SessionManagementFilter@67521a79, org.springframework.security.web.access.ExceptionTranslationFilter@58b30e3e, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@439d649c]
+2022-12-01 00:04:18,639 - INFO  o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2022-12-01 00:04:18,892 - INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9000"]
+2022-12-01 00:04:18,927 - INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 9000 (http) with context path ''
+2022-12-01 00:04:18,941 - INFO  com.uroom.backend.URoomApplication - Started URoomApplication in 5.093 seconds (JVM running for 6.268)
+2022-12-01 00:04:32,018 - INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2022-12-01 00:04:32,019 - INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2022-12-01 00:04:32,020 - INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2022-12-01 00:04:32,273 - DEBUG org.hibernate.SQL - 
+    select
+        user0_.id as id1_11_,
+        user0_.distinguished_name as distingu2_11_,
+        user0_.email as email3_11_,
+        user0_.is_active as is_activ4_11_,
+        user0_.is_student as is_stude5_11_,
+        user0_.name as name6_11_,
+        user0_.photo as photo7_11_,
+        user0_.score as score8_11_ 
+    from
+        user user0_ 
+    where
+        user0_.email=?
+2022-12-01 00:04:32,293 - TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [1] as [VARCHAR] - [rcalvom@unal.edu.co]
+2022-12-01 00:04:32,500 - ERROR c.u.b.controllers.UserController - Contraseña ingresada por el usuario es incorrecta
+2022-12-01 00:04:35,197 - DEBUG org.hibernate.SQL - 
+    select
+        user0_.id as id1_11_,
+        user0_.distinguished_name as distingu2_11_,
+        user0_.email as email3_11_,
+        user0_.is_active as is_activ4_11_,
+        user0_.is_student as is_stude5_11_,
+        user0_.name as name6_11_,
+        user0_.photo as photo7_11_,
+        user0_.score as score8_11_ 
+    from
+        user user0_ 
+    where
+        user0_.email=?
+2022-12-01 00:04:35,199 - TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [1] as [VARCHAR] - [rcalvom@unal.edu.co]
+2022-12-01 00:04:35,431 - INFO  c.u.b.controllers.UserController - Inicio de sesión exitoso
