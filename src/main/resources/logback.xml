@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="true" scan="true" scanPeriod="30 seconds">
+    <appender name="defaultConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%date - %-5level %logger{36} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+    <appender name="rollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>audit-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>1GB</maxFileSize>
+            <maxHistory>100</maxHistory>
+            <totalSizeCap>200GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>%date - %-5level %logger{36} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+    <root name="com.uroom.backend.controllers" level="info">
+        <appender-ref ref="defaultConsoleAppender"/>
+        <appender-ref ref="rollingFileAppender"/>
+    </root>
+</configuration>
