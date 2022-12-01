@@ -141,6 +141,9 @@ public class UserController {
     @PostMapping(path = "/sign-up")
     public ResponseEntity<Object> signUp(@ModelAttribute UserRequest newUser) throws IOException {
         System.out.println("Imagen: "+(newUser.getPhoto_file().isEmpty()));
+        if(!newUser.validate()){
+            return new ResponseEntity<>("Datos mal diligenciados", HttpStatus.BAD_REQUEST);
+        }
         if(newUser.getPassword().length() < 6 || newUser.getPassword().length() > 20){
             return new ResponseEntity<>("La contraseña debe tener un longitud entre 6 y 20.", HttpStatus.BAD_REQUEST);
         }
@@ -221,6 +224,9 @@ public class UserController {
             UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userService.selectByEmail(updatedUser.getEmail()).iterator().next();
 
+            if(!updatedUser.validate()){
+                return new ResponseEntity<>("Datos mal diligenciados", HttpStatus.BAD_REQUEST);
+            }
             if(!principal.getUsername().equals(user.getEmail())){
                 return new ResponseEntity<>("Usted no tiene permisos para actualizar la información de esta cuenta de usuario", HttpStatus.BAD_REQUEST);
             }
@@ -230,6 +236,7 @@ public class UserController {
             if(!user.getEmail().equals(updatedUser.getEmail())){
                 return new ResponseEntity<>("No puede cambiar su correo electrónico", HttpStatus.BAD_REQUEST);
             }
+
             /*List<User> selectByCellphone = userService.selectByCellphone(updatedUser.getCellphone());
             if(selectByCellphone.size() > 0 && !user.getCellphone().equals(updatedUser.getCellphone())){
                 return new ResponseEntity<>("El teléfono ingresado ya está registrado", HttpStatus.BAD_REQUEST);

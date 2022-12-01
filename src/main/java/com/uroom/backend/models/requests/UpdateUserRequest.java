@@ -49,4 +49,8 @@ public class UpdateUserRequest {
     public void setPhoto_file(MultipartFile photo_file) {
         this.photo_file = photo_file;
     }
+
+    public boolean validate(){
+        return this.cellphone.startsWith("3") && this.cellphone.length() == 10;
+    }
 }

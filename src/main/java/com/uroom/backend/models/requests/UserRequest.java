@@ -114,4 +114,9 @@ public class UserRequest {
     public Set<Post> getFavorites() { return favorites; }
 
     public void setFavorites(Set<Post> favorites) { this.favorites = favorites; }
+
+
+    public boolean validate(){
+        return this.email.matches("[-\\w\\.]+@\\w+\\.\\w+") && this.cellphone.startsWith("3") && this.cellphone.length() == 10;
+    }
 }

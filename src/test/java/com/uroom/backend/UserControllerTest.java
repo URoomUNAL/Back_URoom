@@ -158,5 +158,23 @@ public class UserControllerTest {
         user = new ObjectMapper().readValue(deleteUser, User.class);
         //assertEquals(SUCCESS_ACCEPTED, userController.deleteUser(user).getStatusCode());
     }
+
+    @Test
+    @Order(5)
+    void userSignUpValidations() throws IOException {
+        UserController userController = new UserController(userService, storageService, authenticationManager, jwtUtils);
+
+        String newUser = "{\n" +
+                "  \"email\": \"test@test.educoo\",\n" +
+                "  \"name\": \"Usuario de Prueba\",\n" +
+                "  \"password\": \"mala\",\n" +
+                "  \"cellphone\": \"3002674935\",\n" +
+                "  \"age\":35,\n" +
+                "  \"is_student\": true\n" +
+                "  }";
+        UserRequest user = new ObjectMapper().readValue(newUser, UserRequest.class);
+        assertEquals(FAILED_BAD_REQUEST, userController.signUp(user).getStatusCode());
+    }
+
 /**/
 }
